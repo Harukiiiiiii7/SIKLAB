@@ -12,16 +12,18 @@ class LocationScreen extends StatefulWidget {
 }
 
 class _LocationScreenState extends State<LocationScreen> {
-  String _locationMessage = '';
   late String _lat;
   late String _long;
   late double lat, long;
 
-  late LatLng markerLocation = LatLng(14.55, 121.02);
+  //late LatLng markerLocation = LatLng(14.55, 121.02);
+  late LatLng markerLocation = LatLng(0, 0);
+  MapController mapController = MapController();
 
   @override
   void initState() {
     _getLocation();
+    mapController = MapController();
     super.initState();
   }
 
@@ -46,9 +48,6 @@ class _LocationScreenState extends State<LocationScreen> {
 
     Position position = await Geolocator.getCurrentPosition();
     setState(() {
-      _locationMessage =
-          'Latitude: ${position.latitude}, Longitude: ${position.longitude}';
-
       _lat = '${position.latitude}';
       _long = '${position.longitude}';
 
@@ -60,26 +59,15 @@ class _LocationScreenState extends State<LocationScreen> {
       print(lat);
       print(long);
       print(markerLocation);
-      print(_locationMessage);
     });
-    // var location = Location();
+  }
 
-    // if (!await location.serviceEnabled()) {
-    //   if (!await location.requestService()) {
-    //     return;
-    //   }
-    // }
-
-    // var permission = await location.hasPermission();
-    // if (permission == PermissionStatus.denied) {
-    //   permission = await location.requestPermission();
-    //   if (permission != PermissionStatus.granted) {
-    //     return;
-    //   }
-    // }
-
-    // markerLocation = (await location.getLocation()) as LatLng;
-    // print("${markerLocation.latitude} ${markerLocation.longitude}");
+  void _onMapMoved(MapPosition position, bool hasGesture) {
+    if (hasGesture) {
+      setState(() {
+        markerLocation = position.center!;
+      });
+    }
   }
 
   @override
@@ -87,15 +75,17 @@ class _LocationScreenState extends State<LocationScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Pin Location from Map'),
+        backgroundColor: const Color.fromRGBO(171, 0, 0, 1),
       ),
-      body: Stack(
-        children: [
+      body: Stack(children: [
+        if (markerLocation.latitude != 0 &&
+            markerLocation.longitude != 0) // Check if markerLocation is updated
           FlutterMap(
+            mapController: mapController,
             options: MapOptions(
-              zoom: 13,
+              zoom: 16,
               center: markerLocation,
-              interactiveFlags:
-                  InteractiveFlag.drag | InteractiveFlag.pinchZoom,
+              onPositionChanged: _onMapMoved,
             ),
             layers: [
               TileLayerOptions(
@@ -109,21 +99,40 @@ class _LocationScreenState extends State<LocationScreen> {
               MarkerLayerOptions(
                 markers: [
                   Marker(
-                      width: 80.0,
-                      height: 80.0,
+                      width: 30.0,
+                      height: 30.0,
                       point: markerLocation,
-                      builder: (ctx) => Container(
-                            child: Icon(
-                              Icons.location_pin,
-                              color: Colors.red,
-                            ),
+                      anchorPos: AnchorPos.align(AnchorAlign.top),
+                      builder: (ctx) => const Icon(
+                            Icons.location_pin,
+                            color: Color.fromARGB(255, 223, 18, 18),
+                            size: 45.0,
                           ))
                 ],
               ),
             ],
           ),
-        ],
-      ),
+        if (markerLocation.latitude == 0 &&
+            markerLocation.longitude ==
+                0) // Display a loading indicator or placeholder if markerLocation is not updated yet
+          Center(child: CircularProgressIndicator()),
+        Positioned(
+          bottom: 16.0,
+          right: 16.0,
+          child: ElevatedButton(
+            onPressed: () {
+              print(markerLocation);
+            },
+            style: ElevatedButton.styleFrom(
+                fixedSize: const Size(350, 50),
+                shape: const StadiumBorder(),
+                shadowColor: const Color.fromRGBO(105, 105, 105, 1),
+                backgroundColor: const Color.fromRGBO(171, 0, 0, 1)),
+            child: const Text("SET LOCATION",
+                style: TextStyle(fontSize: 20, color: Colors.white)),
+          ),
+        ),
+      ]),
     );
   }
 }
