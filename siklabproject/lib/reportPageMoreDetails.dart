@@ -8,8 +8,6 @@ import 'package:siklabproject/ConfirmReport.dart';
 import 'package:siklabproject/cameraPage.dart';
 import 'package:siklabproject/userDashboard.dart';
 
-import 'mapPage.dart';
-
 class ReportPageMoreDetails extends StatefulWidget {
   String reportID, picture;
 

@@ -41,6 +41,8 @@ dependencies:
   intl: ^0.18.0
   location: ^4.4.0
   geolocator: ^8.2.1
+  geocoding: ^2.0.1-nullsafety.3
+  mapbox_gl: ^0.16.0
 
 dev_dependencies:
   flutter_test:
@@ -74,6 +76,8 @@ flutter:
     - assets/hotline.png
     - assets/log-out.png
     - assets/map.png
+    - assets/camera.png
+    - assets/marker.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

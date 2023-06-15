@@ -3,10 +3,17 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
+import 'package:siklabproject/confirmAddressPage.dart';
 
 import 'appConstants.dart';
 
 class LocationScreen extends StatefulWidget {
+  String reportID;
+
+  LocationScreen({
+    required this.reportID,
+  });
+
   @override
   _LocationScreenState createState() => _LocationScreenState();
 }
@@ -22,6 +29,7 @@ class _LocationScreenState extends State<LocationScreen> {
 
   @override
   void initState() {
+    print(widget.reportID);
     _getLocation();
     mapController = MapController();
     super.initState();
@@ -47,7 +55,7 @@ class _LocationScreenState extends State<LocationScreen> {
     }
 
     Position position = await Geolocator.getCurrentPosition();
-    setState(() {
+    setState(() async {
       _lat = '${position.latitude}';
       _long = '${position.longitude}';
 
@@ -56,6 +64,15 @@ class _LocationScreenState extends State<LocationScreen> {
 
       markerLocation = LatLng(lat, long);
 
+      // markerLocation = await mapController.addSymbol
+      //   (
+      //       SymbolOptions
+      //       (
+      //           geometry: location,
+      //           iconImage: 'assets/images/location-pin.png',
+      //           iconSize: 0.2,
+      //       ),
+      //   );
       print(lat);
       print(long);
       print(markerLocation);
@@ -121,7 +138,14 @@ class _LocationScreenState extends State<LocationScreen> {
           right: 16.0,
           child: ElevatedButton(
             onPressed: () {
-              print(markerLocation);
+              // print(markerLocation);
+              // print(widget.reportID);
+              // Navigator.push(
+              //     context,
+              //     MaterialPageRoute(
+              //         builder: (context) => ConfirmAddressPage(
+              //             reportID: widget.reportID,
+              //             markerLocation: markerLocation)));
             },
             style: ElevatedButton.styleFrom(
                 fixedSize: const Size(350, 50),

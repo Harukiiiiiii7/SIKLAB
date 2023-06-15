@@ -28,17 +28,24 @@ class _ImagePreviewState extends State<ImagePreview> {
     String base64Image = base64Encode(imageBytes);
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Image Preview")),
-      body: Container(
+      appBar: AppBar(
+        title: const Text("Image Preview"),
+        backgroundColor: const Color.fromRGBO(171, 0, 0, 1),
+      ),
+      body: SingleChildScrollView(
+        child: Container(
           child: Column(
-        children: [
-          Align(
-            alignment: Alignment.center,
-            child: Image.file(picture),
+            children: [
+              Align(
+                alignment: Alignment.center,
+                child: Image.file(picture),
+              ),
+            ],
           ),
-        ],
-      )),
+        ),
+      ),
       floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: const Color.fromRGBO(171, 0, 0, 1),
         onPressed: () {
           //print(imageBytes);
           print(base64Image);
@@ -48,7 +55,9 @@ class _ImagePreviewState extends State<ImagePreview> {
                   builder: (context) =>
                       ReportPageMoreDetails(widget.reportID, base64Image)));
         },
-        icon: const Icon(Icons.check),
+        icon: const Icon(
+          Icons.check,
+        ),
         label: const Text("OK"),
       ),
     );

@@ -7,9 +7,8 @@ import 'package:intl/intl.dart';
 import 'package:siklabproject/ConfirmReport.dart';
 import 'package:siklabproject/cameraPage.dart';
 import 'package:siklabproject/testLocationGetter.dart';
+import 'package:siklabproject/testMapBox.dart';
 import 'package:siklabproject/userDashboard.dart';
-
-import 'mapPage.dart';
 
 class ReportPage extends StatefulWidget {
   @override
@@ -23,24 +22,6 @@ class _ReportPageState extends State<ReportPage> {
     cameras.clear();
     cameras.addAll(await availableCameras());
   }
-
-  final items = [
-    "Fire Severity 1",
-    "Fire Severity 2",
-    "Fire Severity 3",
-    "Fire Severity 4",
-    "Fire Severity 5",
-    "Fire Severity 6",
-    "Fire Severity 7",
-    "Fire Severity 8",
-    "Fire Severity 9",
-    "Fire Severity 10"
-  ];
-  String? value;
-  final items2 = ["10-50", "51-100", "101-150", "151-200", "200+"];
-  String? value2;
-
-  TextEditingController _contactNumberController = TextEditingController();
 
   String formattedDate = '';
   String reportID = '';
@@ -63,6 +44,23 @@ class _ReportPageState extends State<ReportPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'REPORT FIRE INCIDENT',
+              style: TextStyle(color: Colors.white, fontSize: 20.0),
+            ),
+            const Text(
+              'Please enable SIKLAB to access your location.',
+              style: TextStyle(color: Colors.white, fontSize: 14.0),
+            ),
+          ],
+        ),
+        backgroundColor: const Color.fromRGBO(171, 0, 0, 1),
+      ),
       resizeToAvoidBottomInset: false,
       body: LayoutBuilder(
         builder: (context, constraints) => SingleChildScrollView(
@@ -74,48 +72,14 @@ class _ReportPageState extends State<ReportPage> {
                     color: const Color.fromRGBO(171, 0, 0, 1),
                     child: Column(
                       children: [
-                        Align(
-                            alignment: Alignment.centerLeft,
-                            child: Padding(
-                              padding:
-                                  EdgeInsets.only(top: 50, left: 25, bottom: 5),
-                              child: Text(
-                                "REPORT FIRE INCIDENT $reportID",
-                                style: const TextStyle(
-                                    fontSize: 24, color: Colors.white),
-                              ),
-                            )),
-                        const Align(
-                            alignment: Alignment.centerLeft,
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 25, bottom: 5),
-                              child: Text(
-                                "Fill up the following information.",
-                                style: TextStyle(
-                                    fontSize: 14, color: Colors.white),
-                              ),
-                            )),
-                        const Align(
-                          alignment: Alignment.centerLeft,
-                          child: Padding(
-                            padding: EdgeInsets.only(left: 25, bottom: 20),
-                            child: Text(
-                              "Enable your camera for authentication",
-                              style:
-                                  TextStyle(fontSize: 14, color: Colors.white),
-                            ),
-                          ),
-                        ),
                         Expanded(
                             child: Align(
                                 alignment: Alignment.bottomCenter,
                                 child: Container(
                                   width: double.infinity,
                                   decoration: const BoxDecoration(
-                                      color: Color.fromRGBO(226, 226, 226, 1),
-                                      borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(30),
-                                          topRight: Radius.circular(30))),
+                                    color: Color.fromRGBO(226, 226, 226, 1),
+                                  ),
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
@@ -136,7 +100,9 @@ class _ReportPageState extends State<ReportPage> {
                                                 context,
                                                 MaterialPageRoute(
                                                     builder: (context) =>
-                                                        LocationScreen()));
+                                                        MapBoxLocationScreen(
+                                                          reportID: reportID,
+                                                        )));
                                           },
                                           child: Row(children: [
                                             Image.asset('assets/map.png',
@@ -149,35 +115,6 @@ class _ReportPageState extends State<ReportPage> {
                                                         0, 0, 0, 1)))
                                           ])),
                                       const SizedBox(height: 10),
-                                      ElevatedButton(
-                                          onPressed: () async {
-                                            await _initializeCameras();
-                                            final camera = cameras.first;
-                                            final result = await Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      CameraScreen(
-                                                        camera: camera,
-                                                        reportID: reportID,
-                                                      )),
-                                            );
-                                            if (result != null) {
-                                              print('Image saved to $result');
-                                            }
-                                          },
-                                          style: ElevatedButton.styleFrom(
-                                              fixedSize: const Size(350, 50),
-                                              shape: const StadiumBorder(),
-                                              shadowColor: const Color.fromRGBO(
-                                                  105, 105, 105, 1),
-                                              backgroundColor:
-                                                  const Color.fromRGBO(
-                                                      248, 248, 248, 1)),
-                                          child: const Text("OPEN CAMERA",
-                                              style: TextStyle(
-                                                  fontSize: 20,
-                                                  color: Colors.black))),
                                     ],
                                   ),
                                 ))),
