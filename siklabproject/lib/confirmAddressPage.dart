@@ -78,7 +78,9 @@ class _confirmAddressPage extends State<ConfirmAddressPage> {
                                 children: [
                                   Text(
                                     address,
-                                    style: const TextStyle(fontSize: 18.0),
+                                    style: const TextStyle(
+                                        fontSize: 18.0,
+                                        fontWeight: FontWeight.bold),
                                   ),
                                   const SizedBox(height: 15),
                                   ElevatedButton(
