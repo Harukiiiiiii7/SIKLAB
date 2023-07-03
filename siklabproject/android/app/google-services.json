@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "755379200261",
+    "project_id": "siklab-project",
+    "storage_bucket": "siklab-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:755379200261:android:a512a7b9539dbd832a576c",
+        "android_client_info": {
+          "package_name": "com.example.siklabproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "755379200261-kidad9bdk56b4uqr4f1a45gu7ahs4n4p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyChj3Y8h6QTeZowpMOl2c9Y2iAZQDSJf9o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "755379200261-kidad9bdk56b4uqr4f1a45gu7ahs4n4p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

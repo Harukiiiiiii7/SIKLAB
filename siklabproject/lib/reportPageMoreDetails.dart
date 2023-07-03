@@ -5,8 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:siklabproject/ConfirmReport.dart';
-import 'package:siklabproject/cameraPage.dart';
-import 'package:siklabproject/userDashboard.dart';
+import 'package:siklabproject/hotlines.dart';
 
 class ReportPageMoreDetails extends StatefulWidget {
   String reportID, picture;
@@ -19,6 +18,40 @@ class ReportPageMoreDetails extends StatefulWidget {
 
 class _ReportPageMoreDetailsState extends State<ReportPageMoreDetails> {
   final List<CameraDescription> cameras = [];
+
+  void _goToNextScreen() {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => Hotlines()));
+  }
+
+  void _showConfirmDialog() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+              title: const Text("Confirm Fire Incident Report"),
+              actions: <Widget>[
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      shadowColor: const Color.fromRGBO(105, 105, 105, 1),
+                      backgroundColor: Color.fromARGB(255, 110, 109, 109)),
+                  child: const Text("Cancel"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        shadowColor: const Color.fromRGBO(105, 105, 105, 1),
+                        backgroundColor: const Color.fromRGBO(171, 0, 0, 1)),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      _goToNextScreen();
+                    },
+                    child: const Text("Yes"))
+              ]);
+        });
+  }
 
   Future<void> _initializeCameras() async {
     cameras.clear();
@@ -64,6 +97,19 @@ class _ReportPageMoreDetailsState extends State<ReportPageMoreDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'MORE DETAILS',
+              style: TextStyle(color: Colors.white, fontSize: 20.0),
+            ),
+          ],
+        ),
+        backgroundColor: const Color.fromRGBO(171, 0, 0, 1),
+      ),
       resizeToAvoidBottomInset: false,
       body: LayoutBuilder(
         builder: (context, constraints) => SingleChildScrollView(
@@ -75,77 +121,17 @@ class _ReportPageMoreDetailsState extends State<ReportPageMoreDetails> {
                     color: const Color.fromRGBO(171, 0, 0, 1),
                     child: Column(
                       children: [
-                        Align(
-                            alignment: Alignment.centerLeft,
-                            child: Padding(
-                              padding:
-                                  EdgeInsets.only(top: 50, left: 25, bottom: 5),
-                              child: Text(
-                                "REPORT FIRE INCIDENT $reportID",
-                                style: const TextStyle(
-                                    fontSize: 24, color: Colors.white),
-                              ),
-                            )),
-                        const Align(
-                            alignment: Alignment.centerLeft,
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 25, bottom: 5),
-                              child: Text(
-                                "Fill up the following information.",
-                                style: TextStyle(
-                                    fontSize: 14, color: Colors.white),
-                              ),
-                            )),
-                        const Align(
-                          alignment: Alignment.centerLeft,
-                          child: Padding(
-                            padding: EdgeInsets.only(left: 25, bottom: 20),
-                            child: Text(
-                              "Enable your camera for authentication",
-                              style:
-                                  TextStyle(fontSize: 14, color: Colors.white),
-                            ),
-                          ),
-                        ),
                         Expanded(
                             child: Align(
                                 alignment: Alignment.bottomCenter,
                                 child: Container(
                                   width: double.infinity,
                                   decoration: const BoxDecoration(
-                                      color: Color.fromRGBO(226, 226, 226, 1),
-                                      borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(30),
-                                          topRight: Radius.circular(30))),
+                                    color: Color.fromRGBO(226, 226, 226, 1),
+                                  ),
                                   child: Column(
-                                    //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      const SizedBox(height: 25),
-                                      const Padding(
-                                        padding: EdgeInsets.only(
-                                            left: 30, right: 30),
-                                        child: TextField(
-                                          textAlign: TextAlign.center,
-                                          readOnly: true,
-                                          decoration: InputDecoration(
-                                              focusedBorder: OutlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                      color: Colors.black)),
-                                              enabledBorder: OutlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                      color: Colors.black)),
-                                              hintText:
-                                                  "Select Location from Map",
-                                              hintStyle: TextStyle(
-                                                  color: Colors.black),
-                                              labelText: "Location",
-                                              labelStyle: TextStyle(
-                                                  color: Colors.black),
-                                              contentPadding: EdgeInsets.only(
-                                                  left: 20, right: 20)),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 5),
                                       //SEVERITY DROPDOWN
                                       Container(
                                         margin: const EdgeInsets.only(
@@ -230,22 +216,10 @@ class _ReportPageMoreDetailsState extends State<ReportPageMoreDetails> {
                                           keyboardType: TextInputType.number,
                                         ),
                                       ),
-                                      const SizedBox(height: 5),
+                                      const SizedBox(height: 25),
                                       ElevatedButton(
                                           onPressed: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        ConfirmReport(
-                                                            widget.reportID,
-                                                            value!,
-                                                            value2!,
-                                                            _contactNumberController
-                                                                .text,
-                                                            widget.picture)));
-                                            print(
-                                                _contactNumberController.text);
+                                            _showConfirmDialog();
                                           },
                                           style: ElevatedButton.styleFrom(
                                               fixedSize: const Size(350, 50),
