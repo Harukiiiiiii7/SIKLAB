@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:siklabproject/ConfirmReport.dart';
 import 'package:siklabproject/cameraPage.dart';
-import 'package:siklabproject/testLocationGetter.dart';
 import 'package:siklabproject/testMapBox.dart';
 import 'package:siklabproject/userDashboard.dart';
 
