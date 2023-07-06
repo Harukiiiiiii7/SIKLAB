@@ -89,7 +89,7 @@ class _CameraScreenState extends State<CameraScreen> {
                 context,
                 MaterialPageRoute(
                     builder: (context) =>
-                        ImagePreview(widget.reportID, picture)));
+                        ImagePreview(widget.reportID, widget.latLng, picture)));
             print(widget.reportID);
             //Navigator.of(context).pop(path);
           } catch (e) {

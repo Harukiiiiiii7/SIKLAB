@@ -1,16 +1,20 @@
 import 'dart:math';
 
 import 'package:camera/camera.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:siklabproject/ConfirmReport.dart';
+import 'package:mapbox_gl/mapbox_gl.dart';
 import 'package:siklabproject/hotlines.dart';
 
 class ReportPageMoreDetails extends StatefulWidget {
-  String reportID, picture;
+  String reportID;
+  String image;
+  LatLng markerLocation;
 
-  ReportPageMoreDetails(this.reportID, this.picture, {super.key});
+  ReportPageMoreDetails(this.reportID, this.image, this.markerLocation,
+      {super.key});
 
   @override
   State<ReportPageMoreDetails> createState() => _ReportPageMoreDetailsState();
@@ -45,6 +49,17 @@ class _ReportPageMoreDetailsState extends State<ReportPageMoreDetails> {
                         shadowColor: const Color.fromRGBO(105, 105, 105, 1),
                         backgroundColor: const Color.fromRGBO(171, 0, 0, 1)),
                     onPressed: () {
+                      FirebaseFirestore.instance.collection('reports').add({
+                        'reportID': reportID,
+                        'userLocation': {
+                          'latitude': widget.markerLocation.latitude,
+                          'longitude': widget.markerLocation.longitude
+                        },
+                        'image': widget.image,
+                        'contactNumber': _contactNumberController.text,
+                        'severity': value,
+                        'numberOfVictims': value2
+                      });
                       Navigator.of(context).pop();
                       _goToNextScreen();
                     },

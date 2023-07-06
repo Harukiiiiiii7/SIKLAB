@@ -4,16 +4,16 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mapbox_gl/mapbox_gl.dart';
 import 'package:siklabproject/ConfirmReport.dart';
 import 'package:siklabproject/reportPageMoreDetails.dart';
 
-import 'addReportPage.dart';
-
 class ImagePreview extends StatefulWidget {
   String reportID;
+  LatLng markerLocation;
   XFile file;
 
-  ImagePreview(this.reportID, this.file, {super.key});
+  ImagePreview(this.reportID, this.markerLocation, this.file, {super.key});
 
   @override
   State<ImagePreview> createState() => _ImagePreviewState();
@@ -52,8 +52,8 @@ class _ImagePreviewState extends State<ImagePreview> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) =>
-                      ReportPageMoreDetails(widget.reportID, base64Image)));
+                  builder: (context) => ReportPageMoreDetails(
+                      widget.reportID, base64Image, widget.markerLocation)));
         },
         icon: const Icon(
           Icons.check,
