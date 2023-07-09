@@ -6,8 +6,11 @@ import 'package:siklabproject/loginAsPage.dart';
 import 'package:siklabproject/userDashboard.dart';
 import 'package:siklabproject/viewReportPage.dart';
 import 'hotlines.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -23,14 +26,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Capston'), // main page
-      //home: LoginAsPage(),
-      //home: UserDashboard(),
-      //home: AdminDashboard(),
-      //home: ReportPage(),
-      //home: Hotlines(),
-      //home: viewReportPage(),
-      //home: HistoryPage()
+      home: const MyHomePage(title: ''), // main page
     );
   }
 }

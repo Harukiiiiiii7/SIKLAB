@@ -49,7 +49,11 @@ class _ReportPageMoreDetailsState extends State<ReportPageMoreDetails> {
                         shadowColor: const Color.fromRGBO(105, 105, 105, 1),
                         backgroundColor: const Color.fromRGBO(171, 0, 0, 1)),
                     onPressed: () {
-                      FirebaseFirestore.instance.collection('reports').add({
+                      final report = FirebaseFirestore.instance
+                          .collection('reports')
+                          .doc(reportID);
+
+                      final json = {
                         'reportID': reportID,
                         'userLocation': {
                           'latitude': widget.markerLocation.latitude,
@@ -58,19 +62,20 @@ class _ReportPageMoreDetailsState extends State<ReportPageMoreDetails> {
                         'image': widget.image,
                         'contactNumber': _contactNumberController.text,
                         'severity': value,
-                        'numberOfVictims': value2
-                      });
+                        'numberOfVictims': value2,
+                      };
+
+                      report.set(json);
+
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text(
+                              'Report is successfully submitted. Please wait for a call from the authorities.')));
                       Navigator.of(context).pop();
                       _goToNextScreen();
                     },
                     child: const Text("Yes"))
               ]);
         });
-  }
-
-  Future<void> _initializeCameras() async {
-    cameras.clear();
-    cameras.addAll(await availableCameras());
   }
 
   final items = [
