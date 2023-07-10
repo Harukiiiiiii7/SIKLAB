@@ -63,6 +63,7 @@ class _ReportPageMoreDetailsState extends State<ReportPageMoreDetails> {
                         'contactNumber': _contactNumberController.text,
                         'severity': value,
                         'numberOfVictims': value2,
+                        'remarks': _remarksController.text
                       };
 
                       report.set(json);
@@ -79,22 +80,16 @@ class _ReportPageMoreDetailsState extends State<ReportPageMoreDetails> {
   }
 
   final items = [
-    "Fire Severity 1",
-    "Fire Severity 2",
-    "Fire Severity 3",
-    "Fire Severity 4",
-    "Fire Severity 5",
-    "Fire Severity 6",
-    "Fire Severity 7",
-    "Fire Severity 8",
-    "Fire Severity 9",
-    "Fire Severity 10"
+    "Alarm 1",
+    "Alarm 2",
+    "Alarm 3"
   ];
   String? value;
   final items2 = ["10-50", "51-100", "101-150", "151-200", "200+"];
   String? value2;
 
   TextEditingController _contactNumberController = TextEditingController();
+  TextEditingController _remarksController = TextEditingController();
 
   String formattedDate = '';
   String reportID = '';
@@ -234,6 +229,27 @@ class _ReportPageMoreDetailsState extends State<ReportPageMoreDetails> {
                                               contentPadding: EdgeInsets.only(
                                                   left: 20, right: 20)),
                                           keyboardType: TextInputType.number,
+                                        ),
+                                      ),
+                                      //REMARKS FIELD
+                                      const SizedBox(height: 5),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            left: 30, right: 30),
+                                        child: TextField(
+                                          decoration: const InputDecoration(
+                                              focusedBorder: OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color: Colors.black)),
+                                              enabledBorder: OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color: Colors.black)),
+                                              labelText: "Remarks",
+                                              labelStyle: TextStyle(
+                                                  color: Colors.black),
+                                              contentPadding: EdgeInsets.only(
+                                                  left: 20, right: 20)),
+                                          keyboardType: TextInputType.text,
                                         ),
                                       ),
                                       const SizedBox(height: 25),
