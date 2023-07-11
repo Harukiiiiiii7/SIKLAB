@@ -49,10 +49,10 @@ class _ReportPageMoreDetailsState extends State<ReportPageMoreDetails> {
                     onPressed: () {
                       final report = FirebaseFirestore.instance
                           .collection('reports')
-                          .doc(reportID);
+                          .doc(widget.reportID);
 
                       final json = {
-                        'reportID': reportID,
+                        'reportID': widget.reportID,
                         'userLocation': {
                           'latitude': widget.markerLocation.latitude,
                           'longitude': widget.markerLocation.longitude
@@ -65,11 +65,11 @@ class _ReportPageMoreDetailsState extends State<ReportPageMoreDetails> {
                       };
 
                       report.set(json);
-
+                      print('sample');
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                           content: Text(
                               'Report is successfully submitted. Please wait for a call from the authorities.')));
-                      //Navigator.of(context).pop();
+                      Navigator.of(context).pop();
                       _goToNextScreen();
                     },
                     child: const Text("Yes"))
@@ -86,7 +86,6 @@ class _ReportPageMoreDetailsState extends State<ReportPageMoreDetails> {
   TextEditingController _remarksController = TextEditingController();
 
   String formattedDate = '';
-  String reportID = '';
 
   @override
   void initState() {
