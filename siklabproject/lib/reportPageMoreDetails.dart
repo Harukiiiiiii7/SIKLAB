@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:camera/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -71,7 +69,7 @@ class _ReportPageMoreDetailsState extends State<ReportPageMoreDetails> {
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                           content: Text(
                               'Report is successfully submitted. Please wait for a call from the authorities.')));
-                      Navigator.of(context).pop();
+                      //Navigator.of(context).pop();
                       _goToNextScreen();
                     },
                     child: const Text("Yes"))
@@ -79,11 +77,7 @@ class _ReportPageMoreDetailsState extends State<ReportPageMoreDetails> {
         });
   }
 
-  final items = [
-    "Alarm 1",
-    "Alarm 2",
-    "Alarm 3"
-  ];
+  final items = ["Alarm 1", "Alarm 2", "Alarm 3"];
   String? value;
   final items2 = ["10-50", "51-100", "101-150", "151-200", "200+"];
   String? value2;
@@ -97,16 +91,6 @@ class _ReportPageMoreDetailsState extends State<ReportPageMoreDetails> {
   @override
   void initState() {
     super.initState();
-    var now = DateTime.now();
-    var formatter = DateFormat('yyyy-MM-dd');
-    formattedDate = formatter.format(now);
-
-    Random random = Random();
-    int randomNumber = random.nextInt(100);
-
-    reportID = formattedDate + randomNumber.toString();
-    reportID = reportID.replaceAll("-", "");
-    print(reportID);
   }
 
   @override
@@ -237,6 +221,7 @@ class _ReportPageMoreDetailsState extends State<ReportPageMoreDetails> {
                                         padding: const EdgeInsets.only(
                                             left: 30, right: 30),
                                         child: TextField(
+                                          controller: _remarksController,
                                           decoration: const InputDecoration(
                                               focusedBorder: OutlineInputBorder(
                                                   borderSide: BorderSide(

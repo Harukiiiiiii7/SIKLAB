@@ -1,7 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:siklabproject/userDashboard.dart';
 
-class Hotlines extends StatelessWidget {
+class Hotlines extends StatefulWidget {
+  @override
+  State<Hotlines> createState() => _HotlinesState();
+}
+
+class _HotlinesState extends State<Hotlines> {
+  void _goToNextScreen() {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => UserDashboard()));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,6 +29,10 @@ class Hotlines extends StatelessWidget {
               style: TextStyle(color: Colors.white, fontSize: 14.0),
             ),
           ],
+        ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: _goToNextScreen,
         ),
         backgroundColor: const Color.fromRGBO(171, 0, 0, 1),
       ),

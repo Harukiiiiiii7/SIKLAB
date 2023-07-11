@@ -1,115 +1,128 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:intl/intl.dart';
 import 'package:siklabproject/adminDashboard.dart';
 
-class HistoryPage extends StatelessWidget {
+class HistoryPage extends StatefulWidget {
+  @override
+  State<HistoryPage> createState() => _HistoryPageState();
+}
+
+class _HistoryPageState extends State<HistoryPage> {
+  List<String> addresses = [];
+
+  String formatReportIDToDateString(String reportID) {
+    String year = reportID.substring(0, 4);
+    String month = reportID.substring(4, 6);
+    String day = reportID.substring(6, 8);
+
+    DateTime dateTime =
+        DateTime(int.parse(year), int.parse(month), int.parse(day));
+    return DateFormat('MMM d, yyyy').format(dateTime);
+  }
+
+  void _BackButton() {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => AdminDashboard()));
+  }
+
+  late Stream<QuerySnapshot> _documentsStream;
+
+  Future<void> getAddressFromLatLng(double latitude, double longitude) async {
+    try {
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(latitude, longitude);
+      Placemark place = placemarks[0];
+      String address =
+          '${place.street}, ${place.locality}, ${place.postalCode}, ${place.country}';
+      setState(() {
+        addresses.add(address);
+      });
+    } catch (e) {
+      setState(() {
+        addresses.add('Error: $e');
+      });
+    }
+  }
+
+  Future<void> convertAddresses() async {
+    try {
+      QuerySnapshot querySnapshot =
+          await FirebaseFirestore.instance.collection('reports').get();
+
+      for (DocumentSnapshot doc in querySnapshot.docs) {
+        Map<String, dynamic> location = doc['userLocation'];
+        double latitude = location['latitude'];
+        double longitude = location['longitude'];
+
+        await getAddressFromLatLng(latitude, longitude);
+      }
+    } catch (e) {
+      setState(() {
+        addresses.add('Error: $e');
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    convertAddresses();
+    _documentsStream =
+        FirebaseFirestore.instance.collection('reports').snapshots();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Container(
-          height: double.infinity,
-          width: double.infinity,
-          color: const Color.fromRGBO(171, 0, 0, 1),
-          child: Column(
-            children: [
-              Align(
-                alignment: Alignment.topRight,
-                child: Padding(
-                    padding: const EdgeInsets.only(top: 35, right: 10),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: ((context) => AdminDashboard())));
-                      },
-                      style: ElevatedButton.styleFrom(
-                          fixedSize: const Size(35, 55),
-                          shadowColor: const Color.fromRGBO(105, 105, 105, 1),
-                          backgroundColor:
-                              const Color.fromRGBO(248, 248, 248, 1)),
-                      child: Image.asset('assets/log-out.png',
-                          height: 50, width: 50),
-                    )),
-              ),
-              const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 25, bottom: 5),
-                    child: Text(
-                      "FIRE INCIDENT HISTORY",
-                      style: TextStyle(fontSize: 24, color: Colors.white),
-                    ),
-                  )),
-              const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 25, bottom: 25),
-                    child: Text(
-                      "Press a report to view details.",
-                      style: TextStyle(fontSize: 14, color: Colors.white),
-                    ),
-                  )),
-              Expanded(
-                  child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Container(
-                        width: double.infinity,
-                        decoration: const BoxDecoration(
-                            color: Color.fromRGBO(226, 226, 226, 1),
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(30),
-                                topRight: Radius.circular(30))),
-                        child: Column(
-                          //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            const SizedBox(height: 25),
-                            ElevatedButton(
-                                onPressed: () {},
-                                style: ElevatedButton.styleFrom(
-                                    fixedSize: const Size(350, 50),
-                                    shape: const StadiumBorder(),
-                                    shadowColor:
-                                        const Color.fromRGBO(105, 105, 105, 1),
-                                    backgroundColor:
-                                        const Color.fromRGBO(248, 248, 248, 1)),
-                                child: const Text("APRIL 3, 2023 - CAINTA",
-                                    style: TextStyle(
-                                        fontSize: 20, color: Colors.black))),
-                            const SizedBox(height: 10),
-                            ElevatedButton(
-                                onPressed: () {},
-                                style: ElevatedButton.styleFrom(
-                                    fixedSize: const Size(350, 50),
-                                    shape: const StadiumBorder(),
-                                    shadowColor:
-                                        const Color.fromRGBO(105, 105, 105, 1),
-                                    backgroundColor:
-                                        const Color.fromRGBO(248, 248, 248, 1)),
-                                child: const Text(
-                                  "MARCH 29, 2023 - ANTIPOLO",
-                                  style: TextStyle(
-                                      fontSize: 20, color: Colors.black),
-                                )),
-                            const SizedBox(height: 10),
-                            ElevatedButton(
-                                onPressed: () {},
-                                style: ElevatedButton.styleFrom(
-                                    fixedSize: const Size(350, 50),
-                                    shape: const StadiumBorder(),
-                                    shadowColor:
-                                        const Color.fromRGBO(105, 105, 105, 1),
-                                    backgroundColor:
-                                        const Color.fromRGBO(248, 248, 248, 1)),
-                                child: const Text("MARCH 24, 2023 - TAYTAY",
-                                    style: TextStyle(
-                                        fontSize: 20, color: Colors.black))),
-                            const SizedBox(height: 10),
-                          ],
-                        ),
-                      ))),
-            ],
-          )),
+      appBar: AppBar(
+        title: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'VIEW FIRE REPORTS',
+              style: TextStyle(color: Colors.white, fontSize: 20.0),
+            ),
+          ],
+        ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: _BackButton,
+        ),
+        backgroundColor: const Color.fromRGBO(171, 0, 0, 1),
+      ),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: _documentsStream,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          final documents = snapshot.data!.docs;
+
+          return ListView.builder(
+            itemCount: documents.length,
+            itemBuilder: (context, index) {
+              final document = documents[index];
+              final data = document.data() as Map<String, dynamic>;
+              final reportID = data['reportID'];
+              final severity = data['severity'];
+
+              String address = index < addresses.length ? addresses[index] : '';
+              String formattedReportID = formatReportIDToDateString(reportID);
+
+              return ListTile(
+                title: Text(formattedReportID + ' - ' + severity),
+                subtitle: Text(address),
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }

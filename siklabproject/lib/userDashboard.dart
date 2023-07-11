@@ -1,8 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:siklabproject/addReportPage.dart';
 import 'package:siklabproject/hotlines.dart';
+import 'package:siklabproject/loginAsPage.dart';
 
-class UserDashboard extends StatelessWidget {
+class UserDashboard extends StatefulWidget {
+  @override
+  State<UserDashboard> createState() => _UserDashboardState();
+}
+
+class _UserDashboardState extends State<UserDashboard> {
+  void _goToNextScreen() {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => LoginAsPage()));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,6 +31,10 @@ class UserDashboard extends StatelessWidget {
               style: TextStyle(color: Colors.white, fontSize: 14.0),
             ),
           ],
+        ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: _goToNextScreen,
         ),
         backgroundColor: const Color.fromRGBO(171, 0, 0, 1),
       ),

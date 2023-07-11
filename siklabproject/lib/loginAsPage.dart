@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:siklabproject/adminDashboard.dart';
+import 'package:siklabproject/main.dart';
 import 'package:siklabproject/userDashboard.dart';
 
 class LoginAsPage extends StatefulWidget {
@@ -13,6 +14,15 @@ class _LoginAsPageState extends State<LoginAsPage> {
   void _goToNextScreen() {
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => AdminDashboard()));
+  }
+
+  void _BackButton() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => const MyHomePage(
+                  title: '',
+                )));
   }
 
   void _showPasswordDialog() {
@@ -80,6 +90,10 @@ class _LoginAsPageState extends State<LoginAsPage> {
               style: TextStyle(color: Colors.white, fontSize: 20.0),
             ),
           ],
+        ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: _BackButton,
         ),
         backgroundColor: const Color.fromRGBO(171, 0, 0, 1),
       ),
