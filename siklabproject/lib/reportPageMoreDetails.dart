@@ -69,7 +69,6 @@ class _ReportPageMoreDetailsState extends State<ReportPageMoreDetails> {
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                           content: Text(
                               'Report is successfully submitted. Please wait for a call from the authorities.')));
-                      Navigator.of(context).pop();
                       _goToNextScreen();
                     },
                     child: const Text("Yes"))

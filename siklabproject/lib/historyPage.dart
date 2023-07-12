@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:intl/intl.dart';
 import 'package:siklabproject/adminDashboard.dart';
+import 'package:siklabproject/viewSingleReportPage.dart';
 
 class HistoryPage extends StatefulWidget {
   @override
@@ -115,10 +116,22 @@ class _HistoryPageState extends State<HistoryPage> {
               String address = index < addresses.length ? addresses[index] : '';
               String formattedReportID = formatReportIDToDateString(reportID);
 
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
               return ListTile(
-                title: Text(formattedReportID + ' - ' + severity),
-                subtitle: Text(address),
-              );
+                  onTap: () {
+                    print(reportID);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                viewSingleReportPage(reportID)));
+                  },
+                  title: Text(formattedReportID + ' - ' + severity),
+                  subtitle: Text(address),
+                  trailing: const Icon(Icons.arrow_forward));
             },
           );
         },

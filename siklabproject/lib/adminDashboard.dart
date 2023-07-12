@@ -1,8 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:siklabproject/historyPage.dart';
+import 'package:siklabproject/loginAsPage.dart';
 import 'package:siklabproject/viewReportPage.dart';
 
-class AdminDashboard extends StatelessWidget {
+class AdminDashboard extends StatefulWidget {
+  @override
+  State<AdminDashboard> createState() => _AdminDashboardState();
+}
+
+class _AdminDashboardState extends State<AdminDashboard> {
+  void _BackButton() {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => LoginAsPage()));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,6 +31,10 @@ class AdminDashboard extends StatelessWidget {
               style: TextStyle(color: Colors.white, fontSize: 14.0),
             ),
           ],
+        ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: _BackButton,
         ),
         backgroundColor: const Color.fromRGBO(171, 0, 0, 1),
       ),
