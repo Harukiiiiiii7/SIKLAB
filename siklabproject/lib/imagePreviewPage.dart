@@ -5,7 +5,6 @@ import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mapbox_gl/mapbox_gl.dart';
-import 'package:siklabproject/ConfirmReport.dart';
 import 'package:siklabproject/reportPageMoreDetails.dart';
 
 class ImagePreview extends StatefulWidget {

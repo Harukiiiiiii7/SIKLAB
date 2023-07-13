@@ -1,11 +1,8 @@
 import 'dart:math';
 
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:siklabproject/ConfirmReport.dart';
-import 'package:siklabproject/cameraPage.dart';
 import 'package:siklabproject/testMapBox.dart';
 import 'package:siklabproject/userDashboard.dart';
 
@@ -15,13 +12,6 @@ class ReportPage extends StatefulWidget {
 }
 
 class _ReportPageState extends State<ReportPage> {
-  final List<CameraDescription> cameras = [];
-
-  Future<void> _initializeCameras() async {
-    cameras.clear();
-    cameras.addAll(await availableCameras());
-  }
-
   String formattedDate = '';
   String reportID = '';
 

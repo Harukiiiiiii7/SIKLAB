@@ -112,6 +112,7 @@ class _HistoryPageState extends State<HistoryPage> {
               final data = document.data() as Map<String, dynamic>;
               final reportID = data['reportID'];
               final severity = data['severity'];
+              final time = data['time'];
 
               String address = index < addresses.length ? addresses[index] : '';
               String formattedReportID = formatReportIDToDateString(reportID);
@@ -129,7 +130,8 @@ class _HistoryPageState extends State<HistoryPage> {
                             builder: (context) =>
                                 viewSingleReportPage(reportID)));
                   },
-                  title: Text(formattedReportID + ' - ' + severity),
+                  title:
+                      Text(formattedReportID + ' - ' + time + ' - ' + severity),
                   subtitle: Text(address),
                   trailing: const Icon(Icons.arrow_forward));
             },

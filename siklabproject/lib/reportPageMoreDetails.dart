@@ -1,4 +1,5 @@
-import 'package:camera/camera.dart';
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,7 +20,16 @@ class ReportPageMoreDetails extends StatefulWidget {
 }
 
 class _ReportPageMoreDetailsState extends State<ReportPageMoreDetails> {
-  final List<CameraDescription> cameras = [];
+  String currentTime = '';
+
+  void getCurrentTime() {
+    Timer.periodic(Duration(seconds: 1), (timer) {
+      DateTime now = DateTime.now();
+      setState(() {
+        currentTime = '${now.hour}:${now.minute}:${now.second}';
+      });
+    });
+  }
 
   void _goToNextScreen() {
     Navigator.push(
@@ -53,6 +63,7 @@ class _ReportPageMoreDetailsState extends State<ReportPageMoreDetails> {
 
                       final json = {
                         'reportID': widget.reportID,
+                        'time': currentTime,
                         'userLocation': {
                           'latitude': widget.markerLocation.latitude,
                           'longitude': widget.markerLocation.longitude
@@ -89,6 +100,7 @@ class _ReportPageMoreDetailsState extends State<ReportPageMoreDetails> {
   @override
   void initState() {
     super.initState();
+    getCurrentTime();
   }
 
   @override
