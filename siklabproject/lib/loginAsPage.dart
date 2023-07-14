@@ -3,6 +3,8 @@ import 'package:siklabproject/adminDashboard.dart';
 import 'package:siklabproject/main.dart';
 import 'package:siklabproject/userDashboard.dart';
 
+import 'adminMobileNumberVerif.dart';
+
 class LoginAsPage extends StatefulWidget {
   @override
   State<LoginAsPage> createState() => _LoginAsPageState();
@@ -40,7 +42,8 @@ class _LoginAsPageState extends State<LoginAsPage> {
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                       shadowColor: const Color.fromRGBO(105, 105, 105, 1),
-                      backgroundColor: Color.fromARGB(255, 110, 109, 109)),
+                      backgroundColor:
+                          const Color.fromARGB(255, 110, 109, 109)),
                   child: const Text("Cancel"),
                   onPressed: () {
                     Navigator.of(context).pop();
@@ -53,7 +56,11 @@ class _LoginAsPageState extends State<LoginAsPage> {
                     onPressed: () {
                       if (_passwordController.text == "admin123") {
                         Navigator.of(context).pop();
-                        _goToNextScreen();
+                        //_goToNextScreen();
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AdminMobileNumber()));
                       } else {
                         showDialog(
                             context: context,
