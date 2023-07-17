@@ -12,6 +12,7 @@ class HistoryPage extends StatefulWidget {
 
 class _HistoryPageState extends State<HistoryPage> {
   List<String> addresses = [];
+  List<DocumentSnapshot> sortedDocuments = [];
 
   String formatReportIDToDateString(String reportID) {
     String year = reportID.substring(0, 4);
@@ -30,29 +31,16 @@ class _HistoryPageState extends State<HistoryPage> {
 
   late Stream<QuerySnapshot> _documentsStream;
 
-  Future<void> getAddressFromLatLng(double latitude, double longitude) async {
-    try {
-      List<Placemark> placemarks =
-          await placemarkFromCoordinates(latitude, longitude);
-      Placemark place = placemarks[0];
-      String address =
-          '${place.street}, ${place.locality}, ${place.postalCode}, ${place.country}';
-      setState(() {
-        addresses.add(address);
-      });
-    } catch (e) {
-      setState(() {
-        addresses.add('Error: $e');
-      });
-    }
-  }
-
   Future<void> convertAddresses() async {
     try {
-      QuerySnapshot querySnapshot =
-          await FirebaseFirestore.instance.collection('reports').get();
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('reports')
+          .orderBy('reportDate', descending: true)
+          .get();
 
-      for (DocumentSnapshot doc in querySnapshot.docs) {
+      sortedDocuments = querySnapshot.docs;
+
+      for (DocumentSnapshot doc in sortedDocuments) {
         Map<String, dynamic> location = doc['userLocation'];
         double latitude = location['latitude'];
         double longitude = location['longitude'];
@@ -69,9 +57,41 @@ class _HistoryPageState extends State<HistoryPage> {
   @override
   void initState() {
     super.initState();
-    convertAddresses();
     _documentsStream =
         FirebaseFirestore.instance.collection('reports').snapshots();
+    convertAddresses();
+  }
+
+  List<DocumentSnapshot> sortDocumentsByReportDate(
+      List<DocumentSnapshot> documents) {
+    documents.sort((a, b) {
+      var aData = a.data() as Map<String, dynamic>;
+      var bData = b.data() as Map<String, dynamic>;
+
+      DateTime aDate = DateTime.parse(aData['reportDate']);
+      DateTime bDate = DateTime.parse(bData['reportDate']);
+
+      return bDate.compareTo(aDate);
+    });
+
+    return documents;
+  }
+
+  Future<void> getAddressFromLatLng(double latitude, double longitude) async {
+    try {
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(latitude, longitude);
+      Placemark place = placemarks[0];
+      String address =
+          '${place.street}, ${place.locality}, ${place.postalCode}, ${place.country}';
+      setState(() {
+        addresses.add(address);
+      });
+    } catch (e) {
+      setState(() {
+        addresses.add('Error: $e');
+      });
+    }
   }
 
   @override
@@ -103,7 +123,8 @@ class _HistoryPageState extends State<HistoryPage> {
             );
           }
 
-          final documents = snapshot.data!.docs;
+          List<DocumentSnapshot> documents = snapshot.data!.docs;
+          documents = sortDocumentsByReportDate(documents);
 
           return ListView.builder(
             itemCount: documents.length,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:siklabproject/historyPage.dart';
 import 'package:siklabproject/loginAsPage.dart';
-import 'package:siklabproject/viewReportPage.dart';
+import 'package:siklabproject/viewLatestReportPage.dart';
 
 class AdminDashboard extends StatefulWidget {
   @override
@@ -63,7 +63,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                       context,
                                       MaterialPageRoute(
                                           builder: ((context) =>
-                                              viewReportPage())));
+                                              viewLatestReportPage())));
                                 },
                                 style: ElevatedButton.styleFrom(
                                     fixedSize: const Size(325, 175),

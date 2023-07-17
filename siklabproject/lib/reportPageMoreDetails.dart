@@ -57,6 +57,10 @@ class _ReportPageMoreDetailsState extends State<ReportPageMoreDetails> {
                         shadowColor: const Color.fromRGBO(105, 105, 105, 1),
                         backgroundColor: const Color.fromRGBO(171, 0, 0, 1)),
                     onPressed: () {
+                      DateTime now = DateTime.now();
+                      String formattedDateTime =
+                          DateFormat('yyyy-MM-dd HH:mm:ss').format(now);
+
                       final report = FirebaseFirestore.instance
                           .collection('reports')
                           .doc(widget.reportID);
@@ -64,6 +68,7 @@ class _ReportPageMoreDetailsState extends State<ReportPageMoreDetails> {
                       final json = {
                         'reportID': widget.reportID,
                         'time': currentTime,
+                        'reportDate': formattedDateTime,
                         'userLocation': {
                           'latitude': widget.markerLocation.latitude,
                           'longitude': widget.markerLocation.longitude

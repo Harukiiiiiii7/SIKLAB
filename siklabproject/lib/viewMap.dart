@@ -16,7 +16,7 @@ class ViewMapReport extends StatefulWidget {
 class _ViewMapReportState extends State<ViewMapReport> {
   late double lat, long;
 
-  late LatLng markerLocation;
+  LatLng markerLocation = LatLng(0.0, 0.0);
   late MapboxMapController mapController;
   late Symbol marker;
 
@@ -33,37 +33,52 @@ class _ViewMapReportState extends State<ViewMapReport> {
   }
 
   void _addMarker() {
-    setState(() {
-      lat = widget.latitude;
-      long = widget.longitude;
+    if (mapController == null) {
+      print("MapController is null. Cannot add marker.");
+      return;
+    }
 
-      markerLocation = LatLng(lat, long);
-      print('ADD MARKER MA MEN');
-      print(markerLocation);
+    print("Adding marker at ${widget.latitude}, ${widget.longitude}");
+    lat = widget.latitude;
+    long = widget.longitude;
 
-      mapController
-          .addSymbol(
-            SymbolOptions(
-              geometry: markerLocation,
-              iconImage: 'assets/marker.png',
-              iconSize: 0.2,
-            ),
-          )
-          .then((value) => {marker = value});
-    });
-    print('afterwards');
+    markerLocation = LatLng(lat, long); // Move this line outside of setState
+
+    mapController.addSymbol(SymbolOptions(
+      geometry: markerLocation,
+      iconImage: 'assets/marker2.png',
+      iconSize: 0.2,
+    ));
   }
 
   void _onMapCreated(MapboxMapController mapController) {
     this.mapController = mapController;
-    _addMarker();
+    print("Map created.");
+
+    // Adding a slight delay to give the mapController enough time to initialize fully
+    Future.delayed(Duration(milliseconds: 500), () {
+      _addMarker();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Reported Fire Location'),
+        title: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'REPORTED FIRE LOCATION VIA MAP',
+              style: TextStyle(color: Colors.white, fontSize: 20.0),
+            ),
+            const Text(
+              'Pin marker may not be accurate',
+              style: TextStyle(color: Colors.white, fontSize: 14.0),
+            ),
+          ],
+        ),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: _BackButton,

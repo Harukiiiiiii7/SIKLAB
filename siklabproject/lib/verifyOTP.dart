@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:siklabproject/adminDashboard.dart';
@@ -9,6 +10,11 @@ import 'adminMobileNumberVerif.dart';
 
 class VerifyOTP extends StatefulWidget {
   static String verifyID = "";
+
+  String phoneNumber;
+
+  VerifyOTP(this.phoneNumber);
+
   @override
   State<VerifyOTP> createState() => _VerifyOTP();
 }
@@ -17,6 +23,9 @@ class _VerifyOTP extends State<VerifyOTP> {
   TextEditingController otpController = TextEditingController();
 
   final FirebaseAuth auth = FirebaseAuth.instance;
+
+  final CollectionReference adminsCollection =
+      FirebaseFirestore.instance.collection('admins');
 
   @override
   void initState() {
@@ -30,7 +39,16 @@ class _VerifyOTP extends State<VerifyOTP> {
     );
   }
 
-  void _adminDashboard() {
+  void _adminDashboard(String phoneNumber) {
+    print(phoneNumber);
+
+    final adminNumber =
+        FirebaseFirestore.instance.collection('admins').doc(widget.phoneNumber);
+
+    final json = {'phone': phoneNumber};
+
+    adminNumber.set(json);
+
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => AdminDashboard()),
@@ -86,7 +104,7 @@ class _VerifyOTP extends State<VerifyOTP> {
 
                       await auth.signInWithCredential(credential);
                       const CircularProgressIndicator();
-                      _adminDashboard();
+                      _adminDashboard(widget.phoneNumber);
                     } catch (e) {
                       print(code);
                       print("mali otp mo pre");

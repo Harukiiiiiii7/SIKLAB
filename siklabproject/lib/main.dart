@@ -4,7 +4,6 @@ import 'package:siklabproject/adminDashboard.dart';
 import 'package:siklabproject/historyPage.dart';
 import 'package:siklabproject/loginAsPage.dart';
 import 'package:siklabproject/userDashboard.dart';
-import 'package:siklabproject/viewReportPage.dart';
 import 'hotlines.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -26,6 +25,15 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
+      // initialRoute: "/",
+      // routes: {
+      //   "/": (context) => MyHomePage(
+      //         title: '',
+      //       ),
+      //   "LoginPage": (context) => LoginAsPage(),
+      //   "UserDashboard": (context) => UserDashboard(),
+      //   "AdminDashboard": (context) => AdminDashboard()
+      // },
       home: const MyHomePage(title: ''), // main page
     );
   }
