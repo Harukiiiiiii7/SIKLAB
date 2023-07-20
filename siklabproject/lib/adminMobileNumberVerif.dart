@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:siklabproject/adminDashboard.dart';
@@ -126,7 +125,7 @@ class _AdminMobileNumberState extends State<AdminMobileNumber> {
                         verificationFailed: (FirebaseAuthException e) {},
                         codeSent: (String verificationId, int? resendToken) {
                           AdminMobileNumber.verifyID = verificationId;
-                          //addPhoneNumber(xphone);
+
                           _nextPage(xphone);
                         },
                         codeAutoRetrievalTimeout: (String verificationId) {},

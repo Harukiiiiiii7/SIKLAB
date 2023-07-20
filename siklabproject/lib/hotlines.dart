@@ -8,8 +8,7 @@ class Hotlines extends StatefulWidget {
 
 class _HotlinesState extends State<Hotlines> {
   void _goToNextScreen() {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => UserDashboard()));
+    Navigator.pushNamed(context, '/UserDashboard');
   }
 
   @override

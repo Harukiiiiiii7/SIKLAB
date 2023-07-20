@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:siklabproject/adminDashboard.dart';
 import 'package:siklabproject/loginAsPage.dart';
@@ -20,6 +21,7 @@ class VerifyOTP extends StatefulWidget {
 }
 
 class _VerifyOTP extends State<VerifyOTP> {
+  String? mtoken = "";
   TextEditingController otpController = TextEditingController();
 
   final FirebaseAuth auth = FirebaseAuth.instance;
@@ -30,6 +32,50 @@ class _VerifyOTP extends State<VerifyOTP> {
   @override
   void initState() {
     super.initState();
+    requestPermission();
+    getToken();
+  }
+
+  Future<void> requestPermission() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: true,
+      provisional: false,
+      sound: true,
+    );
+
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      print("User Granted Permission");
+    } else if (settings.authorizationStatus ==
+        AuthorizationStatus.provisional) {
+      print("User granted provisional permission");
+    } else {
+      print("User denied permission");
+    }
+  }
+
+  void getToken() async {
+    await FirebaseMessaging.instance.getToken().then((token) {
+      setState(() {
+        mtoken = token;
+        print("Token: $mtoken");
+      });
+      saveAdminCreds(token!, widget.phoneNumber);
+    });
+  }
+
+  void saveAdminCreds(String token, String phoneNumber) async {
+    final json = {'phone': phoneNumber, 'token': token};
+
+    await FirebaseFirestore.instance
+        .collection('admins')
+        .doc(widget.phoneNumber)
+        .set(json);
   }
 
   void _backButton() {
@@ -40,15 +86,6 @@ class _VerifyOTP extends State<VerifyOTP> {
   }
 
   void _adminDashboard(String phoneNumber) {
-    print(phoneNumber);
-
-    final adminNumber =
-        FirebaseFirestore.instance.collection('admins').doc(widget.phoneNumber);
-
-    final json = {'phone': phoneNumber};
-
-    adminNumber.set(json);
-
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => AdminDashboard()),

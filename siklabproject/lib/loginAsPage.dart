@@ -14,17 +14,11 @@ class _LoginAsPageState extends State<LoginAsPage> {
   TextEditingController _passwordController = TextEditingController();
 
   void _goToNextScreen() {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => AdminDashboard()));
+    Navigator.pushNamed(context, '/AdminDashboard');
   }
 
   void _BackButton() {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => const MyHomePage(
-                  title: '',
-                )));
+    Navigator.pushNamed(context, '/Home');
   }
 
   void _showPasswordDialog() {
@@ -70,6 +64,11 @@ class _LoginAsPageState extends State<LoginAsPage> {
                                 content: const Text("Please try again."),
                                 actions: <Widget>[
                                   ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                          shadowColor: const Color.fromRGBO(
+                                              105, 105, 105, 1),
+                                          backgroundColor: const Color.fromRGBO(
+                                              171, 0, 0, 1)),
                                       onPressed: () {
                                         Navigator.of(context).pop();
                                       },

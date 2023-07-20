@@ -43,13 +43,20 @@ dependencies:
   geolocator: ^8.2.1
   geocoding: ^2.0.1-nullsafety.3
   mapbox_gl: ^0.16.0
-  cloud_firestore: ^3.1.5
-  firebase_core: ^1.10.2
-  firebase_auth: ^3.7.0
-  firebase_auth_web: ^4.3.0
+  
+  firebase_auth: ^4.7.1
+  firebase_auth_web: ^5.6.1
+  permission_handler: ^10.4.3
+
+  firebase_core: ^2.13.0
+  flutter_local_notifications: ^9.2.0
+  firebase_messaging: ^14.0.1
+  http: ^0.13.4
+  cloud_firestore: ^4.0.1
+  
 
 dependency_overrides:
-  firebase_core_platform_interface: 4.5.1
+  firebase_core_platform_interface: 4.8.0
   
 
 dev_dependencies:

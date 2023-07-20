@@ -6,11 +6,13 @@ import 'package:siklabproject/viewImage.dart';
 import 'package:siklabproject/viewMap.dart';
 
 class viewLatestReportPage extends StatefulWidget {
+  static const route = '/ViewLatestReportPage';
   @override
   State<viewLatestReportPage> createState() => _viewLatestReportPageState();
 }
 
 class _viewLatestReportPageState extends State<viewLatestReportPage> {
+  //static const route = '/ViewLatestReportPage';
   String reportID = '';
   String address = '';
 
