@@ -71,20 +71,22 @@ class _MyHomePageState extends State<MyHomePage> {
     var iOSInitialize = const IOSInitializationSettings();
     var initializationsSettings =
         InitializationSettings(android: androidInitialize, iOS: iOSInitialize);
-    flutterLocalNotificationsPlugin.initialize(initializationsSettings,
-        onSelectNotification: (String? payload) async {
-      try {
-        if (payload != null && payload.isNotEmpty) {
-          Navigator.pushNamed(context, '/LatestReportPage');
-        } else {
-          //
+    flutterLocalNotificationsPlugin.initialize(
+      initializationsSettings,
+      onSelectNotification: (String? payload) async {
+        try {
+          if (payload != null && payload.isNotEmpty) {
+            Navigator.pushNamed(context, '/LatestReportPage');
+          } else {
+            //
+          }
+        } catch (e) {
+          print("CANNOT GO TO SM PARE");
+          print(e);
         }
-      } catch (e) {
-        print("CANNOT PUSH NAME");
-        print(e);
-      }
-      return;
-    });
+        return;
+      },
+    );
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       print("----------------- onMessage -----------------");
