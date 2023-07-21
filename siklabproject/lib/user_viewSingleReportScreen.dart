@@ -1,60 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
-import 'package:siklabproject/historyPage.dart';
+import 'package:siklabproject/user_viewHistory.dart';
 import 'package:siklabproject/viewImage.dart';
 import 'package:siklabproject/viewMap.dart';
 
-class viewSingleReportPage extends StatefulWidget {
+class User_ViewSingleReportScreen extends StatefulWidget {
   String reportID;
 
-  viewSingleReportPage(this.reportID, {super.key});
+  User_ViewSingleReportScreen(this.reportID, {super.key});
 
   @override
-  State<viewSingleReportPage> createState() => _viewSingleReportPageState();
+  State<User_ViewSingleReportScreen> createState() =>
+      _User_ViewSingleReportScreen();
 }
 
-class _viewSingleReportPageState extends State<viewSingleReportPage> {
+class _User_ViewSingleReportScreen extends State<User_ViewSingleReportScreen> {
   String get documentId => widget.reportID;
 
   void _BackButton() {
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => HistoryPage()));
+        context, MaterialPageRoute(builder: (context) => UserHistoryScreen()));
   }
 
   String _convertDate(String date) {
     DateTime parsedDate = DateTime.parse(date);
     String formattedDate = DateFormat('MMMM d, y').format(parsedDate);
     return formattedDate;
-  }
-
-  void _deleteDocument(String reportID) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Delete fire report'),
-            content: const Text(
-                "Are you sure you want to delete this fire report? Deleting a report will be gone forever."),
-            actions: <Widget>[
-              ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      shadowColor: const Color.fromRGBO(105, 105, 105, 1),
-                      backgroundColor: const Color.fromRGBO(171, 0, 0, 1)),
-                  onPressed: () async {
-                    await FirebaseFirestore.instance
-                        .collection('reports')
-                        .doc(reportID)
-                        .delete();
-
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Text('Fire Report is successfully deleted.')));
-                    _BackButton();
-                  },
-                  child: const Text("OK"))
-            ],
-          );
-        });
   }
 
   @override
@@ -149,13 +121,6 @@ class _viewSingleReportPageState extends State<viewSingleReportPage> {
                               widget.reportID, latitude, longitude)));
                 },
                 title: const Text('Location via Map'),
-                trailing: const Icon(Icons.arrow_forward),
-              ),
-              ListTile(
-                onTap: () {
-                  _deleteDocument(widget.reportID);
-                },
-                title: const Text('Delete Report'),
                 trailing: const Icon(Icons.arrow_forward),
               ),
             ],

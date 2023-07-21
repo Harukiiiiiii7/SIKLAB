@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:mapbox_gl/mapbox_gl.dart';
 import 'package:siklabproject/viewSingleReportPage.dart';
 
@@ -56,7 +55,7 @@ class _ViewMapReportState extends State<ViewMapReport> {
     print("Map created.");
 
     // Adding a slight delay to give the mapController enough time to initialize fully
-    Future.delayed(Duration(milliseconds: 500), () {
+    Future.delayed(const Duration(milliseconds: 500), () {
       _addMarker();
     });
   }
@@ -65,22 +64,22 @@ class _ViewMapReportState extends State<ViewMapReport> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Column(
+        title: const Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               'REPORTED FIRE LOCATION VIA MAP',
               style: TextStyle(color: Colors.white, fontSize: 20.0),
             ),
-            const Text(
+            Text(
               'Pin marker may not be accurate',
               style: TextStyle(color: Colors.white, fontSize: 14.0),
             ),
           ],
         ),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: _BackButton,
         ),
         backgroundColor: const Color.fromRGBO(171, 0, 0, 1),

@@ -79,7 +79,10 @@ class _MyHomePageState extends State<MyHomePage> {
         } else {
           //
         }
-      } catch (e) {}
+      } catch (e) {
+        print("CANNOT PUSH NAME");
+        print(e);
+      }
       return;
     });
 

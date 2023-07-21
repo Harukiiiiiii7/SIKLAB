@@ -87,18 +87,18 @@ class _LoginAsPageState extends State<LoginAsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Column(
+        title: const Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               'LOGIN',
               style: TextStyle(color: Colors.white, fontSize: 20.0),
             ),
           ],
         ),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: _BackButton,
         ),
         backgroundColor: const Color.fromRGBO(171, 0, 0, 1),

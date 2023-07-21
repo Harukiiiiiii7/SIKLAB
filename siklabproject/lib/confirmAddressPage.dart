@@ -41,15 +41,15 @@ class _confirmAddressPage extends State<ConfirmAddressPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Column(
+        title: const Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               'Confirm Address',
               style: TextStyle(color: Colors.white, fontSize: 20.0),
             ),
-            const Text(
+            Text(
               'Please enable Camera Permission.',
               style: TextStyle(color: Colors.white, fontSize: 14.0),
             ),

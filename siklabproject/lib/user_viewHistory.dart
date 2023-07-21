@@ -2,15 +2,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:intl/intl.dart';
-import 'package:siklabproject/adminDashboard.dart';
-import 'package:siklabproject/viewSingleReportPage.dart';
+import 'package:siklabproject/userDashboard.dart';
+import 'package:siklabproject/user_viewSingleReportScreen.dart';
 
-class HistoryPage extends StatefulWidget {
+class UserHistoryScreen extends StatefulWidget {
   @override
-  State<HistoryPage> createState() => _HistoryPageState();
+  State<UserHistoryScreen> createState() => _UserHistoryScreenState();
 }
 
-class _HistoryPageState extends State<HistoryPage> {
+class _UserHistoryScreenState extends State<UserHistoryScreen> {
   List<String> addresses = [];
   List<DocumentSnapshot> sortedDocuments = [];
 
@@ -26,7 +26,7 @@ class _HistoryPageState extends State<HistoryPage> {
 
   void _BackButton() {
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => AdminDashboard()));
+        context, MaterialPageRoute(builder: (context) => UserDashboard()));
   }
 
   late Stream<QuerySnapshot> _documentsStream;
@@ -146,10 +146,12 @@ class _HistoryPageState extends State<HistoryPage> {
                   onTap: () {
                     print(reportID);
                     Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                viewSingleReportPage(reportID)));
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            User_ViewSingleReportScreen(reportID),
+                      ),
+                    );
                   },
                   title:
                       Text(formattedReportID + ' - ' + time + ' - ' + severity),

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:geocoding/geocoding.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -24,11 +25,27 @@ class ReportPageMoreDetails extends StatefulWidget {
 
 class _ReportPageMoreDetailsState extends State<ReportPageMoreDetails> {
   String currentTime = '';
+  String address = '';
 
-  final items = ["Alarm 1", "Alarm 2", "Alarm 3"];
+  final items = ["Alarm 1 (Low)", "Alarm 2 (Medium)", "Alarm 3 (High)"];
   String? value;
   final items2 = ["10-50", "51-100", "101-150", "151-200", "200+"];
   String? value2;
+
+  void _convertLatLngToAddress() async {
+    double lat = widget.markerLocation.latitude;
+    double long = widget.markerLocation.longitude;
+    final placemarks = await placemarkFromCoordinates(lat, long);
+
+    if (placemarks.isNotEmpty) {
+      final placemark = placemarks.first;
+      final formattedAddress =
+          '${placemark.street}, ${placemark.locality} ${placemark.postalCode}';
+      setState(() {
+        address = formattedAddress;
+      });
+    }
+  }
 
   void getCurrentTime() {
     Timer.periodic(Duration(seconds: 1), (timer) {
@@ -113,7 +130,7 @@ class _ReportPageMoreDetailsState extends State<ReportPageMoreDetails> {
                         // token, body, title
                         sendPushMessage(
                           token,
-                          _remarksController.text,
+                          '${address} - ${_remarksController.text}',
                           'FIRE ALARM EMERGENCY - ${value!}',
                         );
 
@@ -184,6 +201,7 @@ class _ReportPageMoreDetailsState extends State<ReportPageMoreDetails> {
   void initState() {
     super.initState();
     getCurrentTime();
+    _convertLatLngToAddress();
   }
 
   @override

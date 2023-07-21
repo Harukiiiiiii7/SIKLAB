@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:intl/intl.dart';
 import 'package:siklabproject/historyPage.dart';
 import 'package:siklabproject/viewImage.dart';
 import 'package:siklabproject/viewMap.dart';
@@ -45,15 +46,21 @@ class _viewLatestReportPageState extends State<viewLatestReportPage> {
     }
   }
 
+  String _convertDate(String date) {
+    DateTime parsedDate = DateTime.parse(date);
+    String formattedDate = DateFormat('MMMM d, y').format(parsedDate);
+    return formattedDate;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Column(
+        title: const Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               'VIEW LATEST REPORT DETAILS',
               style: TextStyle(color: Colors.white, fontSize: 20.0),
             ),
@@ -93,6 +100,7 @@ class _viewLatestReportPageState extends State<viewLatestReportPage> {
           double longitude = location['longitude'];
 
           reportID = data['reportID'];
+          String date = data['reportDate'];
 
           return FutureBuilder<String>(
             future: _fetchAddress(latitude, longitude),
@@ -111,6 +119,10 @@ class _viewLatestReportPageState extends State<viewLatestReportPage> {
               // Return the ListView with the fetched address and other details
               return ListView(
                 children: [
+                  ListTile(
+                    title: const Text('Date'),
+                    subtitle: Text(_convertDate(date)),
+                  ),
                   ListTile(
                     title: const Text('Address'),
                     subtitle: Text(address),

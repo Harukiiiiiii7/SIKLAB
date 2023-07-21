@@ -1,265 +1,160 @@
 import 'package:flutter/material.dart';
 import 'package:siklabproject/userDashboard.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Hotlines extends StatefulWidget {
+  Hotlines({super.key});
   @override
-  State<Hotlines> createState() => _HotlinesState();
+  State<Hotlines> createState() => HotlinesState();
 }
 
-class _HotlinesState extends State<Hotlines> {
-  void _goToNextScreen() {
-    Navigator.pushNamed(context, '/UserDashboard');
+class HotlinesState extends State<Hotlines> {
+  final List<Map<String, dynamic>> hotlines = [
+    {'name': 'NATIONAL HOTLINE', 'number': '911'},
+    {'name': 'Bureau of Fire Protection', 'number': '117'},
+    {'name': 'PNP ', 'number': '117'},
+    {'name': 'ANTIPOLO CITY EMERGENCY HOTLINE', 'number': '86969911'},
+    {'name': 'TAYTAY BFP', 'number': '86619887'},
+    {'name': 'CAINTA RESCUE 171 (24/7)', 'number': '85350131'},
+  ];
+
+  final List<String> BFPManual = [
+    'https://bfp.gov.ph/wp-content/uploads/2015/09/BFP-Operational-Procedures-Manual.pdf',
+  ];
+
+  _launchPDF(BuildContext context, String pdfUrl) async {
+    // ignore: deprecated_member_use
+    if (await canLaunch(pdfUrl)) {
+      // ignore: deprecated_member_use
+      await launch(pdfUrl);
+    } else {
+      // If the PDF URL couldn't be launched, you can handle the error here.
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('There is an error opening the PDF file.'),
+        ),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'GOVERNMENT HOTLINES',
-              style: TextStyle(color: Colors.white, fontSize: 20.0),
-            ),
-            const Text(
-              'LOCAL and NATIONAL HOTLINES available',
-              style: TextStyle(color: Colors.white, fontSize: 14.0),
-            ),
-          ],
-        ),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: _goToNextScreen,
-        ),
-        backgroundColor: const Color.fromRGBO(171, 0, 0, 1),
-      ),
-      body: Container(
-          height: double.infinity,
-          width: double.infinity,
-          color: const Color.fromRGBO(171, 0, 0, 1),
-          child: Column(
+    return WillPopScope(
+      onWillPop: () async {
+        _BackButton();
+        // Prevent default back button behavior
+        return false;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                  child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Container(
-                        width: double.infinity,
-                        decoration: const BoxDecoration(
-                          color: Color.fromRGBO(226, 226, 226, 1),
+              Text(
+                'GOVERNMENT HOTLINES',
+                style: TextStyle(color: Colors.white, fontSize: 20.0),
+              ),
+            ],
+          ),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: _BackButton,
+          ),
+          backgroundColor: const Color.fromRGBO(171, 0, 0, 1),
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24.0,
+                  vertical: 20.0,
+                ),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    shadowColor: const Color.fromARGB(255, 34, 34, 34),
+                    backgroundColor: const Color.fromARGB(255, 206, 205, 205),
+                  ),
+                  onPressed: () {
+                    _launchPDF(context, BFPManual[0]);
+                  },
+                  child: const Padding(
+                    padding: EdgeInsets.only(
+                        top: 24.0, bottom: 24.0, left: 24.0, right: 24.0),
+                    child: Text(
+                      "BFP ONLINE MANUAL LIBRARY ",
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ),
+              ListView.builder(
+                shrinkWrap: true,
+                physics:
+                    NeverScrollableScrollPhysics(), // Disable ListView scrolling
+                itemCount: hotlines.length,
+                itemBuilder: (context, index) {
+                  final hotline = hotlines[index];
+                  return Padding(
+                    padding: const EdgeInsets.all(11.0),
+                    child: ListTile(
+                      title: Text(
+                        hotline['name'],
+                        style: const TextStyle(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold,
                         ),
-                        child: Column(
-                          //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          // ignore: prefer_const_literals_to_create_immutables
-                          children: [
-                            const SizedBox(height: 30),
-                            const Align(
-                              alignment: Alignment.centerLeft,
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 25, bottom: 15),
-                                child: Text(
-                                  "NATIONAL HOTLINES",
-                                  style: TextStyle(
-                                      fontSize: 20, color: Colors.black),
-                                ),
-                              ),
-                            ),
-                            const Align(
-                              alignment: Alignment.centerLeft,
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 35),
-                                child: Text(
-                                  "911 (National Emergency Hotline)",
-                                  style: TextStyle(
-                                      fontSize: 15, color: Colors.black),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 5),
-                            const Align(
-                              alignment: Alignment.centerLeft,
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 35),
-                                child: Text(
-                                  "117 (PNP National Hotline)",
-                                  style: TextStyle(
-                                      fontSize: 15, color: Colors.black),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 5),
-                            const Align(
-                              alignment: Alignment.centerLeft,
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 35),
-                                child: Text(
-                                  "136 (MMDA National Hotline)",
-                                  style: TextStyle(
-                                      fontSize: 15, color: Colors.black),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 20),
-                            const Align(
-                              alignment: Alignment.centerLeft,
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 25, bottom: 15),
-                                child: Text(
-                                  "LOCAL HOTLINES",
-                                  style: TextStyle(
-                                      fontSize: 20, color: Colors.black),
-                                ),
-                              ),
-                            ),
-                            const Align(
-                              alignment: Alignment.centerLeft,
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 35),
-                                child: Text(
-                                  "ANTIPOLO CITY",
-                                  style: TextStyle(
-                                      fontSize: 16, color: Colors.black),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 5),
-                            const Align(
-                              alignment: Alignment.centerLeft,
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 50),
-                                child: Text(
-                                  "8696-9911 (Emergency Hotline)",
-                                  style: TextStyle(
-                                      fontSize: 15, color: Colors.black),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 5),
-                            const Align(
-                              alignment: Alignment.centerLeft,
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 50),
-                                child: Text(
-                                  "8697-2409 (PNP Antipolo)",
-                                  style: TextStyle(
-                                      fontSize: 15, color: Colors.black),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 5),
-                            const Align(
-                              alignment: Alignment.centerLeft,
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 50),
-                                child: Text(
-                                  "8871-2865 (BFP Antipolo)",
-                                  style: TextStyle(
-                                      fontSize: 15, color: Colors.black),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 5),
-                            const Align(
-                              alignment: Alignment.centerLeft,
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 35),
-                                child: Text(
-                                  "TAYTAY, RIZAL",
-                                  style: TextStyle(
-                                      fontSize: 16, color: Colors.black),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 5),
-                            const Align(
-                              alignment: Alignment.centerLeft,
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 50),
-                                child: Text(
-                                  "8661-9887 (BFP Taytay)",
-                                  style: TextStyle(
-                                      fontSize: 15, color: Colors.black),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 5),
-                            const Align(
-                              alignment: Alignment.centerLeft,
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 50),
-                                child: Text(
-                                  "8571-4858 (Taytay Emergency Hospital)",
-                                  style: TextStyle(
-                                      fontSize: 15, color: Colors.black),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 5),
-                            const Align(
-                              alignment: Alignment.centerLeft,
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 50),
-                                child: Text(
-                                  "8284-4770 (Office of the Mayor)",
-                                  style: TextStyle(
-                                      fontSize: 15, color: Colors.black),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 5),
-                            const Align(
-                              alignment: Alignment.centerLeft,
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 35),
-                                child: Text(
-                                  "CAINTA, RIZAL",
-                                  style: TextStyle(
-                                      fontSize: 16, color: Colors.black),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 5),
-                            const Align(
-                              alignment: Alignment.centerLeft,
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 50),
-                                child: Text(
-                                  "8535-0131 (Rescue 131 24/7)",
-                                  style: TextStyle(
-                                      fontSize: 15, color: Colors.black),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 5),
-                            const Align(
-                              alignment: Alignment.centerLeft,
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 50),
-                                child: Text(
-                                  "8650-6175 (PNP Cainta)",
-                                  style: TextStyle(
-                                      fontSize: 15, color: Colors.black),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 5),
-                            const Align(
-                              alignment: Alignment.centerLeft,
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 50),
-                                child: Text(
-                                  "8654-4977 (Cainta Fire Department)",
-                                  style: TextStyle(
-                                      fontSize: 15, color: Colors.black),
-                                ),
-                              ),
+                      ),
+                      subtitle: Text(
+                        hotline['number'],
+                        style: const TextStyle(
+                          fontSize: 16.0,
+                        ),
+                      ),
+                      trailing: Container(
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Color.fromRGBO(255, 11, 11, 1),
+                              offset: Offset.zero,
                             ),
                           ],
                         ),
-                      ))),
+                        child: IconButton(
+                          icon: const Icon(
+                            Icons.phone,
+                          ),
+                          onPressed: () {
+                            // ignore: deprecated_member_use
+                            launch('tel:${hotline['number']}');
+                          },
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
             ],
-          )),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _BackButton() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => UserDashboard()),
     );
   }
 }
