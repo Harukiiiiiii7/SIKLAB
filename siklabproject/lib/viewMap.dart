@@ -69,7 +69,7 @@ class _ViewMapReportState extends State<ViewMapReport> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'REPORTED FIRE LOCATION VIA MAP',
+              'FIRE LOCATION VIA MAP',
               style: TextStyle(color: Colors.white, fontSize: 20.0),
             ),
             Text(

@@ -35,7 +35,6 @@ class MyApp extends StatelessWidget {
       ),
       navigatorKey: navigatorKey,
       home: const MyHomePage(),
-      //home: const NotificationScreen(),
       //initialRoute: "/Home",
       routes: {
         "/Home": (context) => const MyHomePage(),
