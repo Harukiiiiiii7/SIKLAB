@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:siklabproject/user_viewHistory.dart';
+import 'package:siklabproject/user_viewImage.dart';
+import 'package:siklabproject/user_viewMapReport.dart';
 import 'package:siklabproject/viewImage.dart';
 import 'package:siklabproject/viewMap.dart';
 
@@ -105,7 +107,7 @@ class _User_ViewSingleReportScreen extends State<User_ViewSingleReportScreen> {
                       context,
                       MaterialPageRoute(
                           builder: (context) =>
-                              viewImage(widget.reportID, data['image'])));
+                              User_ViewImage(widget.reportID, data['image'])));
                 },
                 title: const Text('View Image'),
                 trailing: const Icon(Icons.arrow_forward),
@@ -117,7 +119,7 @@ class _User_ViewSingleReportScreen extends State<User_ViewSingleReportScreen> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => ViewMapReport(
+                          builder: (context) => User_ViewMapReport(
                               widget.reportID, latitude, longitude)));
                 },
                 title: const Text('Location via Map'),

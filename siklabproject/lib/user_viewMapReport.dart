@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:mapbox_gl/mapbox_gl.dart';
-import 'package:siklabproject/historyPage.dart';
+import 'package:siklabproject/user_viewHistory.dart';
+import 'package:siklabproject/user_viewSingleReportScreen.dart';
 
-class ViewMapReport extends StatefulWidget {
+class User_ViewMapReport extends StatefulWidget {
   String reportID;
   double latitude, longitude;
 
-  ViewMapReport(this.reportID, this.latitude, this.longitude);
+  User_ViewMapReport(this.reportID, this.latitude, this.longitude);
 
   @override
-  _ViewMapReportState createState() => _ViewMapReportState();
+  _User_ViewMapReportState createState() => _User_ViewMapReportState();
 }
 
-class _ViewMapReportState extends State<ViewMapReport> {
+class _User_ViewMapReportState extends State<User_ViewMapReport> {
   late double lat, long;
 
   LatLng markerLocation = LatLng(0.0, 0.0);
@@ -26,7 +27,10 @@ class _ViewMapReportState extends State<ViewMapReport> {
 
   void _BackButton() {
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => HistoryPage()));
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                User_ViewSingleReportScreen(widget.reportID)));
   }
 
   void _addMarker() {

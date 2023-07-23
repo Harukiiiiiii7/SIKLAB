@@ -117,7 +117,7 @@ class _confirmAddressPage extends State<ConfirmAddressPage> {
                                         const SizedBox(width: 25),
                                         const Text("OPEN CAMERA",
                                             style: TextStyle(
-                                                fontSize: 24,
+                                                fontSize: 20,
                                                 color:
                                                     Color.fromRGBO(0, 0, 0, 1)))
                                       ])),
