@@ -63,6 +63,7 @@ class _ReportPageMoreDetailsState extends State<ReportPageMoreDetails> {
 
   void sendPushMessage(String token, String body, String title) async {
     try {
+      print("Sending Notif to Token: $token");
       await http.post(
         Uri.parse('https://fcm.googleapis.com/fcm/send'),
         headers: <String, String>{
@@ -88,6 +89,7 @@ class _ReportPageMoreDetailsState extends State<ReportPageMoreDetails> {
           },
         ),
       );
+      print("Done Notif to Token: $token");
     } catch (e) {
       if (kDebugMode) {
         print("ERROR PARE");
@@ -119,20 +121,28 @@ class _ReportPageMoreDetailsState extends State<ReportPageMoreDetails> {
                       if (_contactNumberController.text != "" &&
                           _contactNumberController.text.length == 11) {
                         print(_contactNumberController.text.length);
-                        DocumentSnapshot snap = await FirebaseFirestore.instance
-                            .collection('admins')
-                            .doc('+639190012251')
-                            .get();
+                        //
+                        try {
+                          // Fetch documents from the 'admins' collection
+                          QuerySnapshot snapshot = await FirebaseFirestore
+                              .instance
+                              .collection('admins')
+                              .get();
 
-                        String token = snap['token'];
-                        print(token);
-
-                        // token, body, title
-                        sendPushMessage(
-                          token,
-                          '${address} - ${_remarksController.text}',
-                          'FIRE ALARM EMERGENCY - ${value!}',
-                        );
+                          // Iterate through each document and get the token field
+                          snapshot.docs.forEach((doc) {
+                            String token = doc['token'];
+                            print(doc['token']);
+                            sendPushMessage(
+                              token,
+                              '${address} - ${_remarksController.text}',
+                              'FIRE ALARM EMERGENCY - ${value!}',
+                            );
+                          });
+                        } catch (e) {
+                          print("Error fetching documents: $e");
+                        }
+                        //
 
                         DateTime now = DateTime.now();
                         String formattedDateTime =
