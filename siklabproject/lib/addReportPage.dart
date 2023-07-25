@@ -86,52 +86,31 @@ class _ReportPageState extends State<ReportPage> {
         backgroundColor: const Color.fromRGBO(171, 0, 0, 1),
       ),
       body: Center(
-        child: Container(
+        child: Center(
           child: _hasInternet
-              ? Expanded(
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Container(
-                      width: double.infinity,
-                      decoration: const BoxDecoration(
-                        color: Color.fromRGBO(226, 226, 226, 1),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                fixedSize: const Size(325, 175),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12)),
-                                shadowColor:
-                                    const Color.fromRGBO(105, 105, 105, 1),
-                                backgroundColor:
-                                    const Color.fromRGBO(248, 248, 248, 1)),
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          MapBoxLocationScreen(
-                                            reportID: reportID,
-                                          )));
-                            },
-                            child: Row(
-                              children: [
-                                Image.asset('assets/map.png',
-                                    height: 90, width: 90),
-                                const SizedBox(width: 25),
-                                const Text("SELECT LOCATION",
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        color: Color.fromRGBO(0, 0, 0, 1)))
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+              ? ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      fixedSize: const Size(325, 175),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
+                      shadowColor: const Color.fromRGBO(105, 105, 105, 1),
+                      backgroundColor: const Color.fromRGBO(248, 248, 248, 1)),
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => MapBoxLocationScreen(
+                                  reportID: reportID,
+                                )));
+                  },
+                  child: Row(
+                    children: [
+                      Image.asset('assets/map.png', height: 90, width: 90),
+                      const SizedBox(width: 25),
+                      const Text("SELECT LOCATION",
+                          style: TextStyle(
+                              fontSize: 20, color: Color.fromRGBO(0, 0, 0, 1)))
+                    ],
                   ),
                 )
               : const CircularProgressIndicator(),

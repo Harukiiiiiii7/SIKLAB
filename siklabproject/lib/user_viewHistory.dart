@@ -96,70 +96,78 @@ class _UserHistoryScreenState extends State<UserHistoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'VIEW FIRE REPORTS',
-              style: TextStyle(color: Colors.white, fontSize: 20.0),
-            ),
-          ],
+    return WillPopScope(
+      onWillPop: () async {
+        _BackButton();
+        // Prevent default back button behavior
+        return false;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'VIEW FIRE REPORTS',
+                style: TextStyle(color: Colors.white, fontSize: 20.0),
+              ),
+            ],
+          ),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: _BackButton,
+          ),
+          backgroundColor: const Color.fromRGBO(171, 0, 0, 1),
         ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: _BackButton,
-        ),
-        backgroundColor: const Color.fromRGBO(171, 0, 0, 1),
-      ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: _documentsStream,
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const Center(
-              child: CircularProgressIndicator(),
+        body: StreamBuilder<QuerySnapshot>(
+          stream: _documentsStream,
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+
+            List<DocumentSnapshot> documents = snapshot.data!.docs;
+            documents = sortDocumentsByReportDate(documents);
+
+            return ListView.builder(
+              itemCount: documents.length,
+              itemBuilder: (context, index) {
+                final document = documents[index];
+                final data = document.data() as Map<String, dynamic>;
+                final reportID = data['reportID'];
+                final severity = data['severity'];
+                final time = data['time'];
+
+                String address =
+                    index < addresses.length ? addresses[index] : '';
+                String formattedReportID = formatReportIDToDateString(reportID);
+
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                return ListTile(
+                    onTap: () {
+                      print(reportID);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              User_ViewSingleReportScreen(reportID),
+                        ),
+                      );
+                    },
+                    title: Text(
+                        formattedReportID + ' - ' + time + ' - ' + severity),
+                    subtitle: Text(address),
+                    trailing: const Icon(Icons.arrow_forward));
+              },
             );
-          }
-
-          List<DocumentSnapshot> documents = snapshot.data!.docs;
-          documents = sortDocumentsByReportDate(documents);
-
-          return ListView.builder(
-            itemCount: documents.length,
-            itemBuilder: (context, index) {
-              final document = documents[index];
-              final data = document.data() as Map<String, dynamic>;
-              final reportID = data['reportID'];
-              final severity = data['severity'];
-              final time = data['time'];
-
-              String address = index < addresses.length ? addresses[index] : '';
-              String formattedReportID = formatReportIDToDateString(reportID);
-
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              }
-
-              return ListTile(
-                  onTap: () {
-                    print(reportID);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            User_ViewSingleReportScreen(reportID),
-                      ),
-                    );
-                  },
-                  title:
-                      Text(formattedReportID + ' - ' + time + ' - ' + severity),
-                  subtitle: Text(address),
-                  trailing: const Icon(Icons.arrow_forward));
-            },
-          );
-        },
+          },
+        ),
       ),
     );
   }

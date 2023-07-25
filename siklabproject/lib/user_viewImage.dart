@@ -19,13 +19,26 @@ class _User_ViewImageState extends State<User_ViewImage> {
   Widget build(BuildContext context) {
     Uint8List imageBytes = base64.decode(widget.imageString);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Image Preview"),
-        backgroundColor: const Color.fromRGBO(171, 0, 0, 1),
-      ),
-      body: SingleChildScrollView(
-        child: Container(
+    void _BackButton() {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  User_ViewSingleReportScreen(widget.reportID)));
+    }
+
+    return WillPopScope(
+      onWillPop: () async {
+        _BackButton();
+        // Prevent default back button behavior
+        return false;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text("Image Preview"),
+          backgroundColor: const Color.fromRGBO(171, 0, 0, 1),
+        ),
+        body: SingleChildScrollView(
           child: Column(
             children: [
               Align(
@@ -35,22 +48,16 @@ class _User_ViewImageState extends State<User_ViewImage> {
             ],
           ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: const Color.fromRGBO(171, 0, 0, 1),
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) =>
-                  User_ViewSingleReportScreen(widget.reportID),
-            ),
-          );
-        },
-        icon: const Icon(
-          Icons.check,
+        floatingActionButton: FloatingActionButton.extended(
+          backgroundColor: const Color.fromRGBO(171, 0, 0, 1),
+          onPressed: () {
+            _BackButton();
+          },
+          icon: const Icon(
+            Icons.check,
+          ),
+          label: const Text("OK"),
         ),
-        label: const Text("OK"),
       ),
     );
   }

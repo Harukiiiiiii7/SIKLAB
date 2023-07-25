@@ -98,8 +98,6 @@ class HotlinesState extends State<Hotlines> {
               ),
               ListView.builder(
                 shrinkWrap: true,
-                physics:
-                    NeverScrollableScrollPhysics(), // Disable ListView scrolling
                 itemCount: hotlines.length,
                 itemBuilder: (context, index) {
                   final hotline = hotlines[index];

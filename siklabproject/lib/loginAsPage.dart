@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:siklabproject/adminDashboard.dart';
 import 'package:siklabproject/main.dart';
 import 'package:siklabproject/userDashboard.dart';
 
@@ -13,12 +12,9 @@ class LoginAsPage extends StatefulWidget {
 class _LoginAsPageState extends State<LoginAsPage> {
   TextEditingController _passwordController = TextEditingController();
 
-  void _goToNextScreen() {
-    Navigator.pushNamed(context, '/AdminDashboard');
-  }
-
   void _BackButton() {
-    Navigator.pushNamed(context, '/Home');
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => const MyHomePage()));
   }
 
   void _showPasswordDialog() {
@@ -85,97 +81,104 @@ class _LoginAsPageState extends State<LoginAsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'LOGIN',
-              style: TextStyle(color: Colors.white, fontSize: 20.0),
-            ),
-          ],
+    return WillPopScope(
+      onWillPop: () async {
+        _BackButton();
+        // Prevent default back button behavior
+        return false;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'LOGIN',
+                style: TextStyle(color: Colors.white, fontSize: 20.0),
+              ),
+            ],
+          ),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: _BackButton,
+          ),
+          backgroundColor: const Color.fromRGBO(171, 0, 0, 1),
         ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: _BackButton,
-        ),
-        backgroundColor: const Color.fromRGBO(171, 0, 0, 1),
-      ),
-      resizeToAvoidBottomInset: false,
-      body: Container(
+        resizeToAvoidBottomInset: false,
+        body: Container(
           height: double.infinity,
           width: double.infinity,
           color: const Color.fromRGBO(171, 0, 0, 1),
           child: Column(
             children: [
               Expanded(
-                  child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Container(
-                        width: double.infinity,
-                        decoration: const BoxDecoration(
-                          color: Color.fromRGBO(226, 226, 226, 1),
-                        ),
-                        child: Column(
-                          //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            const SizedBox(height: 110),
-                            ElevatedButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: ((context) =>
-                                              UserDashboard())));
-                                },
-                                style: ElevatedButton.styleFrom(
-                                    fixedSize: const Size(275, 175),
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(12)),
-                                    shadowColor:
-                                        const Color.fromRGBO(105, 105, 105, 1),
-                                    backgroundColor:
-                                        const Color.fromRGBO(248, 248, 248, 1)),
-                                child: Row(children: [
-                                  Image.asset('assets/account.png',
-                                      height: 100, width: 100),
-                                  const SizedBox(width: 25),
-                                  const Text("USER",
-                                      style: TextStyle(
-                                          fontSize: 24,
-                                          color: Color.fromRGBO(0, 0, 0, 1)))
-                                ])),
-                            const SizedBox(height: 30),
-                            ElevatedButton(
-                                onPressed: () {
-                                  _showPasswordDialog();
-                                },
-                                style: ElevatedButton.styleFrom(
-                                    fixedSize: const Size(275, 175),
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(12)),
-                                    shadowColor:
-                                        const Color.fromRGBO(105, 105, 105, 1),
-                                    backgroundColor:
-                                        const Color.fromRGBO(248, 248, 248, 1)),
-                                child: Row(children: [
-                                  Image.asset('assets/admin.png',
-                                      height: 100, width: 100),
-                                  const SizedBox(width: 25),
-                                  const Text("ADMIN",
-                                      style: TextStyle(
-                                          fontSize: 24,
-                                          color: Color.fromRGBO(0, 0, 0, 1)))
-                                ]))
-                          ],
-                        ),
-                      ))),
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                    width: double.infinity,
+                    decoration: const BoxDecoration(
+                      color: Color.fromRGBO(226, 226, 226, 1),
+                    ),
+                    child: Column(
+                      //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        const SizedBox(height: 110),
+                        ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: ((context) => UserDashboard())));
+                            },
+                            style: ElevatedButton.styleFrom(
+                                fixedSize: const Size(275, 175),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12)),
+                                shadowColor:
+                                    const Color.fromRGBO(105, 105, 105, 1),
+                                backgroundColor:
+                                    const Color.fromRGBO(248, 248, 248, 1)),
+                            child: Row(children: [
+                              Image.asset('assets/account.png',
+                                  height: 100, width: 100),
+                              const SizedBox(width: 25),
+                              const Text("USER",
+                                  style: TextStyle(
+                                      fontSize: 24,
+                                      color: Color.fromRGBO(0, 0, 0, 1)))
+                            ])),
+                        const SizedBox(height: 30),
+                        ElevatedButton(
+                            onPressed: () {
+                              _showPasswordDialog();
+                            },
+                            style: ElevatedButton.styleFrom(
+                                fixedSize: const Size(275, 175),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12)),
+                                shadowColor:
+                                    const Color.fromRGBO(105, 105, 105, 1),
+                                backgroundColor:
+                                    const Color.fromRGBO(248, 248, 248, 1)),
+                            child: Row(children: [
+                              Image.asset('assets/admin.png',
+                                  height: 100, width: 100),
+                              const SizedBox(width: 25),
+                              const Text("ADMIN",
+                                  style: TextStyle(
+                                      fontSize: 24,
+                                      color: Color.fromRGBO(0, 0, 0, 1)))
+                            ]))
+                      ],
+                    ),
+                  ),
+                ),
+              ),
             ],
-          )),
+          ),
+        ),
+      ),
     );
   }
 }

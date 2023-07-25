@@ -122,7 +122,9 @@ class _AdminMobileNumberState extends State<AdminMobileNumber> {
                         phoneNumber: xphone,
                         verificationCompleted:
                             (PhoneAuthCredential credential) {},
-                        verificationFailed: (FirebaseAuthException e) {},
+                        verificationFailed: (FirebaseAuthException e) {
+                          print(e);
+                        },
                         codeSent: (String verificationId, int? resendToken) {
                           AdminMobileNumber.verifyID = verificationId;
 

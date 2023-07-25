@@ -92,7 +92,7 @@ class _LocationScreenState extends State<MapBoxLocationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Pin Location from Map'),
+        title: const Text('Pin Location from Map'),
         backgroundColor: const Color.fromRGBO(171, 0, 0, 1),
       ),
       body: Stack(children: [
