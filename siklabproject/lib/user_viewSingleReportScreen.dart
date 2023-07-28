@@ -103,10 +103,6 @@ class _User_ViewSingleReportScreen extends State<User_ViewSingleReportScreen> {
                   subtitle: Text('${data['remarks']}'),
                 ),
                 ListTile(
-                  title: const Text('Reporter Contact Number'),
-                  subtitle: Text('${data['contactNumber']}'),
-                ),
-                ListTile(
                   onTap: () {
                     print(data['image']);
                     Navigator.push(

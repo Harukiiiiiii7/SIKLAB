@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:siklabproject/historyPage.dart';
 import 'package:siklabproject/viewImage.dart';
 import 'package:siklabproject/viewMap.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class viewSingleReportPage extends StatefulWidget {
   String reportID;
@@ -131,6 +132,27 @@ class _viewSingleReportPageState extends State<viewSingleReportPage> {
                 ListTile(
                   title: const Text('Reporter Contact Number'),
                   subtitle: Text('${data['contactNumber']}'),
+                  trailing: Container(
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Color.fromRGBO(255, 11, 11, 1),
+                          offset: Offset.zero,
+                        ),
+                      ],
+                    ),
+                    child: IconButton(
+                      icon: const Icon(
+                        Icons.phone,
+                      ),
+                      onPressed: () {
+                        // ignore: deprecated_member_use
+                        launch('tel:${data['contactNumber']}');
+                      },
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
                 ListTile(
                   onTap: () {

@@ -4,6 +4,7 @@ import 'package:siklabproject/adminDashboard.dart';
 import 'package:siklabproject/loginAsPage.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:siklabproject/otp_pinput.dart';
 import 'package:siklabproject/verifyOTP.dart';
 
 class AdminMobileNumber extends StatefulWidget {
@@ -37,7 +38,7 @@ class _AdminMobileNumberState extends State<AdminMobileNumber> {
     const CircularProgressIndicator();
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => VerifyOTP(phoneNumber)),
+      MaterialPageRoute(builder: (context) => OTP_Screen(phoneNumber)),
     );
   }
 
@@ -120,6 +121,7 @@ class _AdminMobileNumberState extends State<AdminMobileNumber> {
 
                       await FirebaseAuth.instance.verifyPhoneNumber(
                         phoneNumber: xphone,
+                        timeout: const Duration(seconds: 60),
                         verificationCompleted:
                             (PhoneAuthCredential credential) {},
                         verificationFailed: (FirebaseAuthException e) {
@@ -127,8 +129,6 @@ class _AdminMobileNumberState extends State<AdminMobileNumber> {
                         },
                         codeSent: (String verificationId, int? resendToken) {
                           AdminMobileNumber.verifyID = verificationId;
-
-                          _nextPage(xphone);
                         },
                         codeAutoRetrievalTimeout: (String verificationId) {},
                       );
