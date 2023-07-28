@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pinput/pinput.dart';
 import 'package:siklabproject/adminDashboard.dart';
-import 'package:siklabproject/adminMobileNumberVerif.dart';
+import 'package:siklabproject/adminMobileNumber.dart';
 import 'package:siklabproject/loginAsPage.dart';
 
 class OTP_Screen extends StatefulWidget {
@@ -24,7 +24,7 @@ class _OTP_ScreenState extends State<OTP_Screen> {
   String? mtoken = "";
   final pinController = TextEditingController();
 
-  late int _countdownSeconds = 69;
+  late int _countdownSeconds = 90;
   Timer? _countdownTimer;
 
   final defaultPinTheme = PinTheme(
@@ -135,6 +135,10 @@ class _OTP_ScreenState extends State<OTP_Screen> {
           // Not needed in this case since we're using manual code entry
         },
         verificationFailed: (FirebaseAuthException e) {
+          defaultPinTheme.copyBorderWith(
+            border: Border.all(color: Colors.redAccent),
+          );
+          pinController.text = "";
           print("Verification failed: ${e.message}");
         },
         codeSent: (String verificationId, int? resendToken) async {
@@ -157,111 +161,107 @@ class _OTP_ScreenState extends State<OTP_Screen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          // children: [
-          //   Text(
-          //     'VIEW REPORT DETAILS',
-          //     style: TextStyle(color: Colors.white, fontSize: 20.0),
-          //   ),
-          // ],
-        ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: _BackButton,
-        ),
-        backgroundColor: const Color.fromRGBO(171, 0, 0, 1),
-      ),
-      body: Container(
-        alignment: Alignment.center,
-        padding: const EdgeInsets.all(25),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text(
-                "VERIFICATION",
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                "Enter the code sent to your phone number.",
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 18,
-                ),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                widget.phoneNumber,
-                style: const TextStyle(color: Colors.black, fontSize: 18),
-              ),
-              const SizedBox(height: 30),
-              Pinput(
-                //androidSmsAutofillMethod: AndroidSmsAutofillMethod.none,
-                controller: pinController,
-                length: 6,
-                defaultPinTheme: defaultPinTheme,
-                focusedPinTheme: defaultPinTheme.copyWith(
-                  decoration: defaultPinTheme.decoration!.copyWith(
-                    border: Border.all(color: Colors.black),
-                  ),
-                ),
-                onCompleted: (pin) async {
-                  print(pin);
-                  try {
-                    PhoneAuthCredential credential =
-                        PhoneAuthProvider.credential(
-                      verificationId: AdminMobileNumber.verifyID,
-                      smsCode: pin,
-                    );
-
-                    await auth.signInWithCredential(credential);
-
-                    const CircularProgressIndicator();
-                    _VerificationComplete();
-                  } catch (e) {
-                    defaultPinTheme.copyBorderWith(
-                      border: Border.all(color: Colors.redAccent),
-                    );
-                    print(pin);
-                    print("Mali otp mo pre");
-                  }
-                },
-              ),
-              const SizedBox(height: 20),
-              Text(
-                _countdownSeconds > 0
-                    ? 'Did not receive OTP? Resend in $_countdownSeconds seconds'
-                    : 'Did not receive OTP? Resend now!',
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontSize: 18,
-                ),
-              ),
-              ElevatedButton(
-                onPressed: _countdownSeconds > 0 ? null : _resendOTP,
-                style: ElevatedButton.styleFrom(
-                  fixedSize: const Size(350, 50),
-                  shape: const StadiumBorder(),
-                  shadowColor: const Color.fromRGBO(105, 105, 105, 1),
-                  backgroundColor: const Color.fromRGBO(171, 0, 0, 1),
-                ),
-                child: const Text(
-                  "Resend OTP",
-                  style: TextStyle(fontSize: 20, color: Colors.white),
-                ),
-              ),
-            ],
+        appBar: AppBar(
+          title: const Column(),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: _BackButton,
           ),
+          backgroundColor: const Color.fromRGBO(171, 0, 0, 1),
         ),
-      ),
-    );
+        body: SingleChildScrollView(
+          child: Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.all(25),
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 35),
+                  Image.asset('assets/mobilev.png', height: 125, width: 125),
+                  const SizedBox(height: 20),
+                  const Text(
+                    "OTP VERIFICATION",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  const Text(
+                    "Enter the code sent to your phone number.",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 18,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    widget.phoneNumber,
+                    style: const TextStyle(color: Colors.black, fontSize: 18),
+                  ),
+                  const SizedBox(height: 30),
+                  Pinput(
+                    //androidSmsAutofillMethod: AndroidSmsAutofillMethod.none,
+                    controller: pinController,
+                    length: 6,
+                    defaultPinTheme: defaultPinTheme,
+                    focusedPinTheme: defaultPinTheme.copyWith(
+                      decoration: defaultPinTheme.decoration!.copyWith(
+                        border: Border.all(color: Colors.black),
+                      ),
+                    ),
+                    onCompleted: (pin) async {
+                      print(pin);
+                      try {
+                        PhoneAuthCredential credential =
+                            PhoneAuthProvider.credential(
+                          verificationId: AdminMobileNumberScreen.verifyID,
+                          smsCode: pin,
+                        );
+
+                        await auth.signInWithCredential(credential);
+
+                        const CircularProgressIndicator();
+                        _VerificationComplete();
+                      } catch (e) {
+                        defaultPinTheme.copyBorderWith(
+                          border: Border.all(color: Colors.redAccent),
+                        );
+                        print(pin);
+                        print("Mali otp mo pre");
+                        pinController.text = "";
+                      }
+                    },
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    _countdownSeconds > 0
+                        ? 'Did not receive OTP? Resend in $_countdownSeconds seconds'
+                        : 'Did not receive OTP? Resend now!',
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 18,
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: _countdownSeconds > 0 ? null : _resendOTP,
+                    style: ElevatedButton.styleFrom(
+                      fixedSize: const Size(350, 50),
+                      shape: const StadiumBorder(),
+                      shadowColor: const Color.fromRGBO(105, 105, 105, 1),
+                      backgroundColor: const Color.fromRGBO(171, 0, 0, 1),
+                    ),
+                    child: const Text(
+                      "Resend OTP",
+                      style: TextStyle(fontSize: 20, color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ));
   }
 }

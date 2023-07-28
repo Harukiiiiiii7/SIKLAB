@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:siklabproject/adminDashboard.dart';
 import 'package:siklabproject/loginAsPage.dart';
-import 'package:siklabproject/otp_pinput.dart';
 import 'package:siklabproject/userDashboard.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:siklabproject/viewLatestReportPage.dart';
@@ -36,7 +35,6 @@ class MyApp extends StatelessWidget {
       ),
       navigatorKey: navigatorKey,
       home: const MyHomePage(),
-      //home: OTP_Screen("+639190012251"),
       //initialRoute: "/Home",
       routes: {
         "/Home": (context) => const MyHomePage(),
@@ -79,7 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
           if (payload != null && payload.isNotEmpty) {
             Navigator.pushNamed(context, '/LatestReportPage');
           } else {
-            //
+            Navigator.pushNamed(context, '/LatestReportPage');
           }
         } catch (e) {
           print("CANNOT GO TO SM PARE");

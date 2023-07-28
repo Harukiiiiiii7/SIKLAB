@@ -1,20 +1,18 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:siklabproject/adminDashboard.dart';
 import 'package:siklabproject/loginAsPage.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:siklabproject/otp_pinput.dart';
-import 'package:siklabproject/verifyOTP.dart';
 
-class AdminMobileNumber extends StatefulWidget {
+class AdminMobileNumberScreen extends StatefulWidget {
   static String verifyID = "";
   @override
-  State<AdminMobileNumber> createState() => _AdminMobileNumberState();
+  State<AdminMobileNumberScreen> createState() =>
+      _AdminMobileNumberScreenState();
 }
 
-class _AdminMobileNumberState extends State<AdminMobileNumber> {
-  bool enableTextField = true;
+class _AdminMobileNumberScreenState extends State<AdminMobileNumberScreen> {
   TextEditingController mobileNumberController = TextEditingController();
 
   var phone = "";
@@ -42,24 +40,62 @@ class _AdminMobileNumberState extends State<AdminMobileNumber> {
     );
   }
 
-  void _showDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (BuildContext context, setState) {
-            return AlertDialog(
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text(
-                    'Enter your Mobile Number for Alerts and Notifications',
+  void main() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Column(),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: _backButton,
+        ),
+        backgroundColor: const Color.fromRGBO(171, 0, 0, 1),
+      ),
+      body: SingleChildScrollView(
+        child: Container(
+          alignment: Alignment.center,
+          padding: const EdgeInsets.all(25),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const SizedBox(height: 35),
+                Image.asset('assets/mobile.png', height: 125, width: 125),
+                const SizedBox(height: 20),
+                const Text(
+                  "Login With Mobile Number",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
                   ),
-                  Container(
-                    child: Row(children: [
-                      const SizedBox(
-                        width: 10,
-                      ),
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  "We will send an OTP to verify.",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 18,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.black,
+                      width: 2.0, //
+                    ),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const SizedBox(width: 10),
                       SizedBox(
                         width: 40,
                         child: TextField(
@@ -67,58 +103,40 @@ class _AdminMobileNumberState extends State<AdminMobileNumber> {
                           enabled: false,
                           decoration:
                               const InputDecoration(border: InputBorder.none),
+                          style: const TextStyle(
+                              fontSize: 18, color: Colors.black),
                         ),
                       ),
                       const Text(
                         "|",
-                        style: TextStyle(fontSize: 33, color: Colors.grey),
+                        style: TextStyle(fontSize: 33, color: Colors.black),
                       ),
-                      const SizedBox(
-                        width: 10,
-                      ),
+                      const SizedBox(width: 10),
                       Expanded(
-                          child: TextField(
-                        keyboardType: TextInputType.phone,
-                        enabled: enableTextField,
-                        onChanged: (value) {
-                          phone = value;
-                        },
-                        decoration: const InputDecoration(
-                            border: InputBorder.none, hintText: '9123456789'),
-                        inputFormatters: [LengthLimitingTextInputFormatter(10)],
-                      )),
-                      const SizedBox(
-                        width: 20,
-                      )
-                    ]),
+                        child: TextField(
+                          keyboardType: TextInputType.phone,
+                          onChanged: (value) {
+                            phone = value;
+                          },
+                          decoration:
+                              const InputDecoration(border: InputBorder.none),
+                          style: const TextStyle(
+                              fontSize: 18, color: Colors.black),
+                          inputFormatters: [
+                            LengthLimitingTextInputFormatter(10)
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-              actions: [
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    shadowColor: const Color.fromRGBO(105, 105, 105, 1),
-                    backgroundColor: const Color.fromRGBO(110, 109, 109, 1),
-                  ),
-                  child: const Text('Close'),
-                  onPressed: () {
-                    _backButton();
-                  },
                 ),
+                const SizedBox(height: 20),
                 ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    shadowColor: const Color.fromRGBO(105, 105, 105, 1),
-                    backgroundColor: const Color.fromRGBO(171, 0, 0, 1),
-                  ),
                   onPressed: () async {
                     var xphone = '${mobileNumberController.text + phone}';
                     print(xphone);
                     print(xphone.length);
                     if ((mobileNumberController.text + phone).length == 13) {
-                      setState(() {
-                        enableTextField = false;
-                      });
-
                       await FirebaseAuth.instance.verifyPhoneNumber(
                         phoneNumber: xphone,
                         timeout: const Duration(seconds: 60),
@@ -128,14 +146,10 @@ class _AdminMobileNumberState extends State<AdminMobileNumber> {
                           print(e);
                         },
                         codeSent: (String verificationId, int? resendToken) {
-                          AdminMobileNumber.verifyID = verificationId;
+                          AdminMobileNumberScreen.verifyID = verificationId;
                         },
                         codeAutoRetrievalTimeout: (String verificationId) {},
                       );
-
-                      setState(() {
-                        enableTextField = false;
-                      });
                       _nextPage(xphone);
                     } else {
                       showDialog(
@@ -164,30 +178,21 @@ class _AdminMobileNumberState extends State<AdminMobileNumber> {
                       );
                     }
                   },
-                  child: const Text('Send OTP'),
+                  style: ElevatedButton.styleFrom(
+                    fixedSize: const Size(350, 50),
+                    shape: const StadiumBorder(),
+                    shadowColor: const Color.fromRGBO(105, 105, 105, 1),
+                    backgroundColor: const Color.fromRGBO(171, 0, 0, 1),
+                  ),
+                  child: const Text(
+                    "Send OTP",
+                    style: TextStyle(fontSize: 20, color: Colors.white),
+                  ),
                 ),
               ],
-            );
-          },
-        );
-      },
-    );
-  }
-
-  void main() async {
-    WidgetsFlutterBinding.ensureInitialized();
-    await Firebase.initializeApp();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
-      // Show the dialog box after the first frame is rendered
-      _showDialog(context);
-    });
-    return Scaffold(
-      body: Container(
-        color: Colors.black,
+            ),
+          ),
+        ),
       ),
     );
   }

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:siklabproject/adminMobileNumber.dart';
 import 'package:siklabproject/main.dart';
 import 'package:siklabproject/userDashboard.dart';
-
-import 'adminMobileNumberVerif.dart';
 
 class LoginAsPage extends StatefulWidget {
   @override
@@ -50,7 +49,8 @@ class _LoginAsPageState extends State<LoginAsPage> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => AdminMobileNumber()));
+                                builder: (context) =>
+                                    AdminMobileNumberScreen()));
                       } else {
                         showDialog(
                             context: context,

@@ -91,11 +91,12 @@ flutter:
     - assets/firefighter.png
     - assets/history.png
     - assets/hotline.png
-    - assets/log-out.png
     - assets/map.png
     - assets/camera.png
     - assets/marker.png
     - assets/marker2.png
+    - assets/mobile.png
+    - assets/mobilev.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
