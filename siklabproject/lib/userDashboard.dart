@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:siklabproject/addReportPage.dart';
 import 'package:siklabproject/hotlines.dart';
-import 'package:siklabproject/loginAsPage.dart';
-import 'package:siklabproject/user_viewHistory.dart';
+import 'package:siklabproject/loginPage.dart';
 
 class UserDashboard extends StatefulWidget {
   @override
@@ -12,7 +11,7 @@ class UserDashboard extends StatefulWidget {
 class _UserDashboardState extends State<UserDashboard> {
   void _BackButton() {
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => LoginAsPage()));
+        context, MaterialPageRoute(builder: (context) => loginPage()));
   }
 
   @override
@@ -121,7 +120,7 @@ class _UserDashboardState extends State<UserDashboard> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: ((context) => UserHistoryScreen()),
+                                  builder: ((context) => UserDashboard()),
                                 ),
                               );
                             },

@@ -1,6 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:siklabproject/loginAsPage.dart';
+import 'package:siklabproject/loginPage.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:siklabproject/otp_pinput.dart';
@@ -28,7 +28,7 @@ class _AdminMobileNumberScreenState extends State<AdminMobileNumberScreen> {
   void _backButton() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => LoginAsPage()),
+      MaterialPageRoute(builder: (context) => loginPage()),
     );
   }
 

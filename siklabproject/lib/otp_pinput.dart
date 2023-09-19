@@ -6,9 +6,9 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pinput/pinput.dart';
-import 'package:siklabproject/adminDashboard.dart';
 import 'package:siklabproject/adminMobileNumber.dart';
-import 'package:siklabproject/loginAsPage.dart';
+import 'package:siklabproject/loginPage.dart';
+import 'package:siklabproject/main.dart';
 
 class OTP_Screen extends StatefulWidget {
   static String verifyID = "";
@@ -40,13 +40,12 @@ class _OTP_ScreenState extends State<OTP_Screen> {
 
   void _BackButton() {
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => LoginAsPage()));
+        context, MaterialPageRoute(builder: (context) => loginPage()));
   }
 
   void _VerificationComplete() {
     const CircularProgressIndicator();
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => AdminDashboard()));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => MyApp()));
   }
 
   final FirebaseAuth auth = FirebaseAuth.instance;
