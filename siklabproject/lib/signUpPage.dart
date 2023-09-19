@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:siklabproject/loginPage.dart';
 import 'main.dart';
 
@@ -23,13 +24,19 @@ class _SignUpPageState extends State<signUpPage> {
   TextEditingController confirmPasswordController = TextEditingController();
 
   final barangays = [
-    "San Andres (Pob.)",
-    "San Isidro",
-    "San Juan",
-    "San Roque",
-    "Santa Rosa",
-    "Santo Domingo",
-    "Santo Niño"
+    "Brgy. Bagong Nayon",
+    "Brgy. Beverly Hills",
+    "Brgy. Cupang",
+    "Brgy. Dalig",
+    "Brgy. Dela Paz",
+    "Brgy. Inarawan",
+    "Brgy. Mambugan",
+    "Brgy. Mayamot",
+    "Brgy. San Isidro",
+    "Brgy. San Jose",
+    "Brgy. San Luis",
+    "Brgy. San Roque",
+    "Brgy. Santa Cruz"
   ];
   String? barangay;
 
@@ -53,13 +60,18 @@ class _SignUpPageState extends State<signUpPage> {
           ),
         ),
         child: Scaffold(
-          backgroundColor: Colors.transparent,
-          body: Stack(
-            children: [
-              Positioned(bottom: 0, child: _buildBottom()),
-            ],
-          ),
+            backgroundColor: Colors.transparent,
+            body: Center(
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Stack(
+                children: [
+                  SingleChildScrollView(physics: BouncingScrollPhysics(), child: _buildBottom()),
+                  ],
+                ),
+              ),
         ),
+      ),
       ),
     );
   }
@@ -67,7 +79,9 @@ class _SignUpPageState extends State<signUpPage> {
   Widget _buildBottom() {
     return SizedBox(
       width: mediaSize.width,
-      child: Card(
+      child: Positioned(
+        bottom: 0,
+        child: Card(
         color: Colors.white.withOpacity(0.75),
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
@@ -78,6 +92,7 @@ class _SignUpPageState extends State<signUpPage> {
         child: Padding(
           padding: const EdgeInsets.all(32.0),
           child: _buildForm(),
+        ),
         ),
       ),
     );
