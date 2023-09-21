@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:siklabproject/loginPage.dart';
+import 'package:siklabproject/signUpPage.dart';
 import 'package:siklabproject/userDashboard.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
@@ -27,6 +28,7 @@ class MyApp extends StatelessWidget {
         "/Home": (context) => const MyHomePage(),
         "/LoginPage": (context) => loginPage(),
         "/UserDashboard": (context) => UserDashboard(),
+        "/SignUpPage": (context) => signUpPage(),
       },
     );
   }

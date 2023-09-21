@@ -1,8 +1,6 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:siklabproject/main.dart';
-import 'package:siklabproject/signUpPage.dart';
-import 'package:siklabproject/userDashboard.dart';
 
 class loginPage extends StatefulWidget {
   @override
@@ -19,6 +17,109 @@ class _LoginPageState extends State<loginPage> {
   TextEditingController mobileNumberController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   bool rememberUser = false;
+
+  late bool _passwordVisible;
+
+  var counter = 5;
+  late Timer _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _passwordVisible = false;
+  }
+
+  void _countdown() {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        counter--;
+        print(counter);
+      });
+      if (counter == 0) {
+        timer.cancel();
+        Navigator.pushNamed(context, '/UserDashboard');
+      }
+    });
+  }
+
+  void _showDialog() {
+    _countdown();
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return Dialog(
+          backgroundColor: const Color.fromRGBO(248, 248, 248, 1),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+          child: Container(
+            height: 250,
+            padding: const EdgeInsets.all(12.0),
+            child: const Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.check_circle_outline_sharp,
+                  size: 100,
+                  color: Colors.green,
+                ),
+                SizedBox(height: 25),
+                Text(
+                  "Success!",
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 15),
+                Text(
+                  "Logging in...",
+                  style: TextStyle(fontSize: 16),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _showErrorDialog() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Dialog(
+            backgroundColor: const Color.fromRGBO(248, 248, 248, 1),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+            child: Container(
+              height: 250,
+              padding: const EdgeInsets.all(12.0),
+              child: const Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.error_outline_sharp,
+                    size: 100,
+                    color: Color.fromARGB(255, 255, 0, 0),
+                  ),
+                  SizedBox(height: 25),
+                  Text(
+                    "Credentials do not match.",
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 15),
+                  Text(
+                    "Try again.",
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,10 +186,11 @@ class _LoginPageState extends State<loginPage> {
         _buildGreyText("Please login with your information"),
         const SizedBox(height: 30),
         _buildGreyText("Mobile Number"),
-        _buildInputField(mobileNumberController),
+        _buildInputField(mobileNumberController, isPhone: true),
         const SizedBox(height: 20),
         _buildGreyText("Password"),
-        _buildInputField(passwordController, isPassword: true),
+        _buildInputField(passwordController,
+            isPassword: true, isObscure: _passwordVisible),
         const SizedBox(height: 20),
         _buildRememberForgot(),
         const SizedBox(height: 10),
@@ -109,7 +211,7 @@ class _LoginPageState extends State<loginPage> {
   }
 
   Widget _buildInputField(TextEditingController controller,
-      {isPassword = false}) {
+      {isPhone = false, isPassword = false, isObscure = true}) {
     return TextField(
       controller: controller,
       keyboardType: isPassword ? TextInputType.text : TextInputType.phone,
@@ -117,10 +219,20 @@ class _LoginPageState extends State<loginPage> {
           isPassword ? null : [LengthLimitingTextInputFormatter(11)],
       decoration: InputDecoration(
         suffixIcon: isPassword
-            ? const Icon(Icons.remove_red_eye_rounded)
-            : const Icon(Icons.phone_android_sharp),
+            ? IconButton(
+                onPressed: () {
+                  setState(() {
+                    _passwordVisible = !_passwordVisible;
+                  });
+                },
+                icon: Icon(
+                    _passwordVisible ? Icons.visibility : Icons.visibility_off),
+              )
+            : isPhone
+                ? const Icon(Icons.phone_android_sharp)
+                : null,
       ),
-      obscureText: isPassword,
+      obscureText: isPassword ? !isObscure : false,
     );
   }
 
@@ -155,8 +267,14 @@ class _LoginPageState extends State<loginPage> {
       onPressed: () {
         debugPrint("Number: ${mobileNumberController.text}");
         debugPrint("Password: ${passwordController.text}");
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => UserDashboard()));
+
+        if (mobileNumberController.text.isEmpty ||
+            passwordController.text.isEmpty ||
+            mobileNumberController.text.length < 11) {
+          _showErrorDialog();
+        } else {
+          _showDialog();
+        }
       },
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color.fromRGBO(171, 0, 0, 1),
@@ -165,7 +283,7 @@ class _LoginPageState extends State<loginPage> {
         shadowColor: myColor,
         minimumSize: const Size.fromHeight(50),
       ),
-      child: const Text("LOGIN"),
+      child: const Text("Login"),
     );
   }
 
@@ -173,8 +291,7 @@ class _LoginPageState extends State<loginPage> {
     return ElevatedButton(
       onPressed: () {
         debugPrint("Signing up fool!");
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => signUpPage()));
+        Navigator.pushNamed(context, '/SignUpPage');
       },
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color.fromRGBO(171, 0, 0, 1),

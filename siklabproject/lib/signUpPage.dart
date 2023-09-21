@@ -1,8 +1,6 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:siklabproject/loginPage.dart';
-import 'main.dart';
 
 class signUpPage extends StatefulWidget {
   @override
@@ -40,6 +38,152 @@ class _SignUpPageState extends State<signUpPage> {
   ];
   String? barangay;
 
+  var counter = 5;
+  late Timer _timer;
+
+  late bool _passwordVisible;
+
+  @override
+  void initState() {
+    super.initState();
+    _passwordVisible = false;
+  }
+
+  void _countdown() {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        counter--;
+        print(counter);
+      });
+      if (counter == 0) {
+        timer.cancel();
+        Navigator.pushNamed(context, '/LoginPage');
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel(); // Cancel the timer when the widget is disposed
+    super.dispose();
+  }
+
+  void _showDialog() {
+    _countdown();
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return Dialog(
+            backgroundColor: const Color.fromRGBO(248, 248, 248, 1),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+            child: Container(
+              height: 250,
+              padding: const EdgeInsets.all(12.0),
+              child: const Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.check_circle_outline_sharp,
+                    size: 100,
+                    color: Colors.green,
+                  ),
+                  SizedBox(height: 25),
+                  Text(
+                    "Successfully Signed Up!",
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 15),
+                  Text(
+                    "Redirecting to the login screen...",
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+  void _showErrorDialog() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Dialog(
+            backgroundColor: const Color.fromRGBO(248, 248, 248, 1),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+            child: Container(
+              height: 250,
+              padding: const EdgeInsets.all(12.0),
+              child: const Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.error_outline_sharp,
+                    size: 100,
+                    color: Color.fromARGB(255, 255, 0, 0),
+                  ),
+                  SizedBox(height: 25),
+                  Text(
+                    "Error with Signing Up",
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 15),
+                  Text(
+                    "Please fill up the necessary information.",
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+  void _showPasswordDoNotMatchDialog() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Dialog(
+            backgroundColor: const Color.fromRGBO(248, 248, 248, 1),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+            child: Container(
+              height: 250,
+              padding: const EdgeInsets.all(12.0),
+              child: const Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.error_outline_sharp,
+                    size: 100,
+                    color: Color.fromARGB(255, 255, 0, 0),
+                  ),
+                  SizedBox(height: 25),
+                  Text(
+                    "Passwords do not match.",
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 15),
+                  Text(
+                    "Please check your password and try again.",
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     myColor = Theme.of(context).primaryColor;
@@ -60,18 +204,19 @@ class _SignUpPageState extends State<signUpPage> {
           ),
         ),
         child: Scaffold(
-            backgroundColor: Colors.transparent,
-            body: Center(
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: Stack(
+          backgroundColor: Colors.transparent,
+          body: Center(
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Stack(
                 children: [
-                  SingleChildScrollView(physics: BouncingScrollPhysics(), child: _buildBottom()),
-                  ],
-                ),
+                  SingleChildScrollView(
+                      physics: BouncingScrollPhysics(), child: _buildBottom()),
+                ],
               ),
+            ),
+          ),
         ),
-      ),
       ),
     );
   }
@@ -82,17 +227,17 @@ class _SignUpPageState extends State<signUpPage> {
       child: Positioned(
         bottom: 0,
         child: Card(
-        color: Colors.white.withOpacity(0.75),
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(30),
-            topRight: Radius.circular(30),
+          color: Colors.white.withOpacity(0.75),
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(30),
+              topRight: Radius.circular(30),
+            ),
           ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(32.0),
-          child: _buildForm(),
-        ),
+          child: Padding(
+            padding: const EdgeInsets.all(32.0),
+            child: _buildForm(),
+          ),
         ),
       ),
     );
@@ -113,7 +258,7 @@ class _SignUpPageState extends State<signUpPage> {
         _buildGreyText("Please fill up your information"),
         const SizedBox(height: 25),
         _buildGreyText("Name"),
-        _buildInputField(nameController),
+        _buildInputField(nameController, isName: true),
         const SizedBox(height: 20),
         _buildGreyText("Barangay"),
         Container(
@@ -140,10 +285,12 @@ class _SignUpPageState extends State<signUpPage> {
         _buildInputField(mobileNumberController, isPhone: true),
         const SizedBox(height: 20),
         _buildGreyText("Password"),
-        _buildInputField(passwordController, isPassword: true),
+        _buildInputField(passwordController,
+            isPassword: true, isObscure: _passwordVisible),
         const SizedBox(height: 20),
         _buildGreyText("Confirm Password"),
-        _buildInputField(confirmPasswordController, isPassword: true),
+        _buildInputField(confirmPasswordController,
+            isPassword: true, isObscure: _passwordVisible),
         const SizedBox(height: 20),
         _buildSignUpButton(),
       ],
@@ -160,7 +307,7 @@ class _SignUpPageState extends State<signUpPage> {
   }
 
   Widget _buildInputField(TextEditingController controller,
-      {isPassword = false, isPhone = false}) {
+      {isPassword = false, isPhone = false, isName = false, isObscure: true}) {
     return Container(
       decoration: const BoxDecoration(
         border: Border(
@@ -174,16 +321,30 @@ class _SignUpPageState extends State<signUpPage> {
             : isPhone
                 ? TextInputType.phone
                 : TextInputType.text,
-        inputFormatters:
-            isPhone ? [LengthLimitingTextInputFormatter(11)] : null,
+        inputFormatters: isPhone
+            ? [LengthLimitingTextInputFormatter(11)]
+            : isName
+                ? <TextInputFormatter>[
+                    FilteringTextInputFormatter.allow(RegExp("[a-zA-Z ]"))
+                  ]
+                : null,
         decoration: InputDecoration(
           suffixIcon: isPassword
-              ? const Icon(Icons.remove_red_eye_rounded)
+              ? IconButton(
+                  onPressed: () {
+                    setState(() {
+                      _passwordVisible = !_passwordVisible;
+                    });
+                  },
+                  icon: Icon(_passwordVisible
+                      ? Icons.visibility
+                      : Icons.visibility_off),
+                )
               : isPhone
                   ? const Icon(Icons.phone_android_sharp)
                   : null,
         ),
-        obscureText: isPassword,
+        obscureText: isPassword ? !isObscure : false,
       ),
     );
   }
@@ -191,11 +352,25 @@ class _SignUpPageState extends State<signUpPage> {
   Widget _buildSignUpButton() {
     return ElevatedButton(
       onPressed: () {
-        debugPrint("Number: ${nameController.text}");
-        debugPrint("Number: $barangay");
-        debugPrint("Number: ${mobileNumberController.text}");
+        debugPrint("Name: ${nameController.text}");
+        debugPrint("Barangay: $barangay");
+        debugPrint("Mobile Number: ${mobileNumberController.text}");
         debugPrint("Password: ${passwordController.text}");
         debugPrint("Password: ${confirmPasswordController.text}");
+
+        if (nameController.text.isEmpty ||
+            barangay == null ||
+            mobileNumberController.text.isEmpty ||
+            passwordController.text.isEmpty ||
+            confirmPasswordController.text.isEmpty ||
+            mobileNumberController.text.length < 11 ||
+            nameController.text.trim().isEmpty) {
+          _showErrorDialog();
+        } else if (passwordController.text != confirmPasswordController.text) {
+          _showPasswordDoNotMatchDialog();
+        } else {
+          _showDialog();
+        }
       },
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color.fromRGBO(171, 0, 0, 1),

@@ -114,51 +114,6 @@ class _UserDashboardState extends State<UserDashboard> {
                                         fontSize: 20,
                                         color: Color.fromRGBO(0, 0, 0, 1)))
                               ])),
-                          const SizedBox(height: 30),
-                          ElevatedButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: ((context) => UserDashboard()),
-                                ),
-                              );
-                            },
-                            style: ElevatedButton.styleFrom(
-                                fixedSize: const Size(325, 175),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12)),
-                                shadowColor:
-                                    const Color.fromRGBO(105, 105, 105, 1),
-                                backgroundColor:
-                                    const Color.fromRGBO(248, 248, 248, 1)),
-                            child: Row(
-                              children: [
-                                Image.asset('assets/history.png',
-                                    height: 100, width: 100),
-                                const SizedBox(width: 25),
-                                const Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      "VIEW OTHER",
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        color: Color.fromRGBO(0, 0, 0, 1),
-                                      ),
-                                    ),
-                                    Text(
-                                      "FIRE REPORTS",
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        color: Color.fromRGBO(0, 0, 0, 1),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
                         ],
                       ),
                     ),
