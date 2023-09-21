@@ -10,12 +10,12 @@ class Hotlines extends StatefulWidget {
 
 class HotlinesState extends State<Hotlines> {
   final List<Map<String, dynamic>> hotlines = [
+    {'name': 'ANTIPOLO CITY EMERGENCY HOTLINE', 'number': '8696-9911'},
     {'name': 'NATIONAL HOTLINE', 'number': '911'},
-    {'name': 'Bureau of Fire Protection', 'number': '117'},
     {'name': 'PNP ', 'number': '117'},
-    {'name': 'ANTIPOLO CITY EMERGENCY HOTLINE', 'number': '86969911'},
-    {'name': 'TAYTAY BFP', 'number': '86619887'},
-    {'name': 'CAINTA RESCUE 171 (24/7)', 'number': '85350131'},
+    {'name': 'BFP Central Fire Station', 'number': '8871-2865'},
+    {'name': 'BFP Dela Paz Sub Station', 'number': '8571-4648'},
+    {'name': 'BFP Mayamot Sub Station', 'number': '8250-0497'},
   ];
 
   final List<String> BFPManual = [
