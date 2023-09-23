@@ -50,7 +50,6 @@ dependencies:
   permission_handler: ^10.4.3
 
   firebase_core: ^2.13.0
-  flutter_local_notifications: ^9.2.0 #fixed as ^9.2.0, keep this to retain onSelectNotification at main.dart 
   firebase_messaging: ^14.0.1
   http: ^1.1.0
   cloud_firestore: ^4.0.1
@@ -89,14 +88,11 @@ flutter:
     - assets/admin.png
     - assets/fire.png
     - assets/firefighter.png
-    - assets/history.png
     - assets/hotline.png
     - assets/map.png
     - assets/camera.png
     - assets/marker.png
     - assets/marker2.png
-    - assets/mobile.png
-    - assets/mobilev.png
     - assets/firetruck.png
 
   # An image asset can refer to one or more resolution-specific "variants", see

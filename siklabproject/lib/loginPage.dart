@@ -255,6 +255,7 @@ class _LoginPageState extends State<loginPage> {
         TextButton(
           onPressed: () {
             debugPrint("Me forgot password huhu help");
+            Navigator.pushNamed(context, '/ForgotPasswordPage');
           },
           child: _buildGreyText("I forgot my password"),
         )

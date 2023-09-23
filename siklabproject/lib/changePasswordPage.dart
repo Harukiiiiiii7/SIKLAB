@@ -2,39 +2,20 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class signUpPage extends StatefulWidget {
+class changePasswordPage extends StatefulWidget {
   @override
-  State<signUpPage> createState() => _SignUpPageState();
+  State<changePasswordPage> createState() => _changePasswordPageState();
 }
 
-class _SignUpPageState extends State<signUpPage> {
+class _changePasswordPageState extends State<changePasswordPage> {
   void _BackButton() {
     Navigator.pushNamed(context, '/LoginPage');
   }
 
   late Color myColor;
   late Size mediaSize;
-  TextEditingController nameController = TextEditingController();
-  TextEditingController mobileNumberController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
-
-  final barangays = [
-    "Brgy. Bagong Nayon",
-    "Brgy. Beverly Hills",
-    "Brgy. Cupang",
-    "Brgy. Dalig",
-    "Brgy. Dela Paz",
-    "Brgy. Inarawan",
-    "Brgy. Mambugan",
-    "Brgy. Mayamot",
-    "Brgy. San Isidro",
-    "Brgy. San Jose",
-    "Brgy. San Luis",
-    "Brgy. San Roque",
-    "Brgy. Santa Cruz"
-  ];
-  String? barangay;
 
   var counter = 5;
   late Timer _timer;
@@ -91,7 +72,7 @@ class _SignUpPageState extends State<signUpPage> {
                   ),
                   SizedBox(height: 25),
                   Text(
-                    "Successfully Signed Up!",
+                    "Password Changed",
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 15),
@@ -246,41 +227,13 @@ class _SignUpPageState extends State<signUpPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          "Hello!",
+          "Change your Password",
           style: TextStyle(
             color: Color.fromRGBO(171, 0, 0, 1),
             fontSize: 28,
             fontWeight: FontWeight.bold,
           ),
         ),
-        _buildGreyText("Please fill up your information"),
-        const SizedBox(height: 25),
-        _buildGreyText("Name"),
-        _buildInputField(nameController, isName: true),
-        const SizedBox(height: 20),
-        _buildGreyText("Barangay"),
-        Container(
-          decoration: const BoxDecoration(
-            border: Border(
-              bottom: BorderSide(color: Colors.black, width: 2.0),
-            ),
-          ),
-          child: DropdownButton<String>(
-            isExpanded: true,
-            value: barangay,
-            items: barangays.map(_barangayItems).toList(),
-            onChanged: (value) => setState(
-              () {
-                barangay = value;
-                debugPrint(value);
-              },
-            ),
-            hint: const Text("Select Barangay"),
-          ),
-        ),
-        const SizedBox(height: 20),
-        _buildGreyText("Mobile Number"),
-        _buildInputField(mobileNumberController, isPhone: true),
         const SizedBox(height: 20),
         _buildGreyText("Password"),
         _buildInputField(passwordController,
@@ -290,7 +243,7 @@ class _SignUpPageState extends State<signUpPage> {
         _buildInputField(confirmPasswordController,
             isPassword: true, isObscure: _passwordVisible),
         const SizedBox(height: 20),
-        _buildSignUpButton(),
+        _buildSubmitButton(),
       ],
     );
   }
@@ -305,7 +258,7 @@ class _SignUpPageState extends State<signUpPage> {
   }
 
   Widget _buildInputField(TextEditingController controller,
-      {isPassword = false, isPhone = false, isName = false, isObscure = true}) {
+      {isPassword = false, isObscure = true}) {
     return Container(
       decoration: const BoxDecoration(
         border: Border(
@@ -314,55 +267,30 @@ class _SignUpPageState extends State<signUpPage> {
       ),
       child: TextField(
         controller: controller,
-        keyboardType: isPassword
-            ? TextInputType.text
-            : isPhone
-                ? TextInputType.phone
-                : TextInputType.text,
-        inputFormatters: isPhone
-            ? [LengthLimitingTextInputFormatter(11)]
-            : isName
-                ? <TextInputFormatter>[
-                    FilteringTextInputFormatter.allow(RegExp("[a-zA-Z ]"))
-                  ]
-                : null,
         decoration: InputDecoration(
-          suffixIcon: isPassword
-              ? IconButton(
-                  onPressed: () {
-                    setState(() {
-                      _passwordVisible = !_passwordVisible;
-                    });
-                  },
-                  icon: Icon(_passwordVisible
-                      ? Icons.visibility
-                      : Icons.visibility_off),
-                )
-              : isPhone
-                  ? const Icon(Icons.phone_android_sharp)
-                  : null,
+          suffixIcon: IconButton(
+            onPressed: () {
+              setState(() {
+                _passwordVisible = !_passwordVisible;
+              });
+            },
+            icon: Icon(
+                _passwordVisible ? Icons.visibility : Icons.visibility_off),
+          ),
         ),
         obscureText: isPassword ? !isObscure : false,
       ),
     );
   }
 
-  Widget _buildSignUpButton() {
+  Widget _buildSubmitButton() {
     return ElevatedButton(
       onPressed: () {
-        debugPrint("Name: ${nameController.text}");
-        debugPrint("Barangay: $barangay");
-        debugPrint("Mobile Number: ${mobileNumberController.text}");
         debugPrint("Password: ${passwordController.text}");
         debugPrint("Password: ${confirmPasswordController.text}");
 
-        if (nameController.text.isEmpty ||
-            barangay == null ||
-            mobileNumberController.text.isEmpty ||
-            passwordController.text.isEmpty ||
-            confirmPasswordController.text.isEmpty ||
-            mobileNumberController.text.length < 11 ||
-            nameController.text.trim().isEmpty) {
+        if (passwordController.text.isEmpty ||
+            confirmPasswordController.text.isEmpty) {
           _showErrorDialog();
         } else if (passwordController.text != confirmPasswordController.text) {
           _showPasswordDoNotMatchDialog();
@@ -377,15 +305,7 @@ class _SignUpPageState extends State<signUpPage> {
         shadowColor: myColor,
         minimumSize: const Size.fromHeight(50),
       ),
-      child: const Text("Sign Up"),
+      child: const Text("Submit"),
     );
   }
-
-  DropdownMenuItem<String> _barangayItems(String item) => DropdownMenuItem(
-        value: item,
-        child: Text(
-          item,
-          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-        ),
-      );
 }

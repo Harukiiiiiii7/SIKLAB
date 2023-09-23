@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:siklabproject/addReportPage.dart';
 import 'package:siklabproject/hotlines.dart';
 import 'package:siklabproject/loginPage.dart';
+import 'package:siklabproject/userSettingsPage.dart';
 
 class UserDashboard extends StatefulWidget {
   @override
@@ -110,6 +111,31 @@ class _UserDashboardState extends State<UserDashboard> {
                                     height: 100, width: 100),
                                 const SizedBox(width: 25),
                                 const Text("VIEW HOTLINES",
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        color: Color.fromRGBO(0, 0, 0, 1)))
+                              ])),
+                          ElevatedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: ((context) =>
+                                            userSettingsPage())));
+                              },
+                              style: ElevatedButton.styleFrom(
+                                  fixedSize: const Size(325, 175),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12)),
+                                  shadowColor:
+                                      const Color.fromRGBO(105, 105, 105, 1),
+                                  backgroundColor:
+                                      const Color.fromRGBO(248, 248, 248, 1)),
+                              child: Row(children: [
+                                Image.asset('assets/hotline.png',
+                                    height: 100, width: 100),
+                                const SizedBox(width: 25),
+                                const Text("USER SETTINGS",
                                     style: TextStyle(
                                         fontSize: 20,
                                         color: Color.fromRGBO(0, 0, 0, 1)))

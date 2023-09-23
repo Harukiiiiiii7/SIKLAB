@@ -2,14 +2,14 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class signUpPage extends StatefulWidget {
+class userSettingsPage extends StatefulWidget {
   @override
-  State<signUpPage> createState() => _SignUpPageState();
+  State<userSettingsPage> createState() => _UserSettingsPageState();
 }
 
-class _SignUpPageState extends State<signUpPage> {
+class _UserSettingsPageState extends State<userSettingsPage> {
   void _BackButton() {
-    Navigator.pushNamed(context, '/LoginPage');
+    Navigator.pushNamed(context, '/UserDashboard');
   }
 
   late Color myColor;
@@ -64,6 +64,36 @@ class _SignUpPageState extends State<signUpPage> {
   void dispose() {
     _timer.cancel(); // Cancel the timer when the widget is disposed
     super.dispose();
+  }
+
+  void _showConfirmDialog() {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return Dialog(
+            backgroundColor: const Color.fromRGBO(248, 248, 248, 1),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+            child: Container(
+              height: 250,
+              padding: const EdgeInsets.all(12.0),
+              child: const Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    "Enter your password to confirm changes",
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 15),
+                  TextField(),
+                ],
+              ),
+            ),
+          );
+        });
   }
 
   void _showDialog() {
@@ -144,44 +174,6 @@ class _SignUpPageState extends State<signUpPage> {
         });
   }
 
-  void _showPasswordDoNotMatchDialog() {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return Dialog(
-            backgroundColor: const Color.fromRGBO(248, 248, 248, 1),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20.0),
-            ),
-            child: Container(
-              height: 250,
-              padding: const EdgeInsets.all(12.0),
-              child: const Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.error_outline_sharp,
-                    size: 100,
-                    color: Color.fromARGB(255, 255, 0, 0),
-                  ),
-                  SizedBox(height: 25),
-                  Text(
-                    "Passwords do not match.",
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 15),
-                  Text(
-                    "Please check your password and try again.",
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ],
-              ),
-            ),
-          );
-        });
-  }
-
   @override
   Widget build(BuildContext context) {
     myColor = Theme.of(context).primaryColor;
@@ -246,14 +238,13 @@ class _SignUpPageState extends State<signUpPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          "Hello!",
+          "User Details",
           style: TextStyle(
             color: Color.fromRGBO(171, 0, 0, 1),
             fontSize: 28,
             fontWeight: FontWeight.bold,
           ),
         ),
-        _buildGreyText("Please fill up your information"),
         const SizedBox(height: 25),
         _buildGreyText("Name"),
         _buildInputField(nameController, isName: true),
@@ -281,16 +272,12 @@ class _SignUpPageState extends State<signUpPage> {
         const SizedBox(height: 20),
         _buildGreyText("Mobile Number"),
         _buildInputField(mobileNumberController, isPhone: true),
-        const SizedBox(height: 20),
-        _buildGreyText("Password"),
-        _buildInputField(passwordController,
-            isPassword: true, isObscure: _passwordVisible),
-        const SizedBox(height: 20),
-        _buildGreyText("Confirm Password"),
-        _buildInputField(confirmPasswordController,
-            isPassword: true, isObscure: _passwordVisible),
-        const SizedBox(height: 20),
-        _buildSignUpButton(),
+        const SizedBox(height: 30),
+        _buildEditButton(),
+        const SizedBox(height: 10),
+        _buildChangePasswordButton(),
+        const SizedBox(height: 10),
+        _buildLogOutButton(),
       ],
     );
   }
@@ -343,32 +330,17 @@ class _SignUpPageState extends State<signUpPage> {
                   : null,
         ),
         obscureText: isPassword ? !isObscure : false,
+        enabled: false,
       ),
     );
   }
 
-  Widget _buildSignUpButton() {
+  Widget _buildEditButton() {
     return ElevatedButton(
       onPressed: () {
         debugPrint("Name: ${nameController.text}");
         debugPrint("Barangay: $barangay");
         debugPrint("Mobile Number: ${mobileNumberController.text}");
-        debugPrint("Password: ${passwordController.text}");
-        debugPrint("Password: ${confirmPasswordController.text}");
-
-        if (nameController.text.isEmpty ||
-            barangay == null ||
-            mobileNumberController.text.isEmpty ||
-            passwordController.text.isEmpty ||
-            confirmPasswordController.text.isEmpty ||
-            mobileNumberController.text.length < 11 ||
-            nameController.text.trim().isEmpty) {
-          _showErrorDialog();
-        } else if (passwordController.text != confirmPasswordController.text) {
-          _showPasswordDoNotMatchDialog();
-        } else {
-          _showDialog();
-        }
       },
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color.fromRGBO(171, 0, 0, 1),
@@ -377,7 +349,39 @@ class _SignUpPageState extends State<signUpPage> {
         shadowColor: myColor,
         minimumSize: const Size.fromHeight(50),
       ),
-      child: const Text("Sign Up"),
+      child: const Text("Edit Information"),
+    );
+  }
+
+  Widget _buildChangePasswordButton() {
+    return ElevatedButton(
+      onPressed: () {
+        Navigator.pushNamed(context, '/ForgotPasswordPage');
+      },
+      style: ElevatedButton.styleFrom(
+        backgroundColor: const Color.fromRGBO(171, 0, 0, 1),
+        shape: const StadiumBorder(),
+        elevation: 20,
+        shadowColor: myColor,
+        minimumSize: const Size.fromHeight(50),
+      ),
+      child: const Text("Change Password"),
+    );
+  }
+
+  Widget _buildLogOutButton() {
+    return ElevatedButton(
+      onPressed: () {
+        Navigator.pushNamed(context, '/LoginPage');
+      },
+      style: ElevatedButton.styleFrom(
+        backgroundColor: const Color.fromRGBO(171, 0, 0, 1),
+        shape: const StadiumBorder(),
+        elevation: 20,
+        shadowColor: myColor,
+        minimumSize: const Size.fromHeight(50),
+      ),
+      child: const Text("Log Out"),
     );
   }
 

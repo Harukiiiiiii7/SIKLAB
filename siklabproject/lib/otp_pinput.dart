@@ -1,14 +1,11 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pinput/pinput.dart';
 import 'package:siklabproject/adminMobileNumber.dart';
-import 'package:siklabproject/loginPage.dart';
-import 'package:siklabproject/main.dart';
 
 class OTP_Screen extends StatefulWidget {
   static String verifyID = "";
@@ -23,6 +20,9 @@ class OTP_Screen extends StatefulWidget {
 class _OTP_ScreenState extends State<OTP_Screen> {
   String? mtoken = "";
   final pinController = TextEditingController();
+
+  late Color myColor;
+  late Size mediaSize;
 
   late int _countdownSeconds = 90;
   Timer? _countdownTimer;
@@ -39,25 +39,20 @@ class _OTP_ScreenState extends State<OTP_Screen> {
   );
 
   void _BackButton() {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => loginPage()));
+    Navigator.pushNamed(context, '/ForgotPasswordPage');
   }
 
   void _VerificationComplete() {
     const CircularProgressIndicator();
-    Navigator.push(context, MaterialPageRoute(builder: (context) => MyApp()));
+    Navigator.pushNamed(context, '/UserDashboard');
   }
 
   final FirebaseAuth auth = FirebaseAuth.instance;
-
-  final CollectionReference adminsCollection =
-      FirebaseFirestore.instance.collection('admins');
 
   @override
   void initState() {
     super.initState();
     requestPermission();
-    getToken();
 
     if (_countdownTimer == null) {
       startCountdownTimer();
@@ -105,25 +100,6 @@ class _OTP_ScreenState extends State<OTP_Screen> {
     }
   }
 
-  void getToken() async {
-    await FirebaseMessaging.instance.getToken().then((token) {
-      setState(() {
-        mtoken = token;
-        print("Token: $mtoken");
-      });
-      saveAdminCreds(token!, widget.phoneNumber);
-    });
-  }
-
-  void saveAdminCreds(String token, String phoneNumber) async {
-    final json = {'phone': phoneNumber, 'token': token};
-
-    await FirebaseFirestore.instance
-        .collection('admins')
-        .doc(widget.phoneNumber)
-        .set(json);
-  }
-
   void _resendOTP() async {
     try {
       // Call verifyPhoneNumber again to resend OTP
@@ -159,108 +135,146 @@ class _OTP_ScreenState extends State<OTP_Screen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: const Column(),
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: _BackButton,
+    myColor = Theme.of(context).primaryColor;
+    mediaSize = MediaQuery.of(context).size;
+    return WillPopScope(
+      onWillPop: () async {
+        _BackButton();
+        // Prevent default back button behavior
+        return false;
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: const AssetImage("assets/firetruck.png"),
+            fit: BoxFit.cover,
+            colorFilter:
+                ColorFilter.mode(myColor.withOpacity(0.4), BlendMode.dstATop),
           ),
-          backgroundColor: const Color.fromRGBO(171, 0, 0, 1),
         ),
-        body: SingleChildScrollView(
-          child: Container(
-            alignment: Alignment.center,
-            padding: const EdgeInsets.all(25),
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const SizedBox(height: 35),
-                  Image.asset('assets/mobilev.png', height: 125, width: 125),
-                  const SizedBox(height: 20),
-                  const Text(
-                    "OTP VERIFICATION",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  const Text(
-                    "Enter the code sent to your phone number.",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 18,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    widget.phoneNumber,
-                    style: const TextStyle(color: Colors.black, fontSize: 18),
-                  ),
-                  const SizedBox(height: 30),
-                  Pinput(
-                    //androidSmsAutofillMethod: AndroidSmsAutofillMethod.none,
-                    controller: pinController,
-                    length: 6,
-                    defaultPinTheme: defaultPinTheme,
-                    focusedPinTheme: defaultPinTheme.copyWith(
-                      decoration: defaultPinTheme.decoration!.copyWith(
-                        border: Border.all(color: Colors.black),
-                      ),
-                    ),
-                    onCompleted: (pin) async {
-                      print(pin);
-                      try {
-                        PhoneAuthCredential credential =
-                            PhoneAuthProvider.credential(
-                          verificationId: AdminMobileNumberScreen.verifyID,
-                          smsCode: pin,
-                        );
-
-                        await auth.signInWithCredential(credential);
-
-                        const CircularProgressIndicator();
-                        _VerificationComplete();
-                      } catch (e) {
-                        defaultPinTheme.copyBorderWith(
-                          border: Border.all(color: Colors.redAccent),
-                        );
-                        print(pin);
-                        print("Mali otp mo pre");
-                        pinController.text = "";
-                      }
-                    },
-                  ),
-                  const SizedBox(height: 20),
-                  Text(
-                    _countdownSeconds > 0
-                        ? 'Did not receive OTP? Resend in $_countdownSeconds seconds'
-                        : 'Did not receive OTP? Resend now!',
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 18,
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: _countdownSeconds > 0 ? null : _resendOTP,
-                    style: ElevatedButton.styleFrom(
-                      fixedSize: const Size(350, 50),
-                      shape: const StadiumBorder(),
-                      shadowColor: const Color.fromRGBO(105, 105, 105, 1),
-                      backgroundColor: const Color.fromRGBO(171, 0, 0, 1),
-                    ),
-                    child: const Text(
-                      "Resend OTP",
-                      style: TextStyle(fontSize: 20, color: Colors.white),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          body: Stack(
+            children: [
+              Positioned(bottom: 0, child: _buildBottom()),
+            ],
           ),
-        ));
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBottom() {
+    return SizedBox(
+      width: mediaSize.width,
+      child: Card(
+        color: Colors.white.withOpacity(0.75),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(30),
+            topRight: Radius.circular(30),
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(32.0),
+          child: _buildForm(),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildForm() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        const Text(
+          "OTP Verification",
+          style: TextStyle(
+            color: Color.fromRGBO(171, 0, 0, 1),
+            fontSize: 32,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 20),
+        _buildGreyText("Enter one-time password sent on "),
+        _buildGreyText(widget.phoneNumber),
+        const SizedBox(height: 20),
+        _buildPinputField(),
+        const SizedBox(height: 20),
+        Text(
+          _countdownSeconds > 0
+              ? 'Did not receive OTP? Resend in $_countdownSeconds seconds'
+              : 'Did not receive OTP? Resend now!',
+          style: const TextStyle(
+            color: Colors.black,
+            fontSize: 18,
+          ),
+        ),
+        const SizedBox(height: 15),
+        _buildResendOTPButton(),
+      ],
+    );
+  }
+
+  Widget _buildGreyText(String text) {
+    return Text(
+      text,
+      style: const TextStyle(
+        color: Colors.black,
+        fontSize: 18,
+      ),
+    );
+  }
+
+  Widget _buildPinputField() {
+    return Pinput(
+      //androidSmsAutofillMethod: AndroidSmsAutofillMethod.none,
+      controller: pinController,
+      length: 6,
+      defaultPinTheme: defaultPinTheme,
+      focusedPinTheme: defaultPinTheme.copyWith(
+        decoration: defaultPinTheme.decoration!.copyWith(
+          border: Border.all(color: Colors.black),
+        ),
+      ),
+      onCompleted: (pin) async {
+        print(pin);
+        try {
+          // PhoneAuthCredential credential = PhoneAuthProvider.credential(
+          //   verificationId: AdminMobileNumberScreen.verifyID,
+          //   smsCode: pin,
+          // );
+
+          // await auth.signInWithCredential(credential);
+
+          const CircularProgressIndicator();
+          _VerificationComplete();
+        } catch (e) {
+          defaultPinTheme.copyBorderWith(
+            border: Border.all(color: Colors.redAccent),
+          );
+          print(pin);
+          print("Mali otp mo pre");
+          print(e);
+          pinController.text = "";
+        }
+      },
+    );
+  }
+
+  Widget _buildResendOTPButton() {
+    return ElevatedButton(
+      onPressed: _countdownSeconds > 0 ? null : _resendOTP,
+      style: ElevatedButton.styleFrom(
+        fixedSize: const Size(350, 50),
+        shape: const StadiumBorder(),
+        shadowColor: const Color.fromRGBO(105, 105, 105, 1),
+        backgroundColor: const Color.fromRGBO(171, 0, 0, 1),
+      ),
+      child: const Text(
+        "Resend OTP",
+        style: TextStyle(fontSize: 20, color: Colors.white),
+      ),
+    );
   }
 }

@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "755379200261-kn5ifas5mfh4h98i1keh02r61upr8ope.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.siklabproject",
+            "certificate_hash": "532b0748c81c9758fd6217319f090b7a1869163a"
+          }
+        },
+        {
           "client_id": "755379200261-kidad9bdk56b4uqr4f1a45gu7ahs4n4p.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,6 +37,13 @@
             {
               "client_id": "755379200261-kidad9bdk56b4uqr4f1a45gu7ahs4n4p.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "755379200261-uf8vh591j7inctvjjfu7fd3j7djtdbht.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.siklabproject"
+              }
             }
           ]
         }
