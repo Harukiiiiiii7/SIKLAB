@@ -1,10 +1,13 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:siklabproject/addReportPage.dart';
 import 'package:siklabproject/forgotPasswordPage.dart';
+import 'package:siklabproject/hotlines.dart';
 import 'package:siklabproject/loginPage.dart';
 import 'package:siklabproject/signUpPage.dart';
 import 'package:siklabproject/userDashboard.dart';
+import 'package:siklabproject/userSettingsPage.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
@@ -35,8 +38,10 @@ class MyApp extends StatelessWidget {
         "/LoginPage": (context) => loginPage(),
         "/UserDashboard": (context) => UserDashboard(),
         "/SignUpPage": (context) => signUpPage(),
-        "/UserSettings": (context) => signUpPage(),
+        "/UserSettings": (context) => userSettingsPage(),
         "/ForgotPasswordPage": (context) => forgotPasswordPage(),
+        "/ReportFirePage": (context) => ReportPage(),
+        "/HotlinesPage": (context) => Hotlines(),
       },
     );
   }

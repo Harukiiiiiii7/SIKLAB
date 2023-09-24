@@ -1,8 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:siklabproject/addReportPage.dart';
-import 'package:siklabproject/hotlines.dart';
-import 'package:siklabproject/loginPage.dart';
-import 'package:siklabproject/userSettingsPage.dart';
 
 class UserDashboard extends StatefulWidget {
   @override
@@ -11,144 +7,165 @@ class UserDashboard extends StatefulWidget {
 
 class _UserDashboardState extends State<UserDashboard> {
   void _BackButton() {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => loginPage()));
+    Navigator.pushNamed(context, '/LoginPage');
   }
+
+  void _goToUserSettings() {
+    Navigator.pushNamed(context, '/UserSettings');
+  }
+
+  late Size mediaSize;
+  late Color myColor;
 
   @override
   Widget build(BuildContext context) {
+    myColor = Theme.of(context).primaryColor;
+    mediaSize = MediaQuery.of(context).size;
     return WillPopScope(
       onWillPop: () async {
         _BackButton();
         // Prevent default back button behavior
         return false;
       },
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
+      child: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: const AssetImage("assets/firetruck.png"),
+            fit: BoxFit.cover,
+            colorFilter:
+                ColorFilter.mode(myColor.withOpacity(0.4), BlendMode.dstATop),
+          ),
+        ),
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          body: Stack(
             children: [
-              Text(
-                'DASHBOARD',
-                style: TextStyle(color: Colors.white, fontSize: 20.0),
-              ),
-              Text(
-                'Report Incident and View Hotlines.',
-                style: TextStyle(color: Colors.white, fontSize: 14.0),
-              ),
+              Positioned(top: 0, child: _buildTop()),
+              Positioned(bottom: 0, child: _buildBottom()),
             ],
           ),
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: _BackButton,
-          ),
-          backgroundColor: const Color.fromRGBO(171, 0, 0, 1),
         ),
-        body: SingleChildScrollView(
-          // Wrap the main container with SingleChildScrollView
-          child: Container(
-            height: MediaQuery.of(context)
-                .size
-                .height, // Use MediaQuery to set the height to the screen height
-            width: double.infinity,
-            child: Column(
-              children: [
-                Expanded(
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Container(
-                      width: double.infinity,
-                      decoration: const BoxDecoration(
-                        color: Color.fromRGBO(226, 226, 226, 1),
-                      ),
-                      child: Column(
-                        //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          const SizedBox(height: 30),
-                          ElevatedButton(
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: ((context) => ReportPage())));
-                              },
-                              style: ElevatedButton.styleFrom(
-                                  fixedSize: const Size(325, 175),
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12)),
-                                  shadowColor:
-                                      const Color.fromRGBO(105, 105, 105, 1),
-                                  backgroundColor:
-                                      const Color.fromRGBO(248, 248, 248, 1)),
-                              child: Row(children: [
-                                Image.asset('assets/fire.png',
-                                    height: 100, width: 100),
-                                const SizedBox(width: 25),
-                                const Text("REPORT FIRE",
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        color: Color.fromRGBO(0, 0, 0, 1)))
-                              ])),
-                          const SizedBox(height: 30),
-                          ElevatedButton(
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: ((context) => Hotlines())));
-                              },
-                              style: ElevatedButton.styleFrom(
-                                  fixedSize: const Size(325, 175),
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12)),
-                                  shadowColor:
-                                      const Color.fromRGBO(105, 105, 105, 1),
-                                  backgroundColor:
-                                      const Color.fromRGBO(248, 248, 248, 1)),
-                              child: Row(children: [
-                                Image.asset('assets/hotline.png',
-                                    height: 100, width: 100),
-                                const SizedBox(width: 25),
-                                const Text("VIEW HOTLINES",
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        color: Color.fromRGBO(0, 0, 0, 1)))
-                              ])),
-                          ElevatedButton(
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: ((context) =>
-                                            userSettingsPage())));
-                              },
-                              style: ElevatedButton.styleFrom(
-                                  fixedSize: const Size(325, 175),
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12)),
-                                  shadowColor:
-                                      const Color.fromRGBO(105, 105, 105, 1),
-                                  backgroundColor:
-                                      const Color.fromRGBO(248, 248, 248, 1)),
-                              child: Row(children: [
-                                Image.asset('assets/hotline.png',
-                                    height: 100, width: 100),
-                                const SizedBox(width: 25),
-                                const Text("USER SETTINGS",
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        color: Color.fromRGBO(0, 0, 0, 1)))
-                              ])),
-                        ],
-                      ),
+      ),
+    );
+  }
+
+  Widget _buildTop() {
+    return Container(
+      color: Colors.white.withOpacity(0.75),
+      child: SizedBox(
+        width: mediaSize.width,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(
+                  top: 30.0, left: 20.0, right: 20.0, bottom: 10.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Image.asset('assets/account.png', height: 35, width: 35),
+                  const Text(
+                    "User Dashboard",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 28.0,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                ),
-              ],
+                  IconButton(
+                    onPressed: () => _goToUserSettings(),
+                    icon: const Icon(Icons.settings, size: 35),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBottom() {
+    return SizedBox(
+      width: mediaSize.width,
+      child: Positioned(
+        bottom: 0,
+        child: Card(
+          color: Colors.white.withOpacity(0.75),
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(30),
+              topRight: Radius.circular(30),
             ),
           ),
+          child: Padding(
+            padding: const EdgeInsets.all(32.0),
+            child: _buildButtons(),
+          ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildButtons() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildReportFireButton(),
+        const SizedBox(height: 20),
+        _buildHotlinesButton(),
+      ],
+    );
+  }
+
+  Widget _buildReportFireButton() {
+    return ElevatedButton(
+      onPressed: () {
+        Navigator.pushNamed(context, '/ReportFirePage');
+      },
+      style: ElevatedButton.styleFrom(
+        fixedSize: const Size(325, 175),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        shadowColor: const Color.fromRGBO(105, 105, 105, 1),
+        backgroundColor: const Color.fromRGBO(248, 248, 248, 1),
+      ),
+      child: Row(
+        children: [
+          Image.asset('assets/fire.png', height: 100, width: 100),
+          const SizedBox(width: 25),
+          const Text(
+            "REPORT FIRE",
+            style: TextStyle(fontSize: 20, color: Colors.black),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHotlinesButton() {
+    return ElevatedButton(
+      onPressed: () {
+        Navigator.pushNamed(context, '/HotlinesPage');
+      },
+      style: ElevatedButton.styleFrom(
+        fixedSize: const Size(325, 175),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        shadowColor: const Color.fromRGBO(105, 105, 105, 1),
+        backgroundColor: const Color.fromRGBO(248, 248, 248, 1),
+      ),
+      child: Row(
+        children: [
+          Image.asset('assets/hotline.png', height: 100, width: 100),
+          const SizedBox(width: 25),
+          const Text(
+            "VIEW HOTLINES",
+            style: TextStyle(fontSize: 20, color: Colors.black),
+          )
+        ],
       ),
     );
   }
