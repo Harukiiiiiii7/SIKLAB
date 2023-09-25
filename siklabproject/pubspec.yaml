@@ -45,13 +45,16 @@ dependencies:
   ## try to keep these dependencies or else mapbox will fuck up
   geocoding: ^2.0.1-nullsafety.3
   mapbox_gl: ^0.16.0
-  
   firebase_auth: ^4.7.1
   firebase_auth_web: ^5.6.1
   permission_handler: ^10.4.3
 
   firebase_core: ^2.13.0
   firebase_messaging: ^14.0.1
+<<<<<<< HEAD
+=======
+
+>>>>>>> 4d21fd0ec3a6d5511a5c05a3d6da91f052993a9a
   cloud_firestore: ^4.0.1
   url_launcher: ^6.1.12
   connectivity: ^3.0.6
