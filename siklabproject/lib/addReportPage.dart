@@ -3,8 +3,6 @@ import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:siklabproject/testMapBox.dart';
-import 'package:siklabproject/userDashboard.dart';
 
 class ReportPage extends StatefulWidget {
   @override
@@ -95,14 +93,7 @@ class _ReportPageState extends State<ReportPage> {
                           borderRadius: BorderRadius.circular(12)),
                       shadowColor: const Color.fromRGBO(105, 105, 105, 1),
                       backgroundColor: const Color.fromRGBO(248, 248, 248, 1)),
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => MapBoxLocationScreen(
-                                  reportID: reportID,
-                                )));
-                  },
+                  onPressed: () {},
                   child: Row(
                     children: [
                       Image.asset('assets/map.png', height: 90, width: 90),
