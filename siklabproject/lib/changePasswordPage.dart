@@ -3,12 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class changePasswordPage extends StatefulWidget {
+  String mobileNumber;
+
+  changePasswordPage(this.mobileNumber, {super.key});
+
   @override
   State<changePasswordPage> createState() => _changePasswordPageState();
 }
 
 class _changePasswordPageState extends State<changePasswordPage> {
-  void _BackButton() {
+  void _backButton() {
     Navigator.pushNamed(context, '/LoginPage');
   }
 
@@ -169,7 +173,7 @@ class _changePasswordPageState extends State<changePasswordPage> {
     mediaSize = MediaQuery.of(context).size;
     return WillPopScope(
       onWillPop: () async {
-        _BackButton();
+        _backButton();
         // Prevent default back button behavior
         return false;
       },

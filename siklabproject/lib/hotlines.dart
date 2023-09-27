@@ -3,7 +3,10 @@ import 'package:siklabproject/userDashboard.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Hotlines extends StatefulWidget {
-  Hotlines({super.key});
+  String _mobileNumber;
+
+  Hotlines(this._mobileNumber, {super.key});
+
   @override
   State<Hotlines> createState() => HotlinesState();
 }
@@ -37,11 +40,19 @@ class HotlinesState extends State<Hotlines> {
     }
   }
 
+  void _backButton() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => UserDashboard(widget._mobileNumber)),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        _BackButton();
+        _backButton();
         // Prevent default back button behavior
         return false;
       },
@@ -59,11 +70,12 @@ class HotlinesState extends State<Hotlines> {
           ),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
-            onPressed: _BackButton,
+            onPressed: _backButton,
           ),
           backgroundColor: const Color.fromRGBO(171, 0, 0, 1),
         ),
         body: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -146,13 +158,6 @@ class HotlinesState extends State<Hotlines> {
           ),
         ),
       ),
-    );
-  }
-
-  void _BackButton() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => UserDashboard()),
     );
   }
 }

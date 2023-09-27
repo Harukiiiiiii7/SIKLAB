@@ -5,6 +5,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pinput/pinput.dart';
+import 'package:siklabproject/changePasswordPage.dart';
 
 class OTP_Screen extends StatefulWidget {
   static String verifyID = "";
@@ -37,13 +38,17 @@ class _OTP_ScreenState extends State<OTP_Screen> {
     ),
   );
 
-  void _BackButton() {
+  void _backButton() {
     Navigator.pushNamed(context, '/ForgotPasswordPage');
   }
 
   void _VerificationComplete() {
     const CircularProgressIndicator();
-    Navigator.pushNamed(context, '/UserDashboard');
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => changePasswordPage(widget.phoneNumber)),
+    );
   }
 
   final FirebaseAuth auth = FirebaseAuth.instance;
@@ -138,7 +143,7 @@ class _OTP_ScreenState extends State<OTP_Screen> {
     mediaSize = MediaQuery.of(context).size;
     return WillPopScope(
       onWillPop: () async {
-        _BackButton();
+        _backButton();
         // Prevent default back button behavior
         return false;
       },

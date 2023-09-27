@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:siklabproject/userDashboard.dart';
 
 class loginPage extends StatefulWidget {
   @override
@@ -8,7 +9,7 @@ class loginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<loginPage> {
-  void _BackButton() {
+  void _backButton() {
     Navigator.pushNamed(context, '/Home');
   }
 
@@ -29,7 +30,7 @@ class _LoginPageState extends State<loginPage> {
     _passwordVisible = false;
   }
 
-  void _countdown() {
+  void _countdown(String mobileNumber) {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
         counter--;
@@ -37,13 +38,17 @@ class _LoginPageState extends State<loginPage> {
       });
       if (counter == 0) {
         timer.cancel();
-        Navigator.pushNamed(context, '/UserDashboard');
+        debugPrint(mobileNumber);
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => UserDashboard(mobileNumber)),
+        );
       }
     });
   }
 
-  void _showDialog() {
-    _countdown();
+  void _showDialog(String mobileNumber) {
+    _countdown(mobileNumber);
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -127,7 +132,7 @@ class _LoginPageState extends State<loginPage> {
     mediaSize = MediaQuery.of(context).size;
     return WillPopScope(
       onWillPop: () async {
-        _BackButton();
+        _backButton();
         // Prevent default back button behavior
         return false;
       },
@@ -254,7 +259,6 @@ class _LoginPageState extends State<loginPage> {
         ),
         TextButton(
           onPressed: () {
-            debugPrint("Me forgot password huhu help");
             Navigator.pushNamed(context, '/ForgotPasswordPage');
           },
           child: _buildGreyText("I forgot my password"),
@@ -274,7 +278,7 @@ class _LoginPageState extends State<loginPage> {
             mobileNumberController.text.length < 11) {
           _showErrorDialog();
         } else {
-          _showDialog();
+          _showDialog(mobileNumberController.text);
         }
       },
       style: ElevatedButton.styleFrom(

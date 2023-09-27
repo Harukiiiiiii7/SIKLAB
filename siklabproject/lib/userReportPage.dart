@@ -2,15 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
+import 'package:siklabproject/userDashboard.dart';
 
 class userReportPage extends StatefulWidget {
+  String _mobileNumber;
+
+  userReportPage(this._mobileNumber, {super.key});
+
   @override
   State<userReportPage> createState() => _UserReportPageState();
 }
 
 class _UserReportPageState extends State<userReportPage> {
-  void _BackButton() {
-    Navigator.pushNamed(context, '/UserDashboard');
+  void _backButton() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => UserDashboard(widget._mobileNumber)),
+    );
   }
 
   late Size mediaSize;
@@ -93,7 +102,7 @@ class _UserReportPageState extends State<userReportPage> {
     mediaSize = MediaQuery.of(context).size;
     return WillPopScope(
       onWillPop: () async {
-        _BackButton();
+        _backButton();
         // Prevent default back button behavior
         return false;
       },
@@ -228,10 +237,12 @@ class _UserReportPageState extends State<userReportPage> {
         String formattedDateTime =
             DateFormat('yyyy-MM-dd HH:mm:ss').format(now);
 
+        debugPrint("Mobile Number: ${widget._mobileNumber}");
         debugPrint("Time: $formattedDateTime");
         debugPrint("Latitude: $_lat");
         debugPrint("Longitude: $_long");
         debugPrint("Address: $address");
+        debugPrint("Assistance: $assistance");
       },
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color.fromRGBO(171, 0, 0, 1),

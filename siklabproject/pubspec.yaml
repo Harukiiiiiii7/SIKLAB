@@ -78,14 +78,9 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/account.png
-    - assets/admin.png
     - assets/fire.png
     - assets/firefighter.png
     - assets/hotline.png
-    - assets/map.png
-    - assets/camera.png
-    - assets/marker.png
-    - assets/marker2.png
     - assets/firetruck.png
 
   # An image asset can refer to one or more resolution-specific "variants", see

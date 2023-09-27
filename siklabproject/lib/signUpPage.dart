@@ -8,7 +8,7 @@ class signUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<signUpPage> {
-  void _BackButton() {
+  void _backButton() {
     Navigator.pushNamed(context, '/LoginPage');
   }
 
@@ -188,7 +188,7 @@ class _SignUpPageState extends State<signUpPage> {
     mediaSize = MediaQuery.of(context).size;
     return WillPopScope(
       onWillPop: () async {
-        _BackButton();
+        _backButton();
         // Prevent default back button behavior
         return false;
       },
@@ -209,7 +209,9 @@ class _SignUpPageState extends State<signUpPage> {
               child: Stack(
                 children: [
                   SingleChildScrollView(
-                      physics: BouncingScrollPhysics(), child: _buildBottom()),
+                    physics: const BouncingScrollPhysics(),
+                    child: _buildBottom(),
+                  ),
                 ],
               ),
             ),

@@ -1,17 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:siklabproject/hotlines.dart';
+import 'package:siklabproject/userReportPage.dart';
+import 'package:siklabproject/userSettingsPage.dart';
 
 class UserDashboard extends StatefulWidget {
+  String _mobileNumber;
+
+  UserDashboard(this._mobileNumber, {super.key});
+
   @override
   State<UserDashboard> createState() => _UserDashboardState();
 }
 
 class _UserDashboardState extends State<UserDashboard> {
-  void _BackButton() {
+  void _backButton() {
     Navigator.pushNamed(context, '/LoginPage');
   }
 
   void _goToUserSettings() {
-    Navigator.pushNamed(context, '/UserSettings');
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => userSettingsPage(widget._mobileNumber)),
+    );
+  }
+
+  void _goToReportPage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => userReportPage(widget._mobileNumber)),
+    );
   }
 
   late Size mediaSize;
@@ -23,7 +42,7 @@ class _UserDashboardState extends State<UserDashboard> {
     mediaSize = MediaQuery.of(context).size;
     return WillPopScope(
       onWillPop: () async {
-        _BackButton();
+        _backButton();
         // Prevent default back button behavior
         return false;
       },
@@ -121,7 +140,7 @@ class _UserDashboardState extends State<UserDashboard> {
   Widget _buildReportFireButton() {
     return ElevatedButton(
       onPressed: () {
-        Navigator.pushNamed(context, '/ReportFirePage');
+        _goToReportPage();
       },
       style: ElevatedButton.styleFrom(
         fixedSize: const Size(325, 175),
@@ -147,7 +166,11 @@ class _UserDashboardState extends State<UserDashboard> {
   Widget _buildHotlinesButton() {
     return ElevatedButton(
       onPressed: () {
-        Navigator.pushNamed(context, '/HotlinesPage');
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => Hotlines(widget._mobileNumber)),
+        );
       },
       style: ElevatedButton.styleFrom(
         fixedSize: const Size(325, 175),

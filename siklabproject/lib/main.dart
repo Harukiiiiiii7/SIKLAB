@@ -2,12 +2,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:siklabproject/forgotPasswordPage.dart';
-import 'package:siklabproject/hotlines.dart';
+//import 'package:siklabproject/hotlines.dart';
 import 'package:siklabproject/loginPage.dart';
 import 'package:siklabproject/signUpPage.dart';
-import 'package:siklabproject/userDashboard.dart';
-import 'package:siklabproject/userReportPage.dart';
-import 'package:siklabproject/userSettingsPage.dart';
+//import 'package:siklabproject/userDashboard.dart';
+//import 'package:siklabproject/userReportPage.dart';
+//import 'package:siklabproject/userSettingsPage.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.grey,
       ),
       navigatorKey: navigatorKey,
       home: const MyHomePage(),
@@ -36,12 +36,12 @@ class MyApp extends StatelessWidget {
       routes: {
         "/Home": (context) => const MyHomePage(),
         "/LoginPage": (context) => loginPage(),
-        "/UserDashboard": (context) => UserDashboard(),
+        // "/UserDashboard": (context) => UserDashboard(),
         "/SignUpPage": (context) => signUpPage(),
-        "/UserSettings": (context) => userSettingsPage(),
+        // "/UserSettings": (context) => userSettingsPage(),
         "/ForgotPasswordPage": (context) => forgotPasswordPage(),
-        "/ReportFirePage": (context) => userReportPage(),
-        "/HotlinesPage": (context) => Hotlines(),
+        // "/ReportFirePage": (context) => userReportPage(),
+        // "/HotlinesPage": (context) => Hotlines(),
       },
     );
   }
