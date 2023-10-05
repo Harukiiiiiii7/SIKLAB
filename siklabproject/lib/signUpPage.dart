@@ -1,6 +1,9 @@
 import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class signUpPage extends StatefulWidget {
   @override
@@ -180,6 +183,40 @@ class _SignUpPageState extends State<signUpPage> {
             ),
           );
         });
+  }
+
+  Future<void> registerUser() async {
+    // Make an HTTP POST request to your PHP backend
+    final response = await http.post(
+      Uri.parse('https://siklabcentral.000webhostapp.com/registration.php'),
+      body: {
+        'username': nameController.text,
+        'barangay': barangay,
+        'contactNum': mobileNumberController.text,
+        'password': passwordController.text,
+      },
+    );
+
+    var data = json.decode(response.body);
+    if (data == "Error") {
+      Fluttertoast.showToast(
+          msg: "This user already exits!",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+    } else {
+      Fluttertoast.showToast(
+          msg: "Registration Successful! Welcome!",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0);
+    }
   }
 
   @override
@@ -369,7 +406,7 @@ class _SignUpPageState extends State<signUpPage> {
         } else if (passwordController.text != confirmPasswordController.text) {
           _showPasswordDoNotMatchDialog();
         } else {
-          _showDialog();
+          registerUser();
         }
       },
       style: ElevatedButton.styleFrom(

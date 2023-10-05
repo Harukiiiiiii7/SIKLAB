@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:siklabproject/userDashboard.dart';
 
+import 'newUserDashboard.dart';
+
 class loginPage extends StatefulWidget {
   @override
   State<loginPage> createState() => _LoginPageState();
@@ -39,9 +41,14 @@ class _LoginPageState extends State<loginPage> {
       if (counter == 0) {
         timer.cancel();
         debugPrint(mobileNumber);
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(builder: (context) => UserDashboard(mobileNumber)),
+        // );
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => UserDashboard(mobileNumber)),
+          MaterialPageRoute(
+              builder: (context) => newUserDashboard(mobileNumber)),
         );
       }
     });
