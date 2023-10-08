@@ -53,7 +53,7 @@ class _LoginPageState extends State<loginPage> {
 
             User userInfo =  User.fromJson(resBodyLogin["userData"]);
 
-            await RememberUser.saveRememberUser(userInfo);
+            await RememberUser.storeUser(userInfo);
 
             //Get.to(newUserDashboard(contactNum.text));
 

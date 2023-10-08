@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
-import 'package:siklabproject/userDashboard.dart';
+import 'package:siklabproject/users/fragments/newUserDashboard.dart';
 
 class userReportPage extends StatefulWidget {
   String _mobileNumber;
@@ -18,7 +18,7 @@ class _UserReportPageState extends State<userReportPage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => UserDashboard(widget._mobileNumber)),
+          builder: (context) => newUserDashboard(widget._mobileNumber)),
     );
   }
 

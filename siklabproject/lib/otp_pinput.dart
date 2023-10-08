@@ -5,7 +5,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pinput/pinput.dart';
-import 'package:siklabproject/changePasswordPage.dart';
+import 'package:siklabproject/users/fragments/changePasswordPage.dart';
 
 class OTP_Screen extends StatefulWidget {
   static String verifyID = "";

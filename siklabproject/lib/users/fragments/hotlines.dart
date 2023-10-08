@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:siklabproject/userDashboard.dart';
+import 'package:siklabproject/users/fragments/newUserDashboard.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Hotlines extends StatefulWidget {
@@ -44,7 +44,7 @@ class HotlinesState extends State<Hotlines> {
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => UserDashboard(widget._mobileNumber)),
+          builder: (context) => newUserDashboard(widget._mobileNumber)),
     );
   }
 

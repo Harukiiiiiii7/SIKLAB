@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:siklabproject/hotlines.dart';
-import 'package:siklabproject/userReportPage.dart';
-import 'package:siklabproject/userSettingsPage.dart';
+import 'package:get/get.dart';
+import 'package:siklabproject/users/fragments/hotlines.dart';
+import 'package:siklabproject/users/fragments/userReportPage.dart';
+import 'package:siklabproject/users/fragments/userSettingsPage.dart';
+
+import '../userPreferences/current_user.dart';
 
 class newUserDashboard extends StatefulWidget {
+  CurrentUser rememberCurrentUser = Get.put(CurrentUser());
+
   String _mobileNumber;
 
   newUserDashboard(this._mobileNumber, {super.key});
@@ -13,9 +18,9 @@ class newUserDashboard extends StatefulWidget {
 }
 
 class _newUserDashboardState extends State<newUserDashboard> {
-  void _backButton() {
+  /*void _backButton() {
     Navigator.pushNamed(context, '/LoginPage');
-  }
+  }*/
 
   void _goToUserSettings() {
     Navigator.push(
@@ -42,7 +47,7 @@ class _newUserDashboardState extends State<newUserDashboard> {
     mediaSize = MediaQuery.of(context).size;
     return WillPopScope(
       onWillPop: () async {
-        _backButton();
+        //_backButton();
         // Prevent default back button behavior
         return false;
       },
@@ -90,6 +95,17 @@ class _newUserDashboardState extends State<newUserDashboard> {
         ),
       ),
     );
+    /*return GetBuilder(
+      init: CurrentUser(),
+      initState: (currentState){
+        _rememberCurrentUser.getUserInfo();
+      },
+      builder: (controller){
+        return Scaffold(
+
+        );
+      },
+    );*/
   }
 
   Widget _buildTop() {
@@ -133,6 +149,7 @@ class _newUserDashboardState extends State<newUserDashboard> {
                     shape: const StadiumBorder(),
                     elevation: 20,
                     minimumSize: const Size.fromHeight(50),
+                   
                   ),
                   child: const Row(
                     mainAxisAlignment: MainAxisAlignment.start,

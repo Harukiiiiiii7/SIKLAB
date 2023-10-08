@@ -1,10 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:siklabproject/forgotPasswordPage.dart';
+import 'package:siklabproject/users/fragments/forgotPasswordPage.dart';
 //import 'package:siklabproject/hotlines.dart';
 import 'package:siklabproject/users/authentication/loginPage.dart';
 import 'package:siklabproject/users/authentication/signUpPage.dart';
+import 'package:siklabproject/users/fragments/newUserDashboard.dart';
+import 'package:siklabproject/users/userPreferences/user_preferences.dart';
 //import 'package:siklabproject/sign.dart';
 //import 'package:siklabproject/userDashboard.dart';
 //import 'package:siklabproject/userReportPage.dart';
@@ -32,7 +34,18 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.grey,
       ),
       navigatorKey: navigatorKey,
-      home: const MyHomePage(),
+      home: FutureBuilder(
+        future: RememberUser.readUser(),
+        builder: (context, dataSnapshot){
+          if(dataSnapshot.data == null){
+            return const MyHomePage();
+          }else{
+            String _mobileNumber = '';
+            
+            return newUserDashboard(_mobileNumber);
+          }
+        } 
+      ),      
       //initialRoute: "/Home",
       routes: {
         "/Home": (context) => const MyHomePage(),
