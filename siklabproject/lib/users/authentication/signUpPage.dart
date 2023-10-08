@@ -4,6 +4,8 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:siklabproject/api_connection/api_connection.dart';
+import 'package:siklabproject/users/model/user.dart';
 
 class signUpPage extends StatefulWidget {
   @override
@@ -17,10 +19,11 @@ class _SignUpPageState extends State<signUpPage> {
 
   late Color myColor;
   late Size mediaSize;
-  TextEditingController nameController = TextEditingController();
-  TextEditingController mobileNumberController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  TextEditingController confirmPasswordController = TextEditingController();
+  var formKey = GlobalKey<FormState>();
+  var usernameController = TextEditingController();
+  var contactNumController = TextEditingController();
+  var passwordController = TextEditingController();
+  var confirmPasswordController = TextEditingController();
 
   final barangays = [
     "Brgy. Bagong Nayon",
@@ -37,7 +40,7 @@ class _SignUpPageState extends State<signUpPage> {
     "Brgy. San Roque",
     "Brgy. Santa Cruz"
   ];
-  String? barangay;
+ String barangay = 'Brgy. Bagong Nayon'; // Initially selected item
 
   var counter = 5;
   late Timer _timer;
@@ -184,7 +187,7 @@ class _SignUpPageState extends State<signUpPage> {
           );
         });
   }
-
+  /*
   Future<void> registerUser() async {
     // Make an HTTP POST request to your PHP backend
     final response = await http.post(
@@ -217,6 +220,72 @@ class _SignUpPageState extends State<signUpPage> {
           textColor: Colors.white,
           fontSize: 16.0);
     }
+  }*/
+
+validateNumber() async {
+    try{
+      var resVal = await http.post(
+        Uri.parse(API.validateNum),
+        body:{
+          'contactNum': contactNumController.text.trim(),
+        }
+      );
+
+      if(resVal.statusCode == 200){
+        var resBody = jsonDecode(resVal.body);
+
+        if(resBody['numberFound']){
+          Fluttertoast.showToast(msg: "Contact Number is already in use");
+        }else{
+          registerUser();
+        }
+      }
+    }catch(e){
+      print(e.toString());
+        Fluttertoast.showToast(msg: e.toString());
+    }
+  }
+
+  registerUser() async {
+    User userModel = User(
+      1,
+      usernameController.text.trim(),
+      barangay,
+      contactNumController.text.trim(),
+      passwordController.text.trim(),
+      );
+
+      try{
+        var res = await http.post(
+          Uri.parse(API.signUp),
+          body: userModel.toJson(),
+        );
+
+        if(res.statusCode == 200){
+          var resBodySign = jsonDecode(res.body);
+          if(resBodySign['Success'] == true){
+            Fluttertoast.showToast(msg: "Congratulations!\nYou have Signed Up Successfully.");
+
+            setState((){
+              usernameController.clear();
+              contactNumController.clear();
+              passwordController.clear();
+              confirmPasswordController.clear();
+            });
+            _showDialog();
+          }else{
+            Fluttertoast.showToast(msg: "Error Occured, Try Again");
+            setState((){
+              usernameController.clear();
+              contactNumController.clear();
+              passwordController.clear();
+            });
+          }
+        }
+      }catch(e){
+        print(e.toString());
+        Fluttertoast.showToast(msg: e.toString());
+      }
   }
 
   @override
@@ -295,7 +364,7 @@ class _SignUpPageState extends State<signUpPage> {
         _buildGreyText("Please fill up your information"),
         const SizedBox(height: 25),
         _buildGreyText("Name"),
-        _buildInputField(nameController, isName: true),
+        _buildInputField(usernameController, isName: true),
         const SizedBox(height: 20),
         _buildGreyText("Barangay"),
         Container(
@@ -310,7 +379,7 @@ class _SignUpPageState extends State<signUpPage> {
             items: barangays.map(_barangayItems).toList(),
             onChanged: (value) => setState(
               () {
-                barangay = value;
+                barangay = value!;
                 debugPrint(value);
               },
             ),
@@ -319,7 +388,7 @@ class _SignUpPageState extends State<signUpPage> {
         ),
         const SizedBox(height: 20),
         _buildGreyText("Mobile Number"),
-        _buildInputField(mobileNumberController, isPhone: true),
+        _buildInputField(contactNumController, isPhone: true),
         const SizedBox(height: 20),
         _buildGreyText("Password"),
         _buildInputField(passwordController,
@@ -389,24 +458,25 @@ class _SignUpPageState extends State<signUpPage> {
   Widget _buildSignUpButton() {
     return ElevatedButton(
       onPressed: () {
-        debugPrint("Name: ${nameController.text}");
+        debugPrint("Name: ${usernameController.text}");
         debugPrint("Barangay: $barangay");
-        debugPrint("Mobile Number: ${mobileNumberController.text}");
+        debugPrint("Mobile Number: ${contactNumController.text}");
         debugPrint("Password: ${passwordController.text}");
         debugPrint("Password: ${confirmPasswordController.text}");
-
-        if (nameController.text.isEmpty ||
+        if(barangay != null){
+          validateNumber();
+        } else if (usernameController.text.isEmpty ||
             barangay == null ||
-            mobileNumberController.text.isEmpty ||
+            contactNumController.text.isEmpty ||
             passwordController.text.isEmpty ||
             confirmPasswordController.text.isEmpty ||
-            mobileNumberController.text.length < 11 ||
-            nameController.text.trim().isEmpty) {
+            contactNumController.text.length < 11 ||
+            usernameController.text.trim().isEmpty) {
           _showErrorDialog();
         } else if (passwordController.text != confirmPasswordController.text) {
           _showPasswordDoNotMatchDialog();
         } else {
-          registerUser();
+          //registerUser();
         }
       },
       style: ElevatedButton.styleFrom(

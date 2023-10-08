@@ -1,9 +1,15 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:siklabproject/userDashboard.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
+import '../../api_connection/api_connection.dart';
+import '../fragments/newUserDashboard.dart';
+import 'package:http/http.dart' as http;
+import '../model/user.dart';
+import '../userPreferences/user_preferences.dart';
 
-import 'newUserDashboard.dart';
 
 class loginPage extends StatefulWidget {
   @override
@@ -17,14 +23,53 @@ class _LoginPageState extends State<loginPage> {
 
   late Color myColor;
   late Size mediaSize;
-  TextEditingController mobileNumberController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+
   bool rememberUser = false;
 
   late bool _passwordVisible;
 
   var counter = 5;
   late Timer _timer;
+
+  var formKey = GlobalKey<FormState>();
+  var contactNum = TextEditingController();
+  var passwordController = TextEditingController();
+  var isObsecure = true.obs;
+
+  loginUserNow() async{
+    try{
+      var res = await http.post(
+        Uri.parse(API.login),
+        body: {
+          "contactNum" : contactNum.text.trim(),
+          "password" : passwordController.text.trim(),
+        },
+      );
+
+      if(res.statusCode == 200){
+          var resBodyLogin = jsonDecode(res.body);
+          if(resBodyLogin['Success'] == true){
+            Fluttertoast.showToast(msg: "Congratulations!\nYou have Signed Up Successfully.");
+
+            User userInfo =  User.fromJson(resBodyLogin["userData"]);
+
+            await RememberUser.saveRememberUser(userInfo);
+
+            //Get.to(newUserDashboard(contactNum.text));
+
+            _showDialog(contactNum.text);
+          }else{
+            Fluttertoast.showToast(msg: "Incorrect Credentials! \nPlease write correct contact number or password!");
+            setState((){
+              contactNum.clear();
+              passwordController.clear();
+            });
+          }
+      }
+    }catch(errorMsg){
+      print("Error :: " + errorMsg.toString());
+    }
+  }
 
   @override
   void initState() {
@@ -198,7 +243,7 @@ class _LoginPageState extends State<loginPage> {
         _buildGreyText("Please login with your information"),
         const SizedBox(height: 30),
         _buildGreyText("Mobile Number"),
-        _buildInputField(mobileNumberController, isPhone: true),
+        _buildInputField(contactNum, isPhone: true),
         const SizedBox(height: 20),
         _buildGreyText("Password"),
         _buildInputField(passwordController,
@@ -277,15 +322,18 @@ class _LoginPageState extends State<loginPage> {
   Widget _buildLoginButton() {
     return ElevatedButton(
       onPressed: () {
-        debugPrint("Number: ${mobileNumberController.text}");
+        debugPrint("Number: ${contactNum.text}");
         debugPrint("Password: ${passwordController.text}");
-
-        if (mobileNumberController.text.isEmpty ||
+        if(contactNum!=null){
+          loginUserNow();
+          debugPrint("Passed");
+        }
+        else if (contactNum.text.isEmpty ||
             passwordController.text.isEmpty ||
-            mobileNumberController.text.length < 11) {
+            contactNum.text.length < 11) {
           _showErrorDialog();
         } else {
-          _showDialog(mobileNumberController.text);
+
         }
       },
       style: ElevatedButton.styleFrom(

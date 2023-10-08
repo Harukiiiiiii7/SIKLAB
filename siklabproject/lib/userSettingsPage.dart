@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:siklabproject/userDashboard.dart';
+import 'users/fragments/newUserDashboard.dart';
 
 class userSettingsPage extends StatefulWidget {
   String _mobileNumber;
@@ -17,7 +18,7 @@ class _UserSettingsPageState extends State<userSettingsPage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => UserDashboard(widget._mobileNumber)),
+          builder: (context) => newUserDashboard(widget._mobileNumber)),
     );
   }
 

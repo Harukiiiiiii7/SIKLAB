@@ -3,9 +3,9 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:siklabproject/forgotPasswordPage.dart';
 //import 'package:siklabproject/hotlines.dart';
-import 'package:siklabproject/loginPage.dart';
-import 'package:siklabproject/signUpPage.dart';
-import 'package:siklabproject/sign.dart';
+import 'package:siklabproject/users/authentication/loginPage.dart';
+import 'package:siklabproject/users/authentication/signUpPage.dart';
+//import 'package:siklabproject/sign.dart';
 //import 'package:siklabproject/userDashboard.dart';
 //import 'package:siklabproject/userReportPage.dart';
 //import 'package:siklabproject/userSettingsPage.dart';
@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: 'Siklab Application',
       theme: ThemeData(
         primarySwatch: Colors.grey,
       ),
