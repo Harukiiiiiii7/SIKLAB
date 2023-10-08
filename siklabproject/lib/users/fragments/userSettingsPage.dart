@@ -1,7 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:siklabproject/users/authentication/loginPage.dart';
 import 'package:siklabproject/users/fragments/newUserDashboard.dart';
+
+import '../userPreferences/user_preferences.dart';
 
 class userSettingsPage extends StatefulWidget {
   String _mobileNumber;
@@ -11,6 +15,61 @@ class userSettingsPage extends StatefulWidget {
   @override
   State<userSettingsPage> createState() => _UserSettingsPageState();
 }
+
+  /*signOutUser() async {
+      var resultResponse = await Get.dialog(
+        AlertDialog(
+          backgroundColor: Colors.grey,
+          title: const Text (
+            "Logout",
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: const Text(
+            "Are you sure\nyou want to log out?",
+          ),
+          actions: [
+            TextButton(
+              onPressed: (){
+                Get.back();
+              },
+              child: const Text(
+                "No",
+                style: TextStyle(
+                  color: Colors.black, 
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: (){
+                Get.back(result: "loggedOut");
+              },
+              child: const Text(
+                "Yes",
+                style: TextStyle(
+                  color: Colors.black, 
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+
+      if(resultResponse == "loggedOut"){
+          //remove user data from local storage
+          RememberUser.removeUserInfo()
+            .then((value){
+              Get.off(loginPage());
+            }
+          );
+      }else{
+
+      }
+    }*/
+
+
 
 class _UserSettingsPageState extends State<userSettingsPage> {
   void _backButton() {
@@ -50,6 +109,19 @@ class _UserSettingsPageState extends State<userSettingsPage> {
       if (counter == 0) {
         timer.cancel();
         Navigator.pushNamed(context, '/LoginPage');
+      }
+    });
+  }
+
+  void _countLog() {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        counter--;
+        print(counter);
+      });
+      if (counter == 0) {
+        timer.cancel();
+        RememberUser.removeUserInfo().then((value){Navigator.pushNamed(context, '/LoginPage');});
       }
     });
   }
@@ -244,7 +316,7 @@ class _UserSettingsPageState extends State<userSettingsPage> {
                   const SizedBox(height: 30),
                   ElevatedButton(
                       onPressed: () {
-                        _countdown();
+                        _countLog();
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color.fromRGBO(171, 0, 0, 1),
@@ -467,6 +539,7 @@ class _UserSettingsPageState extends State<userSettingsPage> {
     return ElevatedButton(
       onPressed: () {
         _showLogOutDialog();
+        //signOutUser();
       },
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color.fromRGBO(171, 0, 0, 1),

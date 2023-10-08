@@ -49,7 +49,7 @@ class _LoginPageState extends State<loginPage> {
       if(res.statusCode == 200){
           var resBodyLogin = jsonDecode(res.body);
           if(resBodyLogin['Success'] == true){
-            Fluttertoast.showToast(msg: "Congratulations!\nYou have Signed Up Successfully.");
+            Fluttertoast.showToast(msg: "Congratulations!\nYou have Logged in Successfully.");
 
             User userInfo =  User.fromJson(resBodyLogin["userData"]);
 

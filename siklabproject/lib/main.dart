@@ -7,7 +7,7 @@ import 'package:siklabproject/users/authentication/loginPage.dart';
 import 'package:siklabproject/users/authentication/signUpPage.dart';
 import 'package:siklabproject/users/fragments/newUserDashboard.dart';
 import 'package:siklabproject/users/userPreferences/user_preferences.dart';
-//import 'package:siklabproject/sign.dart';
+import 'package:siklabproject/users/fragments/userProfile.dart';
 //import 'package:siklabproject/userDashboard.dart';
 //import 'package:siklabproject/userReportPage.dart';
 //import 'package:siklabproject/userSettingsPage.dart';
@@ -55,6 +55,7 @@ class MyApp extends StatelessWidget {
         "/SignUpPage": (context) => signUpPage(),
         // "/UserSettings": (context) => userSettingsPage(),
         "/ForgotPasswordPage": (context) => forgotPasswordPage(),
+        "/UserProfile": (context) => UserProfile(),
         // "/ReportFirePage": (context) => userReportPage(),
         // "/HotlinesPage": (context) => Hotlines(),
       },

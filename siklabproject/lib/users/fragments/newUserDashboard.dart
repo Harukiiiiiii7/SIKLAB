@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:siklabproject/users/fragments/hotlines.dart';
+import 'package:siklabproject/users/fragments/userProfile.dart';
 import 'package:siklabproject/users/fragments/userReportPage.dart';
 import 'package:siklabproject/users/fragments/userSettingsPage.dart';
 
@@ -21,6 +22,22 @@ class _newUserDashboardState extends State<newUserDashboard> {
   /*void _backButton() {
     Navigator.pushNamed(context, '/LoginPage');
   }*/
+
+  void _goToUserProfile(){
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => UserProfile()),
+    );
+  }
+
+  void _goToHotlines(){
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Hotlines(widget._mobileNumber)),
+    );
+  }
 
   void _goToUserSettings() {
     Navigator.push(
@@ -63,10 +80,15 @@ class _newUserDashboardState extends State<newUserDashboard> {
                 _goToUserSettings();
               },
             ),
+            IconButton(
+              icon: const Icon(Icons.person),
+              onPressed: (){
+                _goToUserProfile();
+              }
+            ),
           ],
           backgroundColor: const Color.fromRGBO(171, 0, 0, 1),
           elevation: 50.0,
-          leading: const Icon(Icons.person),
           foregroundColor: Colors.white,
         ),
         body: SingleChildScrollView(
@@ -125,7 +147,9 @@ class _newUserDashboardState extends State<newUserDashboard> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    _goToReportPage();
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(255, 214, 212, 212),
                     shape: const StadiumBorder(),
@@ -143,13 +167,14 @@ class _newUserDashboardState extends State<newUserDashboard> {
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    _goToHotlines();
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(255, 214, 212, 212),
                     shape: const StadiumBorder(),
                     elevation: 20,
                     minimumSize: const Size.fromHeight(50),
-                   
                   ),
                   child: const Row(
                     mainAxisAlignment: MainAxisAlignment.start,
