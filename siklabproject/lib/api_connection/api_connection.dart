@@ -8,4 +8,13 @@ class API{
     
     //login
     static const login ="$hostConnect/user/login.php";
+
+    //report
+    static const subRep = "$hostConnect/user/submitReport.php";
+
+    //getUserID
+    static const getID = "$hostConnect/user/getUserID.php";
+
+    //displayData
+    static const displayData = "$hostConnect/user/displayData.php";
 }
