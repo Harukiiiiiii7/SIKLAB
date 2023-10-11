@@ -3,18 +3,22 @@ class API{
     static const hostConnectUser = "$hostConnect/user";
 
     //signUp
-    static const validateNum = "$hostConnect/user/validateNum.php";
-    static const signUp ="$hostConnect/user/signup.php";
+    static const validateNum = "$hostConnectUser/validateNum.php";
+    static const signUp ="$hostConnectUser/signup.php";
     
     //login
-    static const login ="$hostConnect/user/login.php";
+    static const login ="$hostConnectUser/login.php";
 
     //report
-    static const subRep = "$hostConnect/user/submitReport.php";
+    static const subRep = "$hostConnectUser/submitReport.php";
 
     //getUserID
-    static const getID = "$hostConnect/user/getUserID.php";
+    static const getID = "$hostConnectUser/getUserID.php";
 
     //displayData
-    static const displayData = "$hostConnect/user/displayData.php";
+    static const displayData = "$hostConnectUser/displayData.php";
+
+    //getBarangay
+    static const getBarangay = "$hostConnectUser/getBarangay.php";
+
 }

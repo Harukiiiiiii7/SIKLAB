@@ -8,7 +8,7 @@ import 'package:siklabproject/users/fragments/userProfile.dart';
 import 'package:siklabproject/users/fragments/userReportPage.dart';
 import 'package:siklabproject/users/fragments/userSettingsPage.dart';
 import 'package:siklabproject/users/model/report.dart';
-
+import 'package:siklabproject/users/fragments/testReport.dart';
 import '../userPreferences/current_user.dart';
 import 'package:http/http.dart' as http;
 
@@ -54,7 +54,7 @@ class _newUserDashboardState extends State<newUserDashboard> {
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => userReportPage(widget._mobileNumber)),
+          builder: (context) => userReportPagev2(widget._mobileNumber)),
     );
   }
 
@@ -215,25 +215,6 @@ class _newUserDashboardState extends State<newUserDashboard> {
       ),
     );
   }
-
-  /*Widget _buildListView() {
-    return ListView.builder(
-      shrinkWrap: true,
-      primary: false,
-      itemCount: 10,
-      padding: const EdgeInsets.all(12.0),
-      itemBuilder: (context, index) => const ListTile(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Icon(Icons.fireplace),
-            SizedBox(width: 30),
-            Text("William Rey"),
-          ],
-        ),
-      ),
-    );
-  }*/
 
   Widget _buildListView() {
     return ListView.builder(

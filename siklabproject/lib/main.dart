@@ -81,7 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, '/UserReport');
+        Navigator.pushNamed(context, '/LoginPage');
       },
       child: Scaffold(
         body: Container(

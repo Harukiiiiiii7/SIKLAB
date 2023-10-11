@@ -1,9 +1,13 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:mapbox_gl/mapbox_gl.dart';
 import 'package:siklabproject/users/fragments/newUserDashboard.dart';
+import 'package:http/http.dart' as http;
+import '../../api_connection/api_connection.dart';
 
 class userReportPagev2 extends StatefulWidget {
   String _mobileNumber;
@@ -15,6 +19,14 @@ class userReportPagev2 extends StatefulWidget {
 }
 
 class _UserReportPagev2State extends State<userReportPagev2> {
+  void _backButton() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => newUserDashboard(widget._mobileNumber)),
+    );
+  }
+
   late String _lat;
   late String _long;
   late double lat, long;
@@ -27,7 +39,89 @@ class _UserReportPagev2State extends State<userReportPagev2> {
   late LatLng coordinates;
 
   late String address = '';
+//////////////////////////////////////////
+  late String validNum;
+  var contactNumController;
+  var timeStamp = TextEditingController();
+  String? userIdFound;
+  String? barangay;
+  String? formattedDateTime;
 
+  Future<String?> fetchUserID(String contactNum) async{
+    final response = await http.post(
+    Uri.parse(API.getID),
+    body: {'contactNum': contactNum},
+  );
+    if (response.statusCode == 200) {
+      final jsonData = jsonDecode(response.body);
+      if (jsonData.containsKey('userID')){
+        userIdFound = jsonData['userID'].toString();
+      }else{
+      }
+    }else {
+      throw Exception('Failed to fetch userID');
+    }  
+  }
+
+  Future<void> verifyContactNum(String contactNum) async {
+    final response = await http.post(
+      Uri.parse(API.getBarangay),
+      body: {'contactNum': contactNum},
+    );
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+      if (jsonData.containsKey('barangay')) {
+        setState(() {
+          barangay = jsonData['barangay'];
+        });
+      } else if (jsonData.containsKey('error')) {
+        setState(() {
+          barangay = jsonData['error'];
+        });
+      } else {
+        setState(() {
+          barangay = "ContactNum not found";
+        });
+      }
+    } else {
+      setState(() {
+        barangay = "Failed to verify contactNum";
+      });
+    }
+  }
+
+  submitReport() async {
+    try{
+      var res = await http.post(
+        Uri.parse(API.subRep),
+        body: {
+          'userID' : userIdFound,
+          'timeStamp' : formattedDateTime,
+          'latitudeRep' : _lat,
+          'longitudeRep' : _long,
+          'barangay' : barangay,
+          'addressRep' : address,
+          'assistanceRep' : assistance,
+        },
+      );
+
+      if(res.statusCode == 200){
+        var resBodySign = jsonDecode(res.body);
+        if(resBodySign['Success'] == true){
+          Fluttertoast.showToast(msg: "Thank You for Submitting your Report!");
+          _backButton();
+        }else{
+          Fluttertoast.showToast(msg: "Error Occured, Try Again");
+        }
+      }
+    }catch(e){
+      print("I FOUND HIM CHIEF");
+      print(e.toString());
+      print("HE OVER HERE");
+      Fluttertoast.showToast(msg: e.toString());
+    }
+  }
+//////////////////////////////////////////
   final assistanceList = [
     "None",
     "Police Assistance Needed",
@@ -36,10 +130,16 @@ class _UserReportPagev2State extends State<userReportPagev2> {
   String? assistance;
 
   @override
-  void initState() {
+  void initState(){
     print(widget._mobileNumber);
+    validNum = widget._mobileNumber;
+    contactNumController = TextEditingController(text: validNum);
+    verifyContactNum(contactNumController.text);
+    //returnData();
     _getLocation();
     super.initState();
+    DateTime now = DateTime.now();
+    formattedDateTime = DateFormat('yyyy-MM-dd HH:mm:ss').format(now);
   }
 
   Future<void> _getLocation() async {
@@ -112,6 +212,7 @@ class _UserReportPagev2State extends State<userReportPagev2> {
       setState(() {
         address = formattedAddress;
         debugPrint(address);
+        debugPrint(barangay);
       });
     }
   }
@@ -159,10 +260,6 @@ class _UserReportPagev2State extends State<userReportPagev2> {
             _buildMap(),
             const SizedBox(height: 10),
             Padding(
-              padding: const EdgeInsets.only(left: 32.0, right: 32.0, top: 8.0),
-              child: _buildSetLocationButton(),
-            ),
-            Padding(
               padding: const EdgeInsets.all(32.0),
               child: _buildForm(),
             ),
@@ -206,7 +303,7 @@ class _UserReportPagev2State extends State<userReportPagev2> {
     );
   }
 
-  Widget _buildSetLocationButton() {
+  /*Widget _buildSetLocationButton() {
     return ElevatedButton(
       onPressed: () {
         print("Coordinates $coordinates");
@@ -225,7 +322,7 @@ class _UserReportPagev2State extends State<userReportPagev2> {
       child: const Text("Set Location",
           style: TextStyle(fontSize: 20, color: Colors.white)),
     );
-  }
+  }*/
 
   Widget _buildForm() {
     return Column(
@@ -233,7 +330,7 @@ class _UserReportPagev2State extends State<userReportPagev2> {
       children: [
         _buildGreyText("Address: $address"),
         const SizedBox(height: 20),
-        _buildGreyText("Barangay: "),
+        _buildGreyText("Barangay: $barangay"),
         const SizedBox(height: 20),
         Container(
           decoration: const BoxDecoration(
@@ -272,17 +369,18 @@ class _UserReportPagev2State extends State<userReportPagev2> {
 
   Widget _buildSubmitButton() {
     return ElevatedButton(
-      onPressed: () {
-        DateTime now = DateTime.now();
-        String formattedDateTime =
-            DateFormat('yyyy-MM-dd HH:mm:ss').format(now);
-
-        debugPrint("Mobile Number: ${widget._mobileNumber}");
+      onPressed: () async{
+        await fetchUserID(contactNumController.text); 
+        submitReport();
+        debugPrint("User ID: $userIdFound");
+        debugPrint("Mobile Number: ${contactNumController?.text}");
         debugPrint("Time: $formattedDateTime");
         debugPrint("Latitude: $_lat");
         debugPrint("Longitude: $_long");
+        debugPrint("Barangay: $barangay");
         debugPrint("Address: $address");
         debugPrint("Assistance: $assistance");
+        debugPrint("-----------------------");
       },
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color.fromRGBO(171, 0, 0, 1),
