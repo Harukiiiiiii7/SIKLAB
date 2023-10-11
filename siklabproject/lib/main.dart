@@ -6,6 +6,7 @@ import 'package:siklabproject/users/fragments/forgotPasswordPage.dart';
 import 'package:siklabproject/users/authentication/loginPage.dart';
 import 'package:siklabproject/users/authentication/signUpPage.dart';
 import 'package:siklabproject/users/fragments/newUserDashboard.dart';
+import 'package:siklabproject/users/fragments/testReport.dart';
 import 'package:siklabproject/users/userPreferences/user_preferences.dart';
 import 'package:siklabproject/users/fragments/userProfile.dart';
 //import 'package:siklabproject/userDashboard.dart';
@@ -35,17 +36,16 @@ class MyApp extends StatelessWidget {
       ),
       navigatorKey: navigatorKey,
       home: FutureBuilder(
-        future: RememberUser.readUser(),
-        builder: (context, dataSnapshot){
-          if(dataSnapshot.data == null){
-            return const MyHomePage();
-          }else{
-            String _mobileNumber = '';
-            
-            return newUserDashboard(_mobileNumber);
-          }
-        } 
-      ),      
+          future: RememberUser.readUser(),
+          builder: (context, dataSnapshot) {
+            if (dataSnapshot.data == null) {
+              return const MyHomePage();
+            } else {
+              String _mobileNumber = '';
+
+              return newUserDashboard(_mobileNumber);
+            }
+          }),
       //initialRoute: "/Home",
       routes: {
         "/Home": (context) => const MyHomePage(),
@@ -58,6 +58,7 @@ class MyApp extends StatelessWidget {
         "/UserProfile": (context) => UserProfile(),
         // "/ReportFirePage": (context) => userReportPage(),
         // "/HotlinesPage": (context) => Hotlines(),
+        "/UserReport": (context) => userReportPagev2('09190012251'),
       },
     );
   }
@@ -80,7 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, '/LoginPage');
+        Navigator.pushNamed(context, '/UserReport');
       },
       child: Scaffold(
         body: Container(

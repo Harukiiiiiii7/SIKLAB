@@ -4,6 +4,7 @@ import 'package:siklabproject/users/fragments/hotlines.dart';
 import 'package:siklabproject/users/fragments/userProfile.dart';
 import 'package:siklabproject/users/fragments/userReportPage.dart';
 import 'package:siklabproject/users/fragments/userSettingsPage.dart';
+//import 'package:siklabproject/users/fragments/testReport.dart';
 
 import '../userPreferences/current_user.dart';
 
@@ -23,19 +24,17 @@ class _newUserDashboardState extends State<newUserDashboard> {
     Navigator.pushNamed(context, '/LoginPage');
   }*/
 
-  void _goToUserProfile(){
+  void _goToUserProfile() {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => UserProfile()),
+      MaterialPageRoute(builder: (context) => UserProfile()),
     );
   }
 
-  void _goToHotlines(){
+  void _goToHotlines() {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => Hotlines(widget._mobileNumber)),
+      MaterialPageRoute(builder: (context) => Hotlines(widget._mobileNumber)),
     );
   }
 
@@ -81,11 +80,10 @@ class _newUserDashboardState extends State<newUserDashboard> {
               },
             ),
             IconButton(
-              icon: const Icon(Icons.person),
-              onPressed: (){
-                _goToUserProfile();
-              }
-            ),
+                icon: const Icon(Icons.person),
+                onPressed: () {
+                  _goToUserProfile();
+                }),
           ],
           backgroundColor: const Color.fromRGBO(171, 0, 0, 1),
           elevation: 50.0,
