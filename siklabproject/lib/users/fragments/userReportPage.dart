@@ -1,14 +1,19 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:siklabproject/users/fragments/newUserDashboard.dart';
+import 'package:http/http.dart' as http;
+import '../../api_connection/api_connection.dart';
 
 class userReportPage extends StatefulWidget {
-  String _mobileNumber;
+  
+  String _mobileNumber;// to get the contactNum
 
   userReportPage(this._mobileNumber, {super.key});
-
+  
   @override
   State<userReportPage> createState() => _UserReportPageState();
 }
@@ -21,12 +26,17 @@ class _UserReportPageState extends State<userReportPage> {
           builder: (context) => newUserDashboard(widget._mobileNumber)),
     );
   }
+  
+  late String validNum;
+  var contactNumController;
+
+  var timeStamp = TextEditingController();
 
   late Size mediaSize;
   late Color myColor;
 
-  late String _lat = '';
-  late String _long = '';
+  String? _lat;
+  String? _long;
   late double lat, long;
 
   late String address = '';
@@ -37,11 +47,69 @@ class _UserReportPageState extends State<userReportPage> {
     "Advance Cardiac Life Support Needed"
   ];
   String? assistance;
+  String? userIdFound;
+  String? formattedDateTime;
+  
+  //Function here
+
+  Future<String?> fetchUserID(String contactNum) async{
+    final response = await http.post(
+    Uri.parse(API.getID),
+    body: {'contactNum': contactNum},
+  );
+
+    if (response.statusCode == 200) {
+      final jsonData = jsonDecode(response.body);
+      if (jsonData.containsKey('userID')) {
+        userIdFound = jsonData['userID'].toString();
+        submitReport();
+      } else {
+        
+      }
+    }else {
+      throw Exception('Failed to fetch userID');
+    }
+  }
+
+  submitReport() async {
+    try{
+      var res = await http.post(
+        Uri.parse(API.subRep),
+        body: {
+          'userID' : userIdFound,
+          'timeStamp' : formattedDateTime,
+          'latitudeRep' : _lat,
+          'longitudeRep' : _long,
+          'addressRep' : address,
+          'assistanceRep' : assistance,
+        },
+      );
+
+      if(res.statusCode == 200){
+        var resBodySign = jsonDecode(res.body);
+        if(resBodySign['Success'] == true){
+          Fluttertoast.showToast(msg: "Thank You for Submitting your Report!");
+          _backButton();
+        }else{
+          Fluttertoast.showToast(msg: "Error Occured, Try Again");
+        }
+      }
+    }catch(e){
+      print("I FOUND HIM CHIEF");
+      print(e.toString());
+      print("HE OVER HERE");
+      Fluttertoast.showToast(msg: e.toString());
+    }
+  }
 
   @override
   void initState() {
     _getLocation();
     super.initState();
+    validNum = widget._mobileNumber;
+    contactNumController = TextEditingController(text: validNum);
+    DateTime now = DateTime.now();
+    formattedDateTime = DateFormat('yyyy-MM-dd HH:mm:ss').format(now);
   }
 
   Future<void> _getLocation() async {
@@ -232,17 +300,16 @@ class _UserReportPageState extends State<userReportPage> {
 
   Widget _buildSubmitButton() {
     return ElevatedButton(
-      onPressed: () {
-        DateTime now = DateTime.now();
-        String formattedDateTime =
-            DateFormat('yyyy-MM-dd HH:mm:ss').format(now);
-
-        debugPrint("Mobile Number: ${widget._mobileNumber}");
+      onPressed: () async{
+        await fetchUserID(contactNumController.text);
+        debugPrint("User ID: $userIdFound");
+        debugPrint("Mobile Number: ${contactNumController?.text}");
         debugPrint("Time: $formattedDateTime");
         debugPrint("Latitude: $_lat");
         debugPrint("Longitude: $_long");
         debugPrint("Address: $address");
         debugPrint("Assistance: $assistance");
+        debugPrint("-----------------------");
       },
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color.fromRGBO(171, 0, 0, 1),

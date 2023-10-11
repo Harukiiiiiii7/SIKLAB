@@ -1,12 +1,16 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:siklabproject/api_connection/api_connection.dart';
 import 'package:siklabproject/users/fragments/hotlines.dart';
 import 'package:siklabproject/users/fragments/userProfile.dart';
 import 'package:siklabproject/users/fragments/userReportPage.dart';
 import 'package:siklabproject/users/fragments/userSettingsPage.dart';
-//import 'package:siklabproject/users/fragments/testReport.dart';
+import 'package:siklabproject/users/model/report.dart';
 
 import '../userPreferences/current_user.dart';
+import 'package:http/http.dart' as http;
 
 class newUserDashboard extends StatefulWidget {
   CurrentUser rememberCurrentUser = Get.put(CurrentUser());
@@ -52,6 +56,27 @@ class _newUserDashboardState extends State<newUserDashboard> {
       MaterialPageRoute(
           builder: (context) => userReportPage(widget._mobileNumber)),
     );
+  }
+
+  List<Item> items = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchItems();
+  }
+
+  Future<void> fetchItems() async {
+    final response = await http.get(Uri.parse(API.displayData));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> jsonItems = jsonDecode(response.body);
+      setState(() {
+        items = jsonItems.map((json) => Item.fromJson(json)).toList();
+      });
+    } else {
+      throw Exception('Failed to load items from the server');
+    }
   }
 
   late Size mediaSize;
@@ -191,7 +216,7 @@ class _newUserDashboardState extends State<newUserDashboard> {
     );
   }
 
-  Widget _buildListView() {
+  /*Widget _buildListView() {
     return ListView.builder(
       shrinkWrap: true,
       primary: false,
@@ -207,6 +232,39 @@ class _newUserDashboardState extends State<newUserDashboard> {
           ],
         ),
       ),
+    );
+  }*/
+
+  Widget _buildListView() {
+    return ListView.builder(
+      shrinkWrap: true,
+      primary: false,
+      itemCount: items.length,
+      padding: const EdgeInsets.all(12.0),
+      itemBuilder: (context, index) {
+        final item = items[index];
+        return ListTile(
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Icon(Icons.fireplace),
+              SizedBox(width: 30),
+              Flexible(
+                child: Text(
+                  item.addressRep, // Display the addressRep from the 'items' list
+                  overflow: TextOverflow.ellipsis, // Add this line
+                ),
+              ),
+            ],
+          ),
+          trailing: Flexible(
+            child: Text(
+              item.timeStamp, // Display the timeStamp from the 'items' list
+              overflow: TextOverflow.ellipsis, // Add this line
+            ),
+          ),
+        );
+      },
     );
   }
 
