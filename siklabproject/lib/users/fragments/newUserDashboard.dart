@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -31,7 +32,8 @@ class _newUserDashboardState extends State<newUserDashboard> {
   void _goToUserProfile() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => UserProfile()),
+      MaterialPageRoute(
+          builder: (context) => userProfile(widget._mobileNumber)),
     );
   }
 
@@ -42,19 +44,75 @@ class _newUserDashboardState extends State<newUserDashboard> {
     );
   }
 
-  void _goToUserSettings() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) => userSettingsPage(widget._mobileNumber)),
-    );
-  }
+  // void _goToUserSettings() {
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(
+  //         builder: (context) => userSettingsPage(widget._mobileNumber)),
+  //   );
+  // }
 
   void _goToReportPage() {
     Navigator.push(
       context,
       MaterialPageRoute(
           builder: (context) => userReportPagev2(widget._mobileNumber)),
+    );
+  }
+
+  var counter = 3;
+  late Timer _timer;
+
+  void _countdown() {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        counter--;
+        print(counter);
+      });
+      if (counter == 0) {
+        timer.cancel();
+        Navigator.pushNamed(context, '/LoginPage');
+      }
+    });
+  }
+
+  void _showErrorDialog() {
+    _countdown();
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          backgroundColor: const Color.fromRGBO(248, 248, 248, 1),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+          child: Container(
+            height: 250,
+            padding: const EdgeInsets.all(12.0),
+            child: const Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.warning_amber_outlined,
+                  size: 100,
+                  color: Color.fromARGB(255, 255, 137, 2),
+                ),
+                SizedBox(height: 25),
+                Text(
+                  "Session Expired",
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 15),
+                Text(
+                  "Redirecting you to the login page.",
+                  style: TextStyle(fontSize: 16),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -98,12 +156,12 @@ class _newUserDashboardState extends State<newUserDashboard> {
             child: Text("USER DASHBOARD"),
           ),
           actions: [
-            IconButton(
-              icon: const Icon(Icons.settings),
-              onPressed: () {
-                _goToUserSettings();
-              },
-            ),
+            // IconButton(
+            //   icon: const Icon(Icons.settings),
+            //   onPressed: () {
+            //     _goToUserSettings();
+            //   },
+            // ),
             IconButton(
                 icon: const Icon(Icons.person),
                 onPressed: () {

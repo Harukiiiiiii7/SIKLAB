@@ -10,7 +10,6 @@ import 'package:http/http.dart' as http;
 import '../model/user.dart';
 import '../userPreferences/user_preferences.dart';
 
-
 class loginPage extends StatefulWidget {
   @override
   State<loginPage> createState() => _LoginPageState();
@@ -28,7 +27,7 @@ class _LoginPageState extends State<loginPage> {
 
   late bool _passwordVisible;
 
-  var counter = 5;
+  var counter = 3;
   late Timer _timer;
 
   var formKey = GlobalKey<FormState>();
@@ -36,37 +35,52 @@ class _LoginPageState extends State<loginPage> {
   var passwordController = TextEditingController();
   var isObsecure = true.obs;
 
-  loginUserNow() async{
-    try{
+  loginUserNow() async {
+    try {
       var res = await http.post(
         Uri.parse(API.login),
         body: {
-          "contactNum" : contactNum.text.trim(),
-          "password" : passwordController.text.trim(),
+          "contactNum": contactNum.text.trim(),
+          "password": passwordController.text.trim(),
         },
       );
 
-      if(res.statusCode == 200){
-          var resBodyLogin = jsonDecode(res.body);
-          if(resBodyLogin['Success'] == true){
-            Fluttertoast.showToast(msg: "Congratulations!\nYou have Logged in Successfully.");
+      if (res.statusCode == 200) {
+        var resBodyLogin = jsonDecode(res.body);
+        if (resBodyLogin['Success'] == true) {
+          Fluttertoast.showToast(
+              msg: "Congratulations!\nYou have Logged in Successfully.");
 
-            User userInfo =  User.fromJson(resBodyLogin["userData"]);
+          User userInfo = User.fromJson(resBodyLogin["userData"]);
 
-            await RememberUser.storeUser(userInfo);
+          await RememberUser.storeUser(userInfo);
 
-            //Get.to(newUserDashboard(contactNum.text));
+          //Get.to(newUserDashboard(contactNum.text));
 
-            _showDialog(contactNum.text);
-          }else{
-            Fluttertoast.showToast(msg: "Incorrect Credentials! \nPlease write correct contact number or password!");
-            setState((){
-              contactNum.clear();
-              passwordController.clear();
-            });
-          }
+          _showDialog(contactNum.text);
+          // ignore: use_build_context_synchronously
+          showDialog(
+            barrierDismissible: false,
+            builder: (ctx) {
+              return const Center(
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                ),
+              );
+            },
+            context: context,
+          );
+        } else {
+          Fluttertoast.showToast(
+              msg:
+                  "Incorrect Credentials! \nPlease write correct contact number or password!");
+          setState(() {
+            contactNum.clear();
+            passwordController.clear();
+          });
+        }
       }
-    }catch(errorMsg){
+    } catch (errorMsg) {
       print("Error :: " + errorMsg.toString());
     }
   }
@@ -324,17 +338,14 @@ class _LoginPageState extends State<loginPage> {
       onPressed: () {
         debugPrint("Number: ${contactNum.text}");
         debugPrint("Password: ${passwordController.text}");
-        if(contactNum!=null){
+        if (contactNum != null) {
           loginUserNow();
           debugPrint("Passed");
-        }
-        else if (contactNum.text.isEmpty ||
+        } else if (contactNum.text.isEmpty ||
             passwordController.text.isEmpty ||
             contactNum.text.length < 11) {
           _showErrorDialog();
-        } else {
-
-        }
+        } else {}
       },
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color.fromRGBO(171, 0, 0, 1),

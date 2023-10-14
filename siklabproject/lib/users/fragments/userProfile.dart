@@ -1,16 +1,196 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:siklabproject/users/fragments/newUserDashboard.dart';
+import 'package:siklabproject/users/userPreferences/user_preferences.dart';
 import '../userPreferences/current_user.dart';
 
-class UserProfile extends StatelessWidget{
+class userProfile extends StatefulWidget {
+  String _mobileNumber;
 
+  userProfile(this._mobileNumber, {super.key});
+
+  @override
+  State<userProfile> createState() => userProfileState();
+}
+
+class userProfileState extends State<userProfile> {
   final CurrentUser _currentUser = Get.put(CurrentUser());
-  
-  Widget userInfoItemProfile(IconData iconData, String userData){
+
+  late Color myColor;
+  late Size mediaSize;
+
+  var counter = 5;
+  late Timer _timer;
+
+  void _backButton() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => newUserDashboard(widget._mobileNumber)),
+    );
+  }
+
+  void _countLog() {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        counter--;
+        print(counter);
+      });
+      if (counter == 0) {
+        timer.cancel();
+        RememberUser.removeUserInfo().then((value) {
+          Navigator.pushNamed(context, '/LoginPage');
+        });
+      }
+    });
+  }
+
+  void _showLogOutDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          backgroundColor: const Color.fromRGBO(248, 248, 248, 1),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+          child: Container(
+            height: 350,
+            padding: const EdgeInsets.all(12.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.warning_amber,
+                  size: 100,
+                  color: Colors.red,
+                ),
+                const SizedBox(height: 25),
+                const Text(
+                  "Are you sure you want to log out?",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 30),
+                ElevatedButton(
+                  onPressed: () {
+                    showDialog(
+                      barrierDismissible: false,
+                      builder: (ctx) {
+                        return const Center(
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                          ),
+                        );
+                      },
+                      context: context,
+                    );
+                    _countLog();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromRGBO(171, 0, 0, 1),
+                    shape: const StadiumBorder(),
+                    elevation: 20,
+                    shadowColor: myColor,
+                    minimumSize: const Size.fromHeight(50),
+                  ),
+                  child: const Text(
+                    "Yes",
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 15),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 240, 240, 240),
+                    shape: const StadiumBorder(),
+                    elevation: 20,
+                    shadowColor: myColor,
+                    minimumSize: const Size.fromHeight(50),
+                  ),
+                  child: const Text("No"),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    myColor = Theme.of(context).primaryColor;
+    mediaSize = MediaQuery.of(context).size;
+    return WillPopScope(
+      onWillPop: () async {
+        _backButton();
+        // Prevent default back button behavior
+        return false;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text("USER DASHBOARD"),
+          backgroundColor: const Color.fromRGBO(171, 0, 0, 1),
+          elevation: 50.0,
+          foregroundColor: Colors.white,
+        ),
+        backgroundColor: Colors.white,
+        body: Center(
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            child: Stack(
+              children: [
+                SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  child: _buildBody(),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBody() {
+    return Padding(
+      padding: const EdgeInsets.all(32.0),
+      child: Column(
+        children: [
+          Center(
+            child: Image.network(
+              "https://i.imgur.com/nTKKdMR.png",
+              width: 240,
+            ),
+          ),
+          const SizedBox(height: 15),
+          userInfoItemProfile(Icons.person, _currentUser.user.username),
+          const SizedBox(height: 15),
+          userInfoItemProfile(Icons.home, _currentUser.user.barangay),
+          const SizedBox(height: 15),
+          userInfoItemProfile(Icons.numbers, _currentUser.user.contactNum),
+          const SizedBox(height: 40),
+          _buildEditProfileButton(),
+          const SizedBox(height: 15),
+          _buildSignOutButton(),
+        ],
+      ),
+    );
+  }
+
+  Widget userInfoItemProfile(IconData iconData, String userData) {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12,),
-        color: Colors.grey,
+        borderRadius: BorderRadius.circular(12.0),
+        color: const Color.fromARGB(255, 241, 239, 239),
       ),
       padding: const EdgeInsets.symmetric(
         horizontal: 16,
@@ -23,7 +203,7 @@ class UserProfile extends StatelessWidget{
             size: 30,
             color: Colors.black,
           ),
-          const SizedBox(width:16),
+          const SizedBox(width: 16),
           Text(
             userData,
             style: const TextStyle(
@@ -31,44 +211,51 @@ class UserProfile extends StatelessWidget{
             ),
           ),
         ],
-      )
+      ),
     );
   }
-  
-  @override
-  Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.all(32,),
-      children: [
-        Center(
-          child: Image.network(
-            "https://i.imgur.com/nTKKdMR.png",
-            width: 240,
-          ),
+
+  Widget _buildEditProfileButton() {
+    return ElevatedButton(
+      onPressed: () {
+        // _showEdit();
+      },
+      style: ElevatedButton.styleFrom(
+        backgroundColor: const Color.fromRGBO(171, 0, 0, 1),
+        shape: const StadiumBorder(),
+        elevation: 20,
+        minimumSize: const Size.fromHeight(50),
+      ),
+      child: const Text(
+        "Edit Profile",
+        style: TextStyle(
+          color: Colors.white,
         ),
-
-        const SizedBox(height:20,),
-
-        userInfoItemProfile(Icons.person, _currentUser.user.username),
-
-        const SizedBox(height:20,),
-
-        userInfoItemProfile(Icons.home, _currentUser.user.barangay),
-
-        const SizedBox(height:20,),
-
-        userInfoItemProfile(Icons.numbers, _currentUser.user.contactNum),
-
-      ],
+      ),
     );
+  }
 
-  }// Widget
+  Widget _buildSignOutButton() {
+    return ElevatedButton(
+      onPressed: () {
+        _showLogOutDialog();
+      },
+      style: ElevatedButton.styleFrom(
+        backgroundColor: const Color.fromRGBO(171, 0, 0, 1),
+        shape: const StadiumBorder(),
+        elevation: 20,
+        minimumSize: const Size.fromHeight(50),
+      ),
+      child: const Text(
+        "Sign Out",
+        style: TextStyle(
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
 
+  // Widget _circularProgressIndicator() {
 
-
-
-
-
-
-
+  // }
 }

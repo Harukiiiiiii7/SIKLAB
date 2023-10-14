@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -27,6 +28,31 @@ class _UserReportPagev2State extends State<userReportPagev2> {
     );
   }
 
+  var counter = 3;
+  late Timer _timer;
+
+  void _returnToDashboard(String mobileNumber) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        counter--;
+        print(counter);
+      });
+      if (counter == 0) {
+        timer.cancel();
+        debugPrint(mobileNumber);
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(builder: (context) => UserDashboard(mobileNumber)),
+        // );
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => newUserDashboard(mobileNumber)),
+        );
+      }
+    });
+  }
+
   late String _lat;
   late String _long;
   late double lat, long;
@@ -47,20 +73,19 @@ class _UserReportPagev2State extends State<userReportPagev2> {
   String? barangay;
   String? formattedDateTime;
 
-  Future<String?> fetchUserID(String contactNum) async{
+  Future<String?> fetchUserID(String contactNum) async {
     final response = await http.post(
-    Uri.parse(API.getID),
-    body: {'contactNum': contactNum},
-  );
+      Uri.parse(API.getID),
+      body: {'contactNum': contactNum},
+    );
     if (response.statusCode == 200) {
       final jsonData = jsonDecode(response.body);
-      if (jsonData.containsKey('userID')){
+      if (jsonData.containsKey('userID')) {
         userIdFound = jsonData['userID'].toString();
-      }else{
-      }
-    }else {
+      } else {}
+    } else {
       throw Exception('Failed to fetch userID');
-    }  
+    }
   }
 
   Future<void> verifyContactNum(String contactNum) async {
@@ -91,36 +116,49 @@ class _UserReportPagev2State extends State<userReportPagev2> {
   }
 
   submitReport() async {
-    try{
+    try {
       var res = await http.post(
         Uri.parse(API.subRep),
         body: {
-          'userID' : userIdFound,
-          'timeStamp' : formattedDateTime,
-          'latitudeRep' : _lat,
-          'longitudeRep' : _long,
-          'barangay' : barangay,
-          'addressRep' : address,
-          'assistanceRep' : assistance,
+          'userID': userIdFound,
+          'timeStamp': formattedDateTime,
+          'latitudeRep': _lat,
+          'longitudeRep': _long,
+          'barangay': barangay,
+          'addressRep': address,
+          'assistanceRep': assistance,
         },
       );
 
-      if(res.statusCode == 200){
+      if (res.statusCode == 200) {
         var resBodySign = jsonDecode(res.body);
-        if(resBodySign['Success'] == true){
+        if (resBodySign['Success'] == true) {
           Fluttertoast.showToast(msg: "Thank You for Submitting your Report!");
-          _backButton();
-        }else{
+          // ignore: use_build_context_synchronously
+          showDialog(
+            barrierDismissible: false,
+            builder: (ctx) {
+              return const Center(
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                ),
+              );
+            },
+            context: context,
+          );
+          _returnToDashboard(widget._mobileNumber);
+        } else {
           Fluttertoast.showToast(msg: "Error Occured, Try Again");
         }
       }
-    }catch(e){
+    } catch (e) {
       print("I FOUND HIM CHIEF");
       print(e.toString());
       print("HE OVER HERE");
       Fluttertoast.showToast(msg: e.toString());
     }
   }
+
 //////////////////////////////////////////
   final assistanceList = [
     "None",
@@ -130,7 +168,7 @@ class _UserReportPagev2State extends State<userReportPagev2> {
   String? assistance;
 
   @override
-  void initState(){
+  void initState() {
     print(widget._mobileNumber);
     validNum = widget._mobileNumber;
     contactNumController = TextEditingController(text: validNum);
@@ -369,8 +407,8 @@ class _UserReportPagev2State extends State<userReportPagev2> {
 
   Widget _buildSubmitButton() {
     return ElevatedButton(
-      onPressed: () async{
-        await fetchUserID(contactNumController.text); 
+      onPressed: () async {
+        await fetchUserID(contactNumController.text);
         submitReport();
         debugPrint("User ID: $userIdFound");
         debugPrint("Mobile Number: ${contactNumController?.text}");
