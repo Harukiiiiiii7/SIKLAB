@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,6 +19,9 @@ class _ForgotPasswordPageState extends State<forgotPasswordPage> {
 
   var phone = "";
 
+  var counter = 3;
+  late Timer _timer;
+
   final FirebaseAuth auth = FirebaseAuth.instance;
 
   @override
@@ -28,8 +33,31 @@ class _ForgotPasswordPageState extends State<forgotPasswordPage> {
     Navigator.pushNamed(context, '/LoginPage');
   }
 
+  void _countdown() {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        counter--;
+        print(counter);
+      });
+      if (counter == 0) {
+        timer.cancel();
+      }
+    });
+  }
+
   void _nextPage(String phoneNumber) {
-    const CircularProgressIndicator();
+    showDialog(
+      barrierDismissible: false,
+      builder: (ctx) {
+        return const Center(
+          child: CircularProgressIndicator(
+            strokeWidth: 2,
+          ),
+        );
+      },
+      context: context,
+    );
+    _countdown();
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => OTP_Screen(phoneNumber)),

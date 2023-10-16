@@ -40,6 +40,17 @@ class _changePasswordPageState extends State<changePasswordPage> {
       });
       if (counter == 0) {
         timer.cancel();
+        showDialog(
+          barrierDismissible: false,
+          builder: (ctx) {
+            return const Center(
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+              ),
+            );
+          },
+          context: context,
+        );
         Navigator.pushNamed(context, '/LoginPage');
       }
     });
