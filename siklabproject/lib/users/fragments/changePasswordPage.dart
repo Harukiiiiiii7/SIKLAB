@@ -239,7 +239,7 @@ class _changePasswordPageState extends State<changePasswordPage> {
           ),
         ),
         const SizedBox(height: 20),
-        _buildGreyText("Password"),
+        _buildGreyText("New Password"),
         _buildInputField(passwordController,
             isPassword: true, isObscure: _passwordVisible),
         const SizedBox(height: 20),

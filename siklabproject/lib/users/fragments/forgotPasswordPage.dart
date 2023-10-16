@@ -181,18 +181,18 @@ class _ForgotPasswordPageState extends State<forgotPasswordPage> {
         print(mobileNumberWithCountryCode);
 
         if (mobileNumberWithCountryCode.length == 13) {
-          // await FirebaseAuth.instance.verifyPhoneNumber(
-          //   phoneNumber: mobileNumberWithCountryCode,
-          //   timeout: const Duration(seconds: 60),
-          //   verificationCompleted: (PhoneAuthCredential credential) {},
-          //   verificationFailed: (FirebaseAuthException e) {
-          //     print(e);
-          //   },
-          //   codeSent: (String verificationId, int? resendToken) {
-          //     forgotPasswordPage.verifyID = verificationId;
-          //   },
-          //   codeAutoRetrievalTimeout: (String verificationId) {},
-          // );
+          await FirebaseAuth.instance.verifyPhoneNumber(
+            phoneNumber: mobileNumberWithCountryCode,
+            timeout: const Duration(seconds: 60),
+            verificationCompleted: (PhoneAuthCredential credential) {},
+            verificationFailed: (FirebaseAuthException e) {
+              print(e);
+            },
+            codeSent: (String verificationId, int? resendToken) {
+              forgotPasswordPage.verifyID = verificationId;
+            },
+            codeAutoRetrievalTimeout: (String verificationId) {},
+          );
           _nextPage(mobileNumberWithCountryCode);
         } else {
           _showErrorDialog();
