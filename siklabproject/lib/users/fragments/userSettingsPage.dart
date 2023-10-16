@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:siklabproject/users/authentication/loginPage.dart';
 import 'package:siklabproject/users/fragments/newUserDashboard.dart';
-
+import 'package:http/http.dart' as http;
+import '../../api_connection/api_connection.dart';
 import '../userPreferences/user_preferences.dart';
 
 class userSettingsPage extends StatefulWidget {
@@ -94,10 +96,63 @@ class _UserSettingsPageState extends State<userSettingsPage> {
 
   late bool _passwordVisible;
 
+  late String validNum;
+  var contactNumController;
+  String usernameFound = '';
+  String barangayFound = '';
+
   @override
   void initState() {
+    print(widget._mobileNumber);
+    validNum = widget._mobileNumber;
+    contactNumController = TextEditingController(text: validNum);
+    userProfile(contactNumController.text);
+    verifyContactNum(contactNumController.text);
     super.initState();
     _passwordVisible = false;
+  }
+
+  Future<String?> userProfile(String contactNum) async{
+    final response = await http.post(
+    Uri.parse(API.getUsername),
+    body: {'contactNum': contactNum},
+  );
+    if (response.statusCode == 200) {
+      final jsonData = jsonDecode(response.body);
+      if (jsonData.containsKey('username')) {
+        usernameFound = jsonData['username'].toString();
+      } else {
+      }
+    }else {
+      throw Exception('Failed to fetch userID');
+    }
+  }
+
+  Future<void> verifyContactNum(String contactNum) async {
+    final response = await http.post(
+      Uri.parse(API.getBarangay),
+      body: {'contactNum': contactNum},
+    );
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+      if (jsonData.containsKey('barangay')) {
+        setState(() {
+          barangayFound = jsonData['barangay'];
+        });
+      } else if (jsonData.containsKey('error')) {
+        setState(() {
+          barangayFound = jsonData['error'];
+        });
+      } else {
+        setState(() {
+          barangayFound = "ContactNum not found";
+        });
+      }
+    } else {
+      setState(() {
+        barangayFound = "Failed to verify contactNum";
+      });
+    }
   }
 
   void _countdown() {
@@ -430,11 +485,12 @@ class _UserSettingsPageState extends State<userSettingsPage> {
         _buildGreyText("Mobile Number"),
         _buildInputField(mobileNumberController, isPhone: true),
         const SizedBox(height: 30),
+        
         // _buildEditButton(),
         // const SizedBox(height: 10),
         _buildChangePasswordButton(),
         const SizedBox(height: 10),
-        _buildLogOutButton(),
+        //_buildLogOutButton(),
       ],
     );
   }
@@ -449,7 +505,17 @@ class _UserSettingsPageState extends State<userSettingsPage> {
   }
 
   Widget _buildInputField(TextEditingController controller,
-      {isPhone = false, isName = false, isBarangay = false}) {
+      {bool isPhone = false, bool isName = false, bool isBarangay = false}) {
+    TextEditingController? textController;
+
+    if (isName) {
+      textController = TextEditingController(text: usernameFound);
+    } else if (isPhone) {
+      textController = TextEditingController(text: widget._mobileNumber);
+    } else if (isBarangay) {
+      textController = TextEditingController(text: barangayFound);
+    }
+
     return Container(
       decoration: const BoxDecoration(
         border: Border(
@@ -457,21 +523,14 @@ class _UserSettingsPageState extends State<userSettingsPage> {
         ),
       ),
       child: TextField(
-        controller: isPhone
-            ? TextEditingController(text: widget._mobileNumber)
-            : isName
-                ? TextEditingController(text: "William Rey")
-                : isBarangay
-                    ? TextEditingController(text: "Barangay LS")
-                    : null,
-        // onChanged: (value) {
-        //   isName
-        //       ? nameController.text = value
-        //       : null; // IF NULL, EWAN TEKA LANG HA - THIS NEEDS TO BE INITIAL VALUE PARIN
-        //   debugPrint("Value : $value");
-        //   debugPrint("Name Controller: ${nameController.text}");
-        //   isName ? _enableUpdateButton = true : _enableUpdateButton = false;
-        // },
+        controller: textController,
+        onChanged: (value) {
+          if (isName) {
+            value = '';
+            usernameFound = value;
+          }
+          // Other processing for other cases.
+        },
         inputFormatters: isName
             ? <TextInputFormatter>[
                 FilteringTextInputFormatter.allow(RegExp("[a-zA-Z ]"))
@@ -484,10 +543,11 @@ class _UserSettingsPageState extends State<userSettingsPage> {
                   ? const Icon(Icons.phone_android_sharp)
                   : null,
         ),
-        enabled: false,
+        enabled: isName,
       ),
     );
   }
+
 
   // Widget _buildEditButton() {
   //   return ElevatedButton(

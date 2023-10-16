@@ -13,6 +13,8 @@ import 'package:siklabproject/users/fragments/testReport.dart';
 import '../userPreferences/current_user.dart';
 import 'package:http/http.dart' as http;
 
+import '../userPreferences/user_preferences.dart';
+
 class newUserDashboard extends StatefulWidget {
   CurrentUser rememberCurrentUser = Get.put(CurrentUser());
 
@@ -25,9 +27,9 @@ class newUserDashboard extends StatefulWidget {
 }
 
 class _newUserDashboardState extends State<newUserDashboard> {
-  /*void _backButton() {
+  void _backButton() {
     Navigator.pushNamed(context, '/LoginPage');
-  }*/
+  }
 
   void _goToUserProfile() {
     Navigator.push(
@@ -63,7 +65,8 @@ class _newUserDashboardState extends State<newUserDashboard> {
   var counter = 3;
   late Timer _timer;
 
-  void _countdown() {
+  void _countdown(){
+    _showErrorDialog();
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
         counter--;
@@ -71,13 +74,14 @@ class _newUserDashboardState extends State<newUserDashboard> {
       });
       if (counter == 0) {
         timer.cancel();
-        Navigator.pushNamed(context, '/LoginPage');
+        RememberUser.removeUserInfo().then((value) {
+          Navigator.pushNamed(context, '/LoginPage');
+        });
       }
     });
   }
 
-  void _showErrorDialog() {
-    _countdown();
+  _showErrorDialog(){
     showDialog(
       context: context,
       builder: (context) {
@@ -114,13 +118,18 @@ class _newUserDashboardState extends State<newUserDashboard> {
         );
       },
     );
-  }
+  } 
 
   List<Item> items = [];
+  String? validNum;
+  var contactNumController;
 
   @override
   void initState() {
     super.initState();
+    print(widget._mobileNumber);
+    validNum = widget._mobileNumber;
+    contactNumController = TextEditingController(text: validNum);
     fetchItems();
   }
 
@@ -132,6 +141,9 @@ class _newUserDashboardState extends State<newUserDashboard> {
       setState(() {
         items = jsonItems.map((json) => Item.fromJson(json)).toList();
       });
+      if(widget._mobileNumber == null || widget._mobileNumber.isEmpty){
+        _countdown();
+      }
     } else {
       throw Exception('Failed to load items from the server');
     }

@@ -21,4 +21,6 @@ class API{
     //getBarangay
     static const getBarangay = "$hostConnectUser/getBarangay.php";
 
+    //userName
+    static const getUsername = "$hostConnectUser/getUsername.php";
 }

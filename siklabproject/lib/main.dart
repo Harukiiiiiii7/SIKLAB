@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:siklabproject/users/fragments/changePasswordPage.dart';
 import 'package:siklabproject/users/fragments/forgotPasswordPage.dart';
 //import 'package:siklabproject/hotlines.dart';
 import 'package:siklabproject/users/authentication/loginPage.dart';
@@ -55,6 +56,7 @@ class MyApp extends StatelessWidget {
         "/SignUpPage": (context) => signUpPage(),
         // "/UserSettings": (context) => userSettingsPage(),
         "/ForgotPasswordPage": (context) => forgotPasswordPage(),
+        //"/ChangePasswordPage": (context) => changePasswordPage(),
         "/UserProfile": (context) => userProfile('09190012251'),
         // "/ReportFirePage": (context) => userReportPage(),
         // "/HotlinesPage": (context) => Hotlines(),

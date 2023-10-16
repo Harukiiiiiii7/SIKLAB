@@ -1,10 +1,13 @@
 import 'dart:async';
-
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:siklabproject/users/fragments/newUserDashboard.dart';
+import 'package:siklabproject/users/fragments/userSettingsPage.dart';
 import 'package:siklabproject/users/userPreferences/user_preferences.dart';
 import '../userPreferences/current_user.dart';
+import 'package:http/http.dart' as http;
+import '../../api_connection/api_connection.dart';
 
 class userProfile extends StatefulWidget {
   String _mobileNumber;
@@ -23,6 +26,71 @@ class userProfileState extends State<userProfile> {
 
   var counter = 5;
   late Timer _timer;
+
+  late String validNum;
+  var contactNumController;
+  String usernameFound = '';
+  String barangayFound = '';
+
+  @override
+  void initState(){
+    print(widget._mobileNumber);
+    validNum = widget._mobileNumber;
+    contactNumController = TextEditingController(text: validNum);
+    userProfile(contactNumController.text);
+    verifyContactNum(contactNumController.text);
+  }
+
+  Future<String?> userProfile(String contactNum) async{
+    final response = await http.post(
+    Uri.parse(API.getUsername),
+    body: {'contactNum': contactNum},
+  );
+    if (response.statusCode == 200) {
+      final jsonData = jsonDecode(response.body);
+      if (jsonData.containsKey('username')) {
+        usernameFound = jsonData['username'].toString();
+      } else {
+      }
+    }else {
+      throw Exception('Failed to fetch userID');
+    }
+  }
+
+  Future<void> verifyContactNum(String contactNum) async {
+    final response = await http.post(
+      Uri.parse(API.getBarangay),
+      body: {'contactNum': contactNum},
+    );
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+      if (jsonData.containsKey('barangay')) {
+        setState(() {
+          barangayFound = jsonData['barangay'];
+        });
+      } else if (jsonData.containsKey('error')) {
+        setState(() {
+          barangayFound = jsonData['error'];
+        });
+      } else {
+        setState(() {
+          barangayFound = "ContactNum not found";
+        });
+      }
+    } else {
+      setState(() {
+        barangayFound = "Failed to verify contactNum";
+      });
+    }
+  }
+  
+  void _userSettings() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => userSettingsPage(widget._mobileNumber)),
+    );
+  }
 
   void _backButton() {
     Navigator.push(
@@ -172,11 +240,11 @@ class userProfileState extends State<userProfile> {
             ),
           ),
           const SizedBox(height: 15),
-          userInfoItemProfile(Icons.person, _currentUser.user.username),
+          userInfoItemProfile(Icons.person, usernameFound),
           const SizedBox(height: 15),
-          userInfoItemProfile(Icons.home, _currentUser.user.barangay),
+          userInfoItemProfile(Icons.home, barangayFound),
           const SizedBox(height: 15),
-          userInfoItemProfile(Icons.numbers, _currentUser.user.contactNum),
+          userInfoItemProfile(Icons.numbers, contactNumController.text),
           const SizedBox(height: 40),
           _buildEditProfileButton(),
           const SizedBox(height: 15),
@@ -219,6 +287,7 @@ class userProfileState extends State<userProfile> {
     return ElevatedButton(
       onPressed: () {
         // _showEdit();
+        _userSettings();
       },
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color.fromRGBO(171, 0, 0, 1),
