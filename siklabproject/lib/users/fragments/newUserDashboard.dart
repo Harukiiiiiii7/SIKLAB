@@ -1,17 +1,14 @@
 import 'dart:async';
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:siklabproject/api_connection/api_connection.dart';
 import 'package:siklabproject/users/fragments/hotlines.dart';
 import 'package:siklabproject/users/fragments/userProfile.dart';
-import 'package:siklabproject/users/fragments/userSettingsPage.dart';
 import 'package:siklabproject/users/model/report.dart';
 import 'package:siklabproject/users/fragments/testReport.dart';
 import '../userPreferences/current_user.dart';
 import 'package:http/http.dart' as http;
-
 import '../userPreferences/user_preferences.dart';
 
 class newUserDashboard extends StatefulWidget {
@@ -44,14 +41,6 @@ class _newUserDashboardState extends State<newUserDashboard> {
       MaterialPageRoute(builder: (context) => Hotlines(widget._mobileNumber)),
     );
   }
-
-  // void _goToUserSettings() {
-  //   Navigator.push(
-  //     context,
-  //     MaterialPageRoute(
-  //         builder: (context) => userSettingsPage(widget._mobileNumber)),
-  //   );
-  // }
 
   void _goToReportPage() {
     Navigator.push(
@@ -317,6 +306,4 @@ class _newUserDashboardState extends State<newUserDashboard> {
       },
     );
   }
-
-  List<String> names = ['Taylor Swift', 'The Weeknd', 'William Rey'];
 }

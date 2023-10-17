@@ -26,4 +26,7 @@ class API{
 
     //updateUsername
     static const updateUsername = "$hostConnectUser/updateUsername.php";
+
+    //updatePassword
+    static const updatePassword = "$hostConnectUser/updatePassword.php";
 }
