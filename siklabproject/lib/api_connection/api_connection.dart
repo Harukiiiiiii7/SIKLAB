@@ -23,4 +23,7 @@ class API{
 
     //userName
     static const getUsername = "$hostConnectUser/getUsername.php";
+
+    //updateUsername
+    static const updateUsername = "$hostConnectUser/updateUsername.php";
 }

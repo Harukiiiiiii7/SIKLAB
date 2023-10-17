@@ -72,6 +72,7 @@ class _UserReportPagev2State extends State<userReportPagev2> {
   String? userIdFound;
   String? barangay;
   String? formattedDateTime;
+  String status = 'Not Resolved';
 
   Future<String?> fetchUserID(String contactNum) async {
     final response = await http.post(
@@ -121,12 +122,14 @@ class _UserReportPagev2State extends State<userReportPagev2> {
         Uri.parse(API.subRep),
         body: {
           'userID': userIdFound,
+          'contactNum' : validNum,
           'timeStamp': formattedDateTime,
           'latitudeRep': _lat,
           'longitudeRep': _long,
           'barangay': barangay,
           'addressRep': address,
           'assistanceRep': assistance,
+          'status':  status,
         },
       );
 

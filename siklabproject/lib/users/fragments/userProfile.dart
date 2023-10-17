@@ -37,11 +37,11 @@ class userProfileState extends State<userProfile> {
     print(widget._mobileNumber);
     validNum = widget._mobileNumber;
     contactNumController = TextEditingController(text: validNum);
-    userProfile(contactNumController.text);
+    userProfileEdit(contactNumController.text);
     verifyContactNum(contactNumController.text);
   }
 
-  Future<String?> userProfile(String contactNum) async{
+  Future<String?> userProfileEdit(String contactNum) async{
     final response = await http.post(
     Uri.parse(API.getUsername),
     body: {'contactNum': contactNum},

@@ -2,10 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:siklabproject/users/authentication/loginPage.dart';
-import 'package:siklabproject/users/fragments/newUserDashboard.dart';
 import 'package:http/http.dart' as http;
+import 'package:siklabproject/users/fragments/userProfile.dart';
 import '../../api_connection/api_connection.dart';
 import '../userPreferences/user_preferences.dart';
 
@@ -78,7 +78,7 @@ class _UserSettingsPageState extends State<userSettingsPage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => newUserDashboard(widget._mobileNumber)),
+          builder: (context) => userProfile(widget._mobileNumber)),
     );
   }
 
@@ -101,18 +101,49 @@ class _UserSettingsPageState extends State<userSettingsPage> {
   String usernameFound = '';
   String barangayFound = '';
 
+  
+
   @override
   void initState() {
     print(widget._mobileNumber);
     validNum = widget._mobileNumber;
     contactNumController = TextEditingController(text: validNum);
-    userProfile(contactNumController.text);
+    userProfilePHP(contactNumController.text);
     verifyContactNum(contactNumController.text);
     super.initState();
     _passwordVisible = false;
   }
+  
+  /*updateUser(String contactNum, String newUsername) async {
+    var response = await http.post(
+      Uri.parse(API.updateUsername),
+      body: {
+        'contactNum' : contactNumController.text,
+        'username': usernameFound,
+      },
+    );
 
-  Future<String?> userProfile(String contactNum) async{
+    if (response.statusCode == 200) {
+      // Handle the response here
+      Fluttertoast.showToast(msg: "Username updated successfully");
+    } else {
+      Fluttertoast.showToast(msg: "Failed to update username");
+    }
+  }*/
+
+  Future<String?> updateUser(String contactNum) async{
+    final response = await http.post(
+    Uri.parse(API.updateUsername),
+    body: {'contactNum': contactNum},
+  );
+    if (response.statusCode == 200) {
+      Fluttertoast.showToast(msg: "Username updated successfully");
+    }else {
+      Fluttertoast.showToast(msg: "Failed to update username");
+    }
+  }
+
+  Future<String?> userProfilePHP(String contactNum) async{
     final response = await http.post(
     Uri.parse(API.getUsername),
     body: {'contactNum': contactNum},
@@ -478,16 +509,10 @@ class _UserSettingsPageState extends State<userSettingsPage> {
         const SizedBox(height: 25),
         _buildGreyText("Name"),
         _buildInputField(nameController, isName: true),
-        const SizedBox(height: 20),
-        _buildGreyText("Barangay"),
-        _buildInputField(barangayController, isBarangay: true),
-        const SizedBox(height: 20),
-        _buildGreyText("Mobile Number"),
-        _buildInputField(mobileNumberController, isPhone: true),
         const SizedBox(height: 30),
         
-        // _buildEditButton(),
-        // const SizedBox(height: 10),
+        _buildEditButton(),
+        const SizedBox(height: 10),
         _buildChangePasswordButton(),
         const SizedBox(height: 10),
         //_buildLogOutButton(),
@@ -509,11 +534,7 @@ class _UserSettingsPageState extends State<userSettingsPage> {
     TextEditingController? textController;
 
     if (isName) {
-      textController = TextEditingController(text: usernameFound);
-    } else if (isPhone) {
-      textController = TextEditingController(text: widget._mobileNumber);
-    } else if (isBarangay) {
-      textController = TextEditingController(text: barangayFound);
+      textController = TextEditingController();
     }
 
     return Container(
@@ -523,10 +544,9 @@ class _UserSettingsPageState extends State<userSettingsPage> {
         ),
       ),
       child: TextField(
-        controller: textController,
+        controller: nameController,
         onChanged: (value) {
           if (isName) {
-            value = '';
             usernameFound = value;
           }
           // Other processing for other cases.
@@ -549,21 +569,23 @@ class _UserSettingsPageState extends State<userSettingsPage> {
   }
 
 
-  // Widget _buildEditButton() {
-  //   return ElevatedButton(
-  //     onPressed: () {
-  //       //
-  //     },
-  //     style: ElevatedButton.styleFrom(
-  //       backgroundColor: const Color.fromRGBO(171, 0, 0, 1),
-  //       shape: const StadiumBorder(),
-  //       elevation: 20,
-  //       shadowColor: myColor,
-  //       minimumSize: const Size.fromHeight(50),
-  //     ),
-  //     child: const Text("Update Information"),
-  //   );
-  // }
+   Widget _buildEditButton() {
+     return ElevatedButton(
+       onPressed: () {
+         updateUser(contactNumController.text);
+         debugPrint(contactNumController.text);
+         debugPrint(usernameFound);
+       },
+       style: ElevatedButton.styleFrom(
+         backgroundColor: const Color.fromRGBO(171, 0, 0, 1),
+         shape: const StadiumBorder(),
+         elevation: 20,
+         shadowColor: myColor,
+         minimumSize: const Size.fromHeight(50),
+       ),
+       child: const Text("Update Information"),
+     );
+   }
 
   // void _updateButtonPressed() {
   //   debugPrint("Mobile Number: ${widget._mobileNumber}");

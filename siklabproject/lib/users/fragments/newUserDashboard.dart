@@ -6,7 +6,6 @@ import 'package:get/get.dart';
 import 'package:siklabproject/api_connection/api_connection.dart';
 import 'package:siklabproject/users/fragments/hotlines.dart';
 import 'package:siklabproject/users/fragments/userProfile.dart';
-import 'package:siklabproject/users/fragments/userReportPage.dart';
 import 'package:siklabproject/users/fragments/userSettingsPage.dart';
 import 'package:siklabproject/users/model/report.dart';
 import 'package:siklabproject/users/fragments/testReport.dart';
