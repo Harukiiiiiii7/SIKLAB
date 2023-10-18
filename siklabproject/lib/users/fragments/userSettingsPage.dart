@@ -82,13 +82,13 @@ class _UserSettingsPageState extends State<userSettingsPage> {
     );
   }
 
-  void _stay() {
+  /*void _stay() {
     Navigator.push(
       context,
       MaterialPageRoute(
           builder: (context) => userSettingsPage(widget._mobileNumber)),
     );
-  }
+  }*/
 
   late Color myColor;
   late Size mediaSize;
@@ -116,7 +116,6 @@ class _UserSettingsPageState extends State<userSettingsPage> {
     //userProfilePHP(contactNumController.text);
     //verifyContactNum(contactNumController.text);
     super.initState();
-    _passwordVisible = false;
   }
   
   /*updateUser(String contactNum, String newUsername) async {
