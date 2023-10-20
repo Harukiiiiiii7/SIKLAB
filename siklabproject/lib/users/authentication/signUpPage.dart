@@ -198,6 +198,7 @@ validateNumber() async {
       );
 
       if(resVal.statusCode == 200){
+        debugPrint('Passed validateNumber');
         var resBody = jsonDecode(resVal.body);
 
         if(resBody['numberFound']){
@@ -228,6 +229,7 @@ validateNumber() async {
         );
 
         if(res.statusCode == 200){
+          debugPrint('Passed registerUser');
           var resBodySign = jsonDecode(res.body);
           if(resBodySign['Success'] == true){
             Fluttertoast.showToast(msg: "Congratulations!\nYou have Signed Up Successfully.");
@@ -424,13 +426,13 @@ validateNumber() async {
   Widget _buildSignUpButton() {
     return ElevatedButton(
       onPressed: () {
-        debugPrint("Name: ${usernameController.text}");
-        debugPrint("Barangay: $barangay");
-        debugPrint("Mobile Number: ${contactNumController.text}");
-        debugPrint("Password: ${passwordController.text}");
-        debugPrint("Password: ${confirmPasswordController.text}");
         if(barangay != null){
           validateNumber();
+          debugPrint("Name: ${usernameController.text}");
+          debugPrint("Barangay: $barangay");
+          debugPrint("Mobile Number: ${contactNumController.text}");
+          debugPrint("Password: ${passwordController.text}");
+          debugPrint("Password: ${confirmPasswordController.text}");
         } else if (usernameController.text.isEmpty ||
             barangay == null ||
             contactNumController.text.isEmpty ||

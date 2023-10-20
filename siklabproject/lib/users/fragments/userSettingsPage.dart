@@ -82,12 +82,19 @@ class _UserSettingsPageState extends State<userSettingsPage> {
     );
   }
 
+  /*void _stay() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => userSettingsPage(widget._mobileNumber)),
+    );
+  }*/
+
   late Color myColor;
   late Size mediaSize;
   TextEditingController nameController = TextEditingController();
   TextEditingController mobileNumberController = TextEditingController();
   TextEditingController barangayController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
   TextEditingController newPasswordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
 
@@ -101,17 +108,14 @@ class _UserSettingsPageState extends State<userSettingsPage> {
   String usernameFound = '';
   String barangayFound = '';
 
-  
-
   @override
   void initState() {
     print(widget._mobileNumber);
     validNum = widget._mobileNumber;
     contactNumController = TextEditingController(text: validNum);
-    userProfilePHP(contactNumController.text);
-    verifyContactNum(contactNumController.text);
+    //userProfilePHP(contactNumController.text);
+    //verifyContactNum(contactNumController.text);
     super.initState();
-    _passwordVisible = false;
   }
   
   /*updateUser(String contactNum, String newUsername) async {
@@ -131,19 +135,46 @@ class _UserSettingsPageState extends State<userSettingsPage> {
     }
   }*/
 
-  Future<String?> updateUser(String contactNum) async{
-    final response = await http.post(
-    Uri.parse(API.updateUsername),
-    body: {'contactNum': contactNum},
-  );
+  Future<void> updateUsername() async {
+    String username = usernameFound;
+    String contactNum = contactNumController.text;
+    
+    var url = Uri.parse(API.updateUsername);
+    var response = await http.post(url, body: {
+      'username': username,
+      'contactNum': contactNum,
+    });
+
     if (response.statusCode == 200) {
+      // Successfully updated the username
       Fluttertoast.showToast(msg: "Username updated successfully");
-    }else {
+      _backButton();
+
+    } else {
       Fluttertoast.showToast(msg: "Failed to update username");
     }
   }
 
-  Future<String?> userProfilePHP(String contactNum) async{
+  Future<void> updatePassword() async {
+    String password = newPasswordController.text;
+    String contactNum = contactNumController.text;
+    
+    var url = Uri.parse(API.updatePassword);
+    var response = await http.post(url, body: {
+      'password': password,
+      'contactNum': contactNum,
+    });
+
+    if (response.statusCode == 200) {
+      // Successfully updated the username
+      debugPrint("New Password: ${newPasswordController.text}");
+      Fluttertoast.showToast(msg: "Password updated successfully");
+    } else {
+      Fluttertoast.showToast(msg: "Failed to update password");
+    }
+  }
+
+  /*Future<String?> userProfilePHP(String contactNum) async{
     final response = await http.post(
     Uri.parse(API.getUsername),
     body: {'contactNum': contactNum},
@@ -157,9 +188,9 @@ class _UserSettingsPageState extends State<userSettingsPage> {
     }else {
       throw Exception('Failed to fetch userID');
     }
-  }
+  }*/
 
-  Future<void> verifyContactNum(String contactNum) async {
+  /*Future<void> verifyContactNum(String contactNum) async {
     final response = await http.post(
       Uri.parse(API.getBarangay),
       body: {'contactNum': contactNum},
@@ -184,7 +215,7 @@ class _UserSettingsPageState extends State<userSettingsPage> {
         barangayFound = "Failed to verify contactNum";
       });
     }
-  }
+  }*/
 
   void _countdown() {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -240,10 +271,6 @@ class _UserSettingsPageState extends State<userSettingsPage> {
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 15),
-                _buildGreyText("Old password"),
-                _buildPasswordInputField(passwordController,
-                    isPassword: true, isObscure: _passwordVisible),
-                const SizedBox(height: 15),
                 _buildGreyText("New password"),
                 _buildPasswordInputField(newPasswordController,
                     isPassword: true, isObscure: _passwordVisible),
@@ -254,12 +281,10 @@ class _UserSettingsPageState extends State<userSettingsPage> {
                 const SizedBox(height: 35),
                 ElevatedButton(
                   onPressed: () {
-                    debugPrint("Old Password: ${passwordController.text}");
                     debugPrint("New Password: ${newPasswordController.text}");
                     debugPrint("CNP: ${confirmPasswordController.text}");
 
                     _passwordValidation(
-                        passwordController.text,
                         newPasswordController.text,
                         confirmPasswordController.text);
                   },
@@ -425,7 +450,7 @@ class _UserSettingsPageState extends State<userSettingsPage> {
                         shadowColor: myColor,
                         minimumSize: const Size.fromHeight(50),
                       ),
-                      child: const Text("No")),
+                      child: const Text("Back")),
                 ],
               ),
             ),
@@ -572,9 +597,13 @@ class _UserSettingsPageState extends State<userSettingsPage> {
    Widget _buildEditButton() {
      return ElevatedButton(
        onPressed: () {
-         updateUser(contactNumController.text);
-         debugPrint(contactNumController.text);
-         debugPrint(usernameFound);
+        if(usernameFound == '' || usernameFound == null){
+          _showErrorDialog();
+        }else{
+          updateUsername();
+          debugPrint(contactNumController.text);
+          debugPrint(usernameFound);
+        }
        },
        style: ElevatedButton.styleFrom(
          backgroundColor: const Color.fromRGBO(171, 0, 0, 1),
@@ -663,15 +692,11 @@ class _UserSettingsPageState extends State<userSettingsPage> {
     );
   }
 
-  void _passwordValidation(
-      String oldPassword, String newPassword, String confirmPassword) {
-    debugPrint("Old Password: $oldPassword");
+  void _passwordValidation(String newPassword, String confirmPassword) {
     debugPrint("New Password: $newPassword");
     debugPrint("Confirm New Password: $confirmPassword");
 
-    if (oldPassword == newPassword ||
-        oldPassword.isEmpty ||
-        newPassword.isEmpty ||
+    if (newPassword.isEmpty ||
         confirmPassword.isEmpty) {
       debugPrint("May error sa input pre");
       _showErrorDialog();
@@ -679,7 +704,9 @@ class _UserSettingsPageState extends State<userSettingsPage> {
       debugPrint("Di same password pre");
     } else {
       debugPrint("YAY PASOK");
+      updatePassword();
       _showDialog();
+
     }
   }
 }

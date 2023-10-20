@@ -30,7 +30,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  http: ^1.1.0
+  http: 
   get:
   shared_preferences:
   # no more flutter map dependencies
@@ -54,6 +54,7 @@ dependencies:
 
   pinput: ^2.3.0
   fluttertoast: ^8.2.2
+  flutter_map: ^0.13.0
 
   # removed dependency overrides
   

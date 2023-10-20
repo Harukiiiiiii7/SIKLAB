@@ -56,13 +56,15 @@ class _UserReportPagev2State extends State<userReportPagev2> {
   late String _lat;
   late String _long;
   late double lat, long;
+  var lat1;
+  var long1;
 
   //late LatLng markerLocation = LatLng(14.55, 121.02);
   late LatLng markerLocation;
   late MapboxMapController mapController;
   late Symbol marker;
 
-  late LatLng coordinates;
+  LatLng coordinates = LatLng(14.6760, 121.0437);
 
   late String address = '';
 //////////////////////////////////////////
@@ -170,14 +172,60 @@ class _UserReportPagev2State extends State<userReportPagev2> {
 
   Future<void> _startSSE() async {
     try {
-      var stream = await client.send(http.Request(
-          'GET', Uri.parse('https://siklabcentral.000webhostapp.com/sse.php')));
+      var stream = await http.Client().send(
+          http.Request('GET', Uri.parse('https://yourdomain.com/sse.php')));
       stream.stream.transform(utf8.decoder).listen((data) {
         // Handle SSE data here
-        print('You have a new report.');
+        print('Received: $data');
       });
     } catch (e) {
       print('Error: $e');
+    }
+  }
+
+  submitReportNew() async {
+    try {
+      var res = await http.post(
+        Uri.parse(API.subRep),
+        body: {
+          'userID': userIdFound,
+          'contactNum': validNum,
+          'timeStamp': formattedDateTime,
+          'latitudeRep': lat1.toString(),
+          'longitudeRep': long1.toString(),
+          'barangay': barangay,
+          'addressRep': address,
+          'assistanceRep': assistance,
+          'status': status,
+        },
+      );
+
+      if (res.statusCode == 200) {
+        var resBodySign = jsonDecode(res.body);
+        if (resBodySign['Success'] == true) {
+          Fluttertoast.showToast(msg: "Thank You for Submitting your Report!");
+          // ignore: use_build_context_synchronously
+          showDialog(
+            barrierDismissible: false,
+            builder: (ctx) {
+              return const Center(
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                ),
+              );
+            },
+            context: context,
+          );
+          _returnToDashboard(widget._mobileNumber);
+        } else {
+          Fluttertoast.showToast(msg: "Error Occured, Try Again");
+        }
+      }
+    } catch (e) {
+      print("I FOUND HIM CHIEF");
+      print(e.toString());
+      print("HE OVER HERE");
+      Fluttertoast.showToast(msg: e.toString());
     }
   }
 
@@ -334,39 +382,42 @@ class _UserReportPagev2State extends State<userReportPagev2> {
         ),
       ),
     );
-  }
+  } // Default coordinates
 
   Widget _buildMap() {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height / 2,
       child: MapboxMap(
-          accessToken:
-              'sk.eyJ1IjoiZXpla2llbGNhcHoiLCJhIjoiY2xpd2t2aTB5MGpwZzNzbjV3a20ycWpidSJ9.nCx9DsseQnku9gaDSmim9w',
-          onMapCreated: _onMapCreated,
-          initialCameraPosition: CameraPosition(
-            target: LatLng(14.6760, 121.0437),
-            zoom: 14,
-          ),
-          styleString: 'mapbox://styles/ezekielcapz/cliwlgup1004t01qqg0avgzeq',
-          rotateGesturesEnabled: true,
-          tiltGesturesEnabled: false,
-          myLocationEnabled: true,
-          zoomGesturesEnabled: true,
-          dragEnabled: true,
-          doubleClickZoomEnabled: true,
-          myLocationTrackingMode: MyLocationTrackingMode.TrackingCompass,
-          myLocationRenderMode: MyLocationRenderMode.COMPASS,
-          onMapClick: (a, coord) {
-            coordinates = coord;
-            print(coord);
-            mapController.updateSymbol(marker, SymbolOptions(geometry: coord));
+        accessToken:
+            'sk.eyJ1IjoiZXpla2llbGNhcHoiLCJhIjoiY2xpd2t2aTB5MGpwZzNzbjV3a20ycWpidSJ9.nCx9DsseQnku9gaDSmim9w',
+        onMapCreated: _onMapCreated,
+        initialCameraPosition: CameraPosition(
+          target: coordinates, // Set the initial coordinates
+          zoom: 14,
+        ),
+        styleString: 'mapbox://styles/ezekielcapz/cliwlgup1004t01qqg0avgzeq',
+        rotateGesturesEnabled: true,
+        tiltGesturesEnabled: false,
+        myLocationEnabled: true,
+        zoomGesturesEnabled: true,
+        dragEnabled: true,
+        doubleClickZoomEnabled: true,
+        myLocationTrackingMode: MyLocationTrackingMode.TrackingCompass,
+        myLocationRenderMode: MyLocationRenderMode.COMPASS,
+        onMapClick: (a, coord) {
+          setState(() {
+            coordinates = coord; // Update the coordinates
+          });
 
-            var lat = coordinates.latitude;
-            var long = coordinates.longitude;
-            _convertLatLngToAddress(lat, long);
-          },
-          onUserLocationUpdated: (UserLocation location) {}),
+          mapController.updateSymbol(marker, SymbolOptions(geometry: coord));
+
+          lat1 = coordinates.latitude;
+          long1 = coordinates.longitude;
+          _convertLatLngToAddress(lat1, long1);
+        },
+        onUserLocationUpdated: (UserLocation location) {},
+      ),
     );
   }
 
@@ -438,16 +489,29 @@ class _UserReportPagev2State extends State<userReportPagev2> {
     return ElevatedButton(
       onPressed: () async {
         await fetchUserID(contactNumController.text);
-        submitReport();
-        debugPrint("User ID: $userIdFound");
-        debugPrint("Mobile Number: ${contactNumController?.text}");
-        debugPrint("Time: $formattedDateTime");
-        debugPrint("Latitude: $_lat");
-        debugPrint("Longitude: $_long");
-        debugPrint("Barangay: $barangay");
-        debugPrint("Address: $address");
-        debugPrint("Assistance: $assistance");
-        debugPrint("-----------------------");
+        if (lat1 == null || long1 == null) {
+          submitReport();
+          debugPrint("User ID: $userIdFound");
+          debugPrint("Mobile Number: ${contactNumController?.text}");
+          debugPrint("Time: $formattedDateTime");
+          debugPrint("Latitude: $lat1");
+          debugPrint("Longitude: $long1");
+          debugPrint("Barangay: $barangay");
+          debugPrint("Address: $address");
+          debugPrint("Assistance: $assistance");
+          debugPrint("-----------------------");
+        } else {
+          submitReportNew();
+          debugPrint("User ID: $userIdFound");
+          debugPrint("Mobile Number: ${contactNumController?.text}");
+          debugPrint("Time: $formattedDateTime");
+          debugPrint("Latitude: $_lat");
+          debugPrint("Longitude: $_lat");
+          debugPrint("Barangay: $barangay");
+          debugPrint("Address: $address");
+          debugPrint("Assistance: $assistance");
+          debugPrint("-----------------------");
+        }
       },
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color.fromRGBO(171, 0, 0, 1),
