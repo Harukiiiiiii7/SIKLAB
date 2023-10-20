@@ -74,6 +74,9 @@ class _UserReportPagev2State extends State<userReportPagev2> {
   String? formattedDateTime;
   String status = 'Not Resolved';
 
+  late http.Client client;
+  late http.Response response;
+
   Future<String?> fetchUserID(String contactNum) async {
     final response = await http.post(
       Uri.parse(API.getID),
@@ -122,14 +125,14 @@ class _UserReportPagev2State extends State<userReportPagev2> {
         Uri.parse(API.subRep),
         body: {
           'userID': userIdFound,
-          'contactNum' : validNum,
+          'contactNum': validNum,
           'timeStamp': formattedDateTime,
           'latitudeRep': _lat,
           'longitudeRep': _long,
           'barangay': barangay,
           'addressRep': address,
           'assistanceRep': assistance,
-          'status':  status,
+          'status': status,
         },
       );
 
@@ -137,6 +140,9 @@ class _UserReportPagev2State extends State<userReportPagev2> {
         var resBodySign = jsonDecode(res.body);
         if (resBodySign['Success'] == true) {
           Fluttertoast.showToast(msg: "Thank You for Submitting your Report!");
+
+          _startSSE();
+
           // ignore: use_build_context_synchronously
           showDialog(
             barrierDismissible: false,
@@ -162,6 +168,19 @@ class _UserReportPagev2State extends State<userReportPagev2> {
     }
   }
 
+  Future<void> _startSSE() async {
+    try {
+      var stream = await client.send(http.Request(
+          'GET', Uri.parse('https://siklabcentral.000webhostapp.com/sse.php')));
+      stream.stream.transform(utf8.decoder).listen((data) {
+        // Handle SSE data here
+        print('You have a new report.');
+      });
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
 //////////////////////////////////////////
   final assistanceList = [
     "None",
@@ -177,10 +196,17 @@ class _UserReportPagev2State extends State<userReportPagev2> {
     contactNumController = TextEditingController(text: validNum);
     verifyContactNum(contactNumController.text);
     //returnData();
+    client = http.Client();
     _getLocation();
     super.initState();
     DateTime now = DateTime.now();
     formattedDateTime = DateFormat('yyyy-MM-dd HH:mm:ss').format(now);
+  }
+
+  @override
+  void dispose() {
+    client.close(); // Close the client when the widget is disposed
+    super.dispose();
   }
 
   Future<void> _getLocation() async {
