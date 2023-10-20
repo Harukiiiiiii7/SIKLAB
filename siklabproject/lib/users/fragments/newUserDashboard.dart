@@ -1,19 +1,19 @@
 import 'dart:async';
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:siklabproject/api_connection/api_connection.dart';
 import 'package:siklabproject/users/fragments/hotlines.dart';
 import 'package:siklabproject/users/fragments/userProfile.dart';
-import 'package:siklabproject/users/fragments/userReportPage.dart';
-import 'package:siklabproject/users/fragments/userSettingsPage.dart';
 import 'package:siklabproject/users/model/report.dart';
 import 'package:siklabproject/users/fragments/testReport.dart';
 import '../userPreferences/current_user.dart';
 import 'package:http/http.dart' as http;
-
 import '../userPreferences/user_preferences.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart' as latlong;
+import 'package:url_launcher/url_launcher.dart';
+
 
 class newUserDashboard extends StatefulWidget {
   CurrentUser rememberCurrentUser = Get.put(CurrentUser());
@@ -45,14 +45,6 @@ class _newUserDashboardState extends State<newUserDashboard> {
       MaterialPageRoute(builder: (context) => Hotlines(widget._mobileNumber)),
     );
   }
-
-  // void _goToUserSettings() {
-  //   Navigator.push(
-  //     context,
-  //     MaterialPageRoute(
-  //         builder: (context) => userSettingsPage(widget._mobileNumber)),
-  //   );
-  // }
 
   void _goToReportPage() {
     Navigator.push(
@@ -224,69 +216,97 @@ class _newUserDashboardState extends State<newUserDashboard> {
   }
 
   Widget _buildTop() {
-    return SizedBox(
-      //height: 150,
-      width: mediaSize.width,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Card(
-          color: const Color.fromARGB(255, 253, 250, 250),
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(24.0)),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    _goToReportPage();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 214, 212, 212),
-                    shape: const StadiumBorder(),
-                    elevation: 20,
-                    minimumSize: const Size.fromHeight(50),
-                  ),
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Icon(Icons.fire_truck_outlined),
-                      SizedBox(width: 50),
-                      Text("REPORT FIRE"),
-                    ],
-                  ),
+  return SizedBox(
+    width: mediaSize.width,
+    child: Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Card(
+        color: const Color.fromARGB(255, 253, 250, 250),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(24.0)),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  _goToReportPage();
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(255, 214, 212, 212),
+                  shape: const StadiumBorder(),
+                  elevation: 20,
+                  minimumSize: const Size.fromHeight(50),
                 ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    _goToHotlines();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 214, 212, 212),
-                    shape: const StadiumBorder(),
-                    elevation: 20,
-                    minimumSize: const Size.fromHeight(50),
-                  ),
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Icon(Icons.phone),
-                      SizedBox(width: 50),
-                      Text("VIEW HOTLINES"),
-                    ],
-                  ),
-                )
-              ],
-            ),
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Icon(Icons.fire_truck_outlined),
+                    SizedBox(width: 50),
+                    Text("REPORT FIRE"),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  _goToHotlines();
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(255, 214, 212, 212),
+                  shape: const StadiumBorder(),
+                  elevation: 20,
+                  minimumSize: const Size.fromHeight(50),
+                ),
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Icon(Icons.phone),
+                    SizedBox(width: 50),
+                    Text("VIEW HOTLINES"),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  _callEmergencyNumber();
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(255, 214, 212, 212),
+                  shape: const StadiumBorder(),
+                  elevation: 20,
+                  minimumSize: const Size.fromHeight(50),
+                ),
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Icon(Icons.call),
+                    SizedBox(width: 50),
+                    Text("CALL EMERGENCY"),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 
-  Widget _buildListView() {
+void _callEmergencyNumber() async {
+  const url = 'tel:911';
+  if (await canLaunch(url)) {
+    await launch(url);
+  } else {
+    throw 'Could not launch $url';
+  }
+}
+
+  /*Widget _buildListView() {
     return ListView.builder(
       shrinkWrap: true,
       primary: false,
@@ -317,7 +337,116 @@ class _newUserDashboardState extends State<newUserDashboard> {
         );
       },
     );
+  }*/
+
+  Widget _buildListView() {
+    return ListView.builder(
+      shrinkWrap: true,
+      primary: false,
+      itemCount: items.length,
+      padding: const EdgeInsets.all(12.0),
+      itemBuilder: (context, index) {
+        final item = items[index];
+
+        bool isSelected = false;
+
+        return InkWell(
+          onTap: () {
+            setState(() {
+              isSelected = !isSelected;
+            });
+            _showLocationOnMap(item.latitudeRep, item.longitudeRep);
+          },
+          child: ListTile(
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Icon(
+                  Icons.fireplace,
+                  color: isSelected ? Colors.red : Colors.black,
+                ),
+                SizedBox(width: 30),
+                Flexible(
+                  child: Text(
+                    item.addressRep,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: isSelected ? Colors.red : Colors.black,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            trailing: Flexible(
+              child: Text(
+                item.timeStamp,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  color: isSelected ? Colors.red : Colors.black,
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 
-  List<String> names = ['Taylor Swift', 'The Weeknd', 'William Rey'];
+  void _showLocationOnMap(String latitudeRep, String longitudeRep) {
+    final double latitude = double.tryParse(latitudeRep ?? '0.0') ?? 0.0;
+    final double longitude = double.tryParse(longitudeRep ?? '0.0') ?? 0.0;
+
+    final map = FlutterMap(
+      options: MapOptions(
+        center: latlong.LatLng(latitude, longitude),
+        zoom: 15.0,
+      ),
+      layers: [
+        TileLayerOptions(
+          urlTemplate: "https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}",
+          additionalOptions: {
+            'accessToken': 'pk.eyJ1IjoiZXpla2llbGNhcHoiLCJhIjoiY2xnODdtcWxhMDcxdjNocWxpOTJpeXlvdCJ9.hYBJ8R_gc4RT9jx0R0nteg',
+            'id': 'mapbox/streets-v11',
+          },
+        ),
+        MarkerLayerOptions(
+          markers: [
+            Marker(
+              width: 80.0,
+              height: 80.0,
+              point: latlong.LatLng(latitude, longitude),
+              builder: (ctx) => Container(
+                child: Icon(
+                  Icons.location_on,
+                  color: Colors.red, // Customize the marker's color
+                  size: 40.0, // Customize the marker's size
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          content: Container(
+            height: 300, // Adjust the height as needed
+            width: 300,
+            child: map,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("Close"),
+            ),
+          ],
+        );
+      }
+    );
+  }
 }

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pinput/pinput.dart';
 import 'package:siklabproject/users/fragments/changePasswordPage.dart';
+import 'package:siklabproject/users/fragments/forgotPasswordPage.dart';
 
 class OTP_Screen extends StatefulWidget {
   static String verifyID = "";
@@ -27,6 +28,9 @@ class _OTP_ScreenState extends State<OTP_Screen> {
   late int _countdownSeconds = 90;
   Timer? _countdownTimer;
 
+  var counter = 3;
+  late Timer _timer;
+
   final defaultPinTheme = PinTheme(
     width: 56,
     height: 60,
@@ -42,8 +46,31 @@ class _OTP_ScreenState extends State<OTP_Screen> {
     Navigator.pushNamed(context, '/ForgotPasswordPage');
   }
 
+  void _countdown() {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        counter--;
+        print(counter);
+      });
+      if (counter == 0) {
+        timer.cancel();
+      }
+    });
+  }
+
   void _VerificationComplete() {
-    const CircularProgressIndicator();
+    showDialog(
+      barrierDismissible: false,
+      builder: (ctx) {
+        return const Center(
+          child: CircularProgressIndicator(
+            strokeWidth: 2,
+          ),
+        );
+      },
+      context: context,
+    );
+    _countdown();
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -244,14 +271,12 @@ class _OTP_ScreenState extends State<OTP_Screen> {
       onCompleted: (pin) async {
         print(pin);
         try {
-          // PhoneAuthCredential credential = PhoneAuthProvider.credential(
-          //   verificationId: AdminMobileNumberScreen.verifyID,
-          //   smsCode: pin,
-          // );
+          PhoneAuthCredential credential = PhoneAuthProvider.credential(
+            verificationId: forgotPasswordPage.verifyID,
+            smsCode: pin,
+          );
 
-          // await auth.signInWithCredential(credential);
-
-          const CircularProgressIndicator();
+          await auth.signInWithCredential(credential);
           _VerificationComplete();
         } catch (e) {
           defaultPinTheme.copyBorderWith(

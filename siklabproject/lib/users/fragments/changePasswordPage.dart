@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
+import '../../api_connection/api_connection.dart';
 
 class changePasswordPage extends StatefulWidget {
   String mobileNumber;
@@ -25,11 +28,50 @@ class _changePasswordPageState extends State<changePasswordPage> {
   late Timer _timer;
 
   late bool _passwordVisible;
+  late String validNum;
+  var contactNumController;
+  var newNumber;
+  var _mobileNumber;
+
+  String changeFirstThreeLetters(String mobileNumber, String number) {
+  if (mobileNumber.length >= 3) {
+    // Combine the new letters with the remaining part of the original string.
+    return number + mobileNumber.substring(3);
+  } else {
+    // Handle cases where the original string is shorter than 3 characters.
+    // You can choose to return the original string or handle it differently.
+    return mobileNumber;
+  }
+}
 
   @override
   void initState() {
+    print(widget.mobileNumber);
+    validNum = widget.mobileNumber;
+    contactNumController = TextEditingController(text: validNum);
+    _mobileNumber = contactNumController.text;
+    newNumber = changeFirstThreeLetters(_mobileNumber, "0");
     super.initState();
     _passwordVisible = false;
+  }
+
+  Future<void> updatePassword() async {
+    String password = passwordController.text;
+    String contactNum = newNumber;
+    
+    var url = Uri.parse(API.updatePassword);
+    var response = await http.post(url, body: {
+      'password': password,
+      'contactNum': contactNum,
+    });
+
+    if (response.statusCode == 200) {
+      // Successfully updated the username
+      debugPrint("New Password: ${passwordController.text}");
+      Fluttertoast.showToast(msg: "Password updated successfully");
+    } else {
+      Fluttertoast.showToast(msg: "Failed to update password");
+    }
   }
 
   void _countdown() {
@@ -40,6 +82,17 @@ class _changePasswordPageState extends State<changePasswordPage> {
       });
       if (counter == 0) {
         timer.cancel();
+        showDialog(
+          barrierDismissible: false,
+          builder: (ctx) {
+            return const Center(
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+              ),
+            );
+          },
+          context: context,
+        );
         Navigator.pushNamed(context, '/LoginPage');
       }
     });
@@ -239,7 +292,7 @@ class _changePasswordPageState extends State<changePasswordPage> {
           ),
         ),
         const SizedBox(height: 20),
-        _buildGreyText("Password"),
+        _buildGreyText("New Password"),
         _buildInputField(passwordController,
             isPassword: true, isObscure: _passwordVisible),
         const SizedBox(height: 20),
@@ -290,15 +343,15 @@ class _changePasswordPageState extends State<changePasswordPage> {
   Widget _buildSubmitButton() {
     return ElevatedButton(
       onPressed: () {
-        debugPrint("Password: ${passwordController.text}");
-        debugPrint("Password: ${confirmPasswordController.text}");
-
         if (passwordController.text.isEmpty ||
             confirmPasswordController.text.isEmpty) {
           _showErrorDialog();
         } else if (passwordController.text != confirmPasswordController.text) {
           _showPasswordDoNotMatchDialog();
         } else {
+          updatePassword();
+          debugPrint("Password: ${passwordController.text}");
+          debugPrint("Number: $newNumber");
           _showDialog();
         }
       },
