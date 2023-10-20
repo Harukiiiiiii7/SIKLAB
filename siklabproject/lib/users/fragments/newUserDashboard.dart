@@ -14,7 +14,6 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart' as latlong;
 import 'package:url_launcher/url_launcher.dart';
 
-
 class newUserDashboard extends StatefulWidget {
   CurrentUser rememberCurrentUser = Get.put(CurrentUser());
 
@@ -57,7 +56,7 @@ class _newUserDashboardState extends State<newUserDashboard> {
   var counter = 3;
   late Timer _timer;
 
-  void _countdown(){
+  void _countdown() {
     _showErrorDialog();
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
@@ -73,7 +72,7 @@ class _newUserDashboardState extends State<newUserDashboard> {
     });
   }
 
-  _showErrorDialog(){
+  _showErrorDialog() {
     showDialog(
       context: context,
       builder: (context) {
@@ -110,7 +109,7 @@ class _newUserDashboardState extends State<newUserDashboard> {
         );
       },
     );
-  } 
+  }
 
   List<Item> items = [];
   String? validNum;
@@ -133,7 +132,7 @@ class _newUserDashboardState extends State<newUserDashboard> {
       setState(() {
         items = jsonItems.map((json) => Item.fromJson(json)).toList();
       });
-      if(widget._mobileNumber == null || widget._mobileNumber.isEmpty){
+      if (widget._mobileNumber == null || widget._mobileNumber.isEmpty) {
         _countdown();
       }
     } else {
@@ -216,95 +215,95 @@ class _newUserDashboardState extends State<newUserDashboard> {
   }
 
   Widget _buildTop() {
-  return SizedBox(
-    width: mediaSize.width,
-    child: Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Card(
-        color: const Color.fromARGB(255, 253, 250, 250),
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(24.0)),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  _goToReportPage();
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 214, 212, 212),
-                  shape: const StadiumBorder(),
-                  elevation: 20,
-                  minimumSize: const Size.fromHeight(50),
+    return SizedBox(
+      width: mediaSize.width,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Card(
+          color: const Color.fromARGB(255, 253, 250, 250),
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(24.0)),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    _goToReportPage();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 214, 212, 212),
+                    shape: const StadiumBorder(),
+                    elevation: 20,
+                    minimumSize: const Size.fromHeight(50),
+                  ),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Icon(Icons.fire_truck_outlined),
+                      SizedBox(width: 50),
+                      Text("REPORT FIRE"),
+                    ],
+                  ),
                 ),
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Icon(Icons.fire_truck_outlined),
-                    SizedBox(width: 50),
-                    Text("REPORT FIRE"),
-                  ],
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    _goToHotlines();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 214, 212, 212),
+                    shape: const StadiumBorder(),
+                    elevation: 20,
+                    minimumSize: const Size.fromHeight(50),
+                  ),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Icon(Icons.phone),
+                      SizedBox(width: 50),
+                      Text("VIEW HOTLINES"),
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  _goToHotlines();
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 214, 212, 212),
-                  shape: const StadiumBorder(),
-                  elevation: 20,
-                  minimumSize: const Size.fromHeight(50),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    _callEmergencyNumber();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 214, 212, 212),
+                    shape: const StadiumBorder(),
+                    elevation: 20,
+                    minimumSize: const Size.fromHeight(50),
+                  ),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Icon(Icons.call),
+                      SizedBox(width: 50),
+                      Text("CALL EMERGENCY"),
+                    ],
+                  ),
                 ),
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Icon(Icons.phone),
-                    SizedBox(width: 50),
-                    Text("VIEW HOTLINES"),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  _callEmergencyNumber();
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 214, 212, 212),
-                  shape: const StadiumBorder(),
-                  elevation: 20,
-                  minimumSize: const Size.fromHeight(50),
-                ),
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Icon(Icons.call),
-                    SizedBox(width: 50),
-                    Text("CALL EMERGENCY"),
-                  ],
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
-    ),
-  );
-}
-
-void _callEmergencyNumber() async {
-  const url = 'tel:911';
-  if (await canLaunch(url)) {
-    await launch(url);
-  } else {
-    throw 'Could not launch $url';
+    );
   }
-}
+
+  void _callEmergencyNumber() async {
+    const url = 'tel:911';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
 
   /*Widget _buildListView() {
     return ListView.builder(
@@ -403,9 +402,11 @@ void _callEmergencyNumber() async {
       ),
       layers: [
         TileLayerOptions(
-          urlTemplate: "https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}",
+          urlTemplate:
+              "https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}",
           additionalOptions: {
-            'accessToken': 'pk.eyJ1IjoiZXpla2llbGNhcHoiLCJhIjoiY2xnODdtcWxhMDcxdjNocWxpOTJpeXlvdCJ9.hYBJ8R_gc4RT9jx0R0nteg',
+            'accessToken':
+                'pk.eyJ1IjoiZXpla2llbGNhcHoiLCJhIjoiY2xnODdtcWxhMDcxdjNocWxpOTJpeXlvdCJ9.hYBJ8R_gc4RT9jx0R0nteg',
             'id': 'mapbox/streets-v11',
           },
         ),
@@ -429,24 +430,23 @@ void _callEmergencyNumber() async {
     );
 
     showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          content: Container(
-            height: 300, // Adjust the height as needed
-            width: 300,
-            child: map,
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text("Close"),
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            content: Container(
+              height: 300, // Adjust the height as needed
+              width: 300,
+              child: map,
             ),
-          ],
-        );
-      }
-    );
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text("Close"),
+              ),
+            ],
+          );
+        });
   }
 }
